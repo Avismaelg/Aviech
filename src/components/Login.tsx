@@ -26,10 +26,13 @@ export function Login() {
     setAviso(null)
 
     if (modo === 'entrar') {
-      const { error: err } = await supabase.auth.signInWithPassword({ email, password })
+      const { error: err } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      })
       if (err) setError(mensajeDeError(err.message))
     } else {
-      const { error: err } = await supabase.auth.signUp({ email, password })
+      const { error: err } = await supabase.auth.signUp({ email: email.trim(), password })
       if (err) setError(mensajeDeError(err.message))
       else setAviso('Cuenta creada. Si la confirmación por correo está activa, revisa tu bandeja para confirmarla.')
     }
