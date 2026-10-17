@@ -1,51 +1,71 @@
-import { isSupabaseConfigured } from './lib/supabase'
+import { useEffect, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
+import { Login } from './components/Login'
+import { Panel } from './components/Panel'
+import { isSupabaseConfigured, supabase } from './lib/supabase'
 
-const pasos = [
-  { texto: 'Proyecto Vite + React + TypeScript', listo: true },
-  { texto: 'Tailwind CSS configurado', listo: true },
-  { texto: 'Cliente de Supabase instalado', listo: true },
-  { texto: 'Proyecto Supabase conectado (.env)', listo: isSupabaseConfigured },
-]
-
-function App() {
+function SinConfigurar() {
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800">
-      <header className="border-b border-slate-950/50 bg-slate-900 px-6 py-4 text-white">
-        <h1 className="text-xl font-semibold tracking-tight">AviTech Panel</h1>
-        <p className="text-sm text-slate-400">Panel de gestión · Fase 1</p>
-      </header>
-
-      <main className="mx-auto max-w-2xl px-6 py-10">
-        <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-900">Estado del entorno</h2>
-          <ul className="mt-4 space-y-2">
-            {pasos.map((paso) => (
-              <li key={paso.texto} className="flex items-center gap-3 text-sm">
-                <span
-                  aria-hidden="true"
-                  className={
-                    paso.listo
-                      ? 'flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-xs text-emerald-700'
-                      : 'flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-xs text-amber-700'
-                  }
-                >
-                  {paso.listo ? '✓' : '…'}
-                </span>
-                <span>{paso.texto}</span>
-              </li>
-            ))}
-          </ul>
-
-          {!isSupabaseConfigured && (
-            <p className="mt-6 rounded-md bg-amber-50 p-3 text-sm text-amber-800">
-              Siguiente paso: crea el proyecto en Supabase, copia <code>.env.example</code> a{' '}
-              <code>.env</code> y completa la URL y la clave anónima.
-            </p>
-          )}
-        </section>
-      </main>
+    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
+      <div className="w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h1 className="text-xl font-semibold tracking-tight text-slate-900">AviTech Panel</h1>
+        <p className="mt-2 text-sm text-slate-600">Falta conectar Supabase. Pasos:</p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+          <li>
+            Crea un proyecto gratuito en{' '}
+            <a className="underline" href="https://supabase.com" target="_blank" rel="noreferrer">
+              supabase.com
+            </a>
+            .
+          </li>
+          <li>
+            Pega el contenido de <code>supabase/sql/001_clientes.sql</code> en el SQL Editor y
+            ejecútalo.
+          </li>
+          <li>
+            Copia <code>.env.example</code> a <code>.env</code> con la URL y la clave anónima del
+            proyecto.
+          </li>
+          <li>
+            Reinicia <code>npm run dev</code>.
+          </li>
+        </ol>
+      </div>
     </div>
   )
+}
+
+function App() {
+  const [sesion, setSesion] = useState<Session | null>(null)
+  const [comprobando, setComprobando] = useState(isSupabaseConfigured)
+
+  useEffect(() => {
+    if (!supabase) return
+
+    void supabase.auth.getSession().then(({ data }) => {
+      setSesion(data.session)
+      setComprobando(false)
+    })
+
+    const { data } = supabase.auth.onAuthStateChange((_evento, sesionNueva) => {
+      setSesion(sesionNueva)
+      setComprobando(false)
+    })
+
+    return () => data.subscription.unsubscribe()
+  }, [])
+
+  if (!isSupabaseConfigured) return <SinConfigurar />
+
+  if (comprobando) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <p className="text-sm text-slate-500">Cargando…</p>
+      </div>
+    )
+  }
+
+  return sesion ? <Panel sesion={sesion} /> : <Login />
 }
 
 export default App
