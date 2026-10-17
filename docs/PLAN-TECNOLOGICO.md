@@ -239,25 +239,22 @@ pnpm dev   # mantener SOLO este proceso a la vez
 
 **Estado de avance (16-oct-2026):**
 
-- ✅ Node.js LTS **v24.20.0** + npm 11.19.0 instalados (winget)
-- ✅ Git **2.55.0** instalado y registrado en el PATH del sistema · identidad configurada
-- ✅ Proyecto **`avitech-panel`** creado: Vite 8 + React 19 + TypeScript + Tailwind 4 + Supabase JS
-- ✅ **Módulo de acceso construido en código**: login/registro con Supabase Auth, panel con sesión, gestión de clientes (alta, listado, baja) y script SQL con RLS (`supabase/sql/001_clientes.sql`)
-- ✅ Repositorio en GitHub creado, enlazado y sincronizado: `github.com/Avismaelg/Aviech` (commit `7f4dcff`)
-- ✅ Build y lint sin errores · historial local y remoto al día
-- ⏳ Pendiente (requiere tus cuentas): proyecto Supabase + ejecutar el SQL + `.env`; despliegue en Cloudflare Pages; cuentas de Google AI Studio y Groq (IA)
-- ⏳ Pendiente (local): liberar disco hasta ≥25 GB
-- ⏳ pnpm: pospuesto por decisión propia (se añade con `corepack enable` cuando haga falta)
+- ✅ Node.js LTS **v24.20.0** + npm 11.19.0 · Git **2.55.0** · identidad configurada
+- ✅ Proyecto **`avitech-panel`**: Vite 8 + React 19 + TypeScript + Tailwind 4 + Supabase JS (login, panel, gestión de clientes)
+- ✅ **Supabase conectado y verificado**: proyecto `ktvyhtbmokmrzeuibznv`, tabla `clientes` creada con RLS (comprobado por API), `.env` configurado y fuera de Git
+- ✅ Repositorio GitHub sincronizado: `github.com/Avismaelg/Aviech`
+- ✅ Build, lint y servidor de desarrollo probados sin errores
+- ⏳ Pendiente inmediato: crear tu cuenta en la app y probar el alta de clientes (desactiva *Confirm email* para entrar al instante)
+- ⏳ Pendiente: Cloudflare Pages (publicar en internet); cuentas Google AI Studio y Groq (funciones de IA); liberar disco ≥25 GB
+- ⏳ Después de crear tu usuario: desactivar el registro público en Supabase
 
-**Próximos pasos (solo queda lo que requiere tus cuentas):**
+**Próximos pasos:**
 
-1. Cuentas gratuitas: GitHub ✅ · faltan Supabase, Cloudflare, Google AI Studio y Groq.
-2. Supabase → *New project* → **SQL Editor** → pegar `supabase/sql/001_clientes.sql` → Run.
-3. Supabase → *Project Settings → API* → copiar URL + clave anónima → archivo `.env` (plantilla en `.env.example`).
-4. `npm run dev` → crear tu cuenta en la app → probar el alta de clientes.
-5. De ahora en adelante, guardar cambios con: `git add -A`, `git commit -m "..."`, `git push` (ya está enlazado).
-6. Cloudflare Pages: conectar el repo → build `npm run build` → salida `dist` (el build corre en la nube).
-7. Export semanal de respaldo antes de meter datos reales.
+1. `npm run dev` → http://localhost:5173 → crear tu cuenta → probar clientes (alta, listado, baja).
+2. Supabase → *Authentication → Settings* → desactivar *Allow new users to sign up* (después de crear tu cuenta).
+3. Publicar gratis en Cloudflare Pages (conectar el repo: build `npm run build`, salida `dist`).
+4. Export semanal de respaldo (vía GitHub Actions con `pg_dump`) antes de meter datos reales.
+5. Disco: liberar hasta ≥25 GB.
 
 **Nota de Windows:** si PowerShell bloquea `npm` o `npx` (política de ejecución de scripts), usa `npm.cmd` / `npx.cmd`, o habilita scripts para tu usuario con:
 ```powershell
