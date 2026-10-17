@@ -1,14 +1,20 @@
-# AviTech Panel
+# Aviech
 
-Panel de gestión de AviTech Solutions Group (Fase 1).
+Startup de auditoría y consultoría.
+
+---
+
+## AviTech Panel — primer producto (Fase 1)
+
+Panel de gestión de AviTech Solutions Group.
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 
-## Requisitos
+### Requisitos
 
 - Node.js LTS (probado con v24)
 - npm (incluido con Node.js)
 
-## Comandos
+### Comandos
 
 ```powershell
 npm install        # instalar dependencias (primera vez o al actualizar)
@@ -20,7 +26,7 @@ npm run lint       # revisión de código (oxlint)
 
 > Regla del equipo: **un solo servidor de desarrollo a la vez**. Al terminar, `Ctrl+C`.
 
-## Puesta en marcha con Supabase (solo la primera vez)
+### Puesta en marcha con Supabase (solo la primera vez)
 
 1. Crea un proyecto en https://supabase.com (plan gratuito, sin tarjeta). Elige la región
    más cercana a tus clientes.
@@ -35,18 +41,18 @@ npm run lint       # revisión de código (oxlint)
 > Cuando ya tengas tus usuarios creados, revisa en **Authentication → Settings** la opción
 > *Allow new users to sign up*: desactívala para que nadie más pueda registrarse.
 
-## Seguridad (recordatorio permanente)
+### Seguridad (recordatorio permanente)
 
 - La clave anónima es pública por diseño; la seguridad real vive en **RLS** en cada tabla.
 - La clave `service_role` **nunca** va en el frontend ni en Git; solo en Edge Functions.
 - `.env` está excluido de Git. No lo subas nunca.
 
-## Despliegue (cuando toque)
+### Despliegue (cuando toque)
 
 El contenido de `dist/` se publica gratis en **Cloudflare Pages** conectando el
 repositorio de GitHub (build en la nube, sin consumir RAM local).
 
-## Estructura
+### Estructura
 
 ```
 src/
@@ -60,4 +66,6 @@ src/
   index.css               # Tailwind CSS
 supabase/
   sql/001_clientes.sql    # tabla + políticas RLS (pegar en SQL Editor)
+docs/
+  PLAN-TECNOLOGICO.md     # plan completo: stack, costos, fases y reglas
 ```
