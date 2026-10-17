@@ -243,18 +243,19 @@ pnpm dev   # mantener SOLO este proceso a la vez
 - ✅ Git **2.55.0** instalado y registrado en el PATH del sistema · identidad configurada
 - ✅ Proyecto **`avitech-panel`** creado: Vite 8 + React 19 + TypeScript + Tailwind 4 + Supabase JS
 - ✅ **Módulo de acceso construido en código**: login/registro con Supabase Auth, panel con sesión, gestión de clientes (alta, listado, baja) y script SQL con RLS (`supabase/sql/001_clientes.sql`)
-- ✅ Build y lint sin errores · commits `7585a4e` y `89a39ec` (repositorio local)
-- ⏳ Pendiente (requiere tus cuentas): proyecto Supabase + ejecutar el SQL + `.env`, cuenta GitHub + `git push`, despliegue en Cloudflare Pages
+- ✅ Repositorio en GitHub creado, enlazado y sincronizado: `github.com/Avismaelg/Aviech` (commit `7f4dcff`)
+- ✅ Build y lint sin errores · historial local y remoto al día
+- ⏳ Pendiente (requiere tus cuentas): proyecto Supabase + ejecutar el SQL + `.env`; despliegue en Cloudflare Pages; cuentas de Google AI Studio y Groq (IA)
 - ⏳ Pendiente (local): liberar disco hasta ≥25 GB
 - ⏳ pnpm: pospuesto por decisión propia (se añade con `corepack enable` cuando haga falta)
 
 **Próximos pasos (solo queda lo que requiere tus cuentas):**
 
-1. Crear cuentas gratuitas: GitHub, Supabase, Cloudflare, Google AI Studio, Groq.
+1. Cuentas gratuitas: GitHub ✅ · faltan Supabase, Cloudflare, Google AI Studio y Groq.
 2. Supabase → *New project* → **SQL Editor** → pegar `supabase/sql/001_clientes.sql` → Run.
 3. Supabase → *Project Settings → API* → copiar URL + clave anónima → archivo `.env` (plantilla en `.env.example`).
 4. `npm run dev` → crear tu cuenta en la app → probar el alta de clientes.
-5. Subir a GitHub: `git remote add origin <url>` + `git push -u origin main`.
+5. De ahora en adelante, guardar cambios con: `git add -A`, `git commit -m "..."`, `git push` (ya está enlazado).
 6. Cloudflare Pages: conectar el repo → build `npm run build` → salida `dist` (el build corre en la nube).
 7. Export semanal de respaldo antes de meter datos reales.
 
