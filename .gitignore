@@ -16,6 +16,8 @@ dist-ssr
 .env
 .env.*
 !.env.example
+# Excepción: .env.production solo lleva la clave "publishable" (pública por diseño)
+!.env.production
 
 # Editor directories and files
 .vscode/*
