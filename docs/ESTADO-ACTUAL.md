@@ -1,39 +1,34 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 17-oct-2026 (mañana)
+> Última actualización: 18-oct-2026 (tarde)
 
-## ✅ Recuento de hoy
+## ✅ ¡El panel está PUBLICADO en internet!
 
-- La app amaneció sin arrancar: una limpieza del sistema dejó archivos borrados
-  a medias (`node_modules` y el favicon del proyecto). Ya está **todo restaurado**:
-  - Reinstalación limpia de dependencias (`npm ci`) ✓
-  - Compilación de producción verificada ✓
-  - Favicon restaurado desde Git ✓
-- GitHub quedó intacto: nada importante se perdió (todo estaba subido).
+- Publicado con **Cloudflare** (plan gratuito), como proyecto tipo **Worker** llamado **`aviech`**.
+- Dirección: `https://aviech.<algo>.workers.dev` — el "algo" es tu subdominio personal.
+  Ver la dirección exacta: panel de Cloudflare → **Workers & Pages** → **aviech** → botón **"Visit"**.
+- **Se recompila y publica solo** con cada `git push` a `main`.
+- Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
+  del repositorio — por eso no hay que configurar nada dentro de Cloudflare.
 
-## ✅ La app funciona (en local)
+## ✅ La app funciona (local y en internet)
 
-- Panel AviTech operativo en `http://localhost:5173`.
-- Supabase: proyecto conectado, tabla `clientes` con seguridad RLS,
-  registro público cerrado (los usuarios solo se crean desde Supabase).
+- Login, alta y borrado de clientes.
+- App local: `npm run dev` → http://localhost:5173
+- Supabase: tabla `clientes` con seguridad RLS; registro público cerrado
+  (los usuarios solo se crean desde Supabase: Authentication → Users).
 
-## 🚀 Cómo abrir el proyecto (2 comandos)
-
-```powershell
-cd C:\Users\User\avitech\avitech-panel
-npm run dev
-```
-
-Luego abre: http://localhost:5173 (para detener: `Ctrl+C` en ese terminal)
-
-## ⚠️ Reglas de oro para no dañar el proyecto
+## ⚠️ Reglas de oro
 
 1. Ningún limpiador de disco ni antivirus debe tocar `C:\Users\User\avitech`.
 2. No borrar `node_modules` a mano: si algo se daña, se repara con `npm ci`.
-3. El archivo `.env` (conexión a Supabase) vive solo en este PC — no borrarlo.
+3. El `.env` normal vive solo en este PC (Git lo ignora). El `.env.production` SÍ va
+   en el repo y solo puede contener la clave "publishable" (pública por diseño);
+   nunca poner ahí secretos reales (contraseñas, service keys).
 
-## 📋 Próximos pasos (en orden sugerido)
+## 📋 Próximos pasos
 
-1. **Publicar en internet** con Cloudflare Pages (gratis; requiere cuenta de Cloudflare).
-2. **Respaldos automáticos** semanales de la base de datos (GitHub Actions).
-3. Terminar limpieza de disco si se necesita (ya hay ~42 GB libres ✓).
+1. **Respaldos automáticos** de la base de datos (en curso — repositorio privado en GitHub).
+2. Ajuste en Supabase: Authentication → URL Configuration → Site URL = dirección del Worker.
+3. Mejoras del panel: más campos/módulos y pulidos de interfaz
+   (ej.: quitar la pestaña "Crear cuenta" del login, ya que el registro está cerrado).
