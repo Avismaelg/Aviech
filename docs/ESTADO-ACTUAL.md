@@ -5,15 +5,18 @@
 ## ✅ ¡El panel está PUBLICADO en internet!
 
 - Publicado con **Cloudflare** (plan gratuito), como proyecto tipo **Worker** llamado **`aviech`**.
-- Dirección: `https://aviech.<algo>.workers.dev` — el "algo" es tu subdominio personal.
-  Ver la dirección exacta: panel de Cloudflare → **Workers & Pages** → **aviech** → botón **"Visit"**.
-- **Se recompila y publica solo** con cada `git push` a `main`.
+- **Dirección pública: `https://aviech.avismael-eg.workers.dev`** ✅ (verificada, responde bien).
+- Publicar cambios a mano (2 comandos, desde este PC): `npm run build` y `npx wrangler deploy`
+  (la herramienta quedó autorizada con tu cuenta de Cloudflare y guarda la sesión en este PC).
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
   del repositorio — por eso no hay que configurar nada dentro de Cloudflare.
+- ⚠️ La compilación automática de Cloudflare (Workers Builds) quedó enredada: nunca alcanzó
+  a publicar. El repo ya incluye `wrangler.jsonc` (la configuración que faltaba); cuando se
+  pueda revisar el panel (Workers & Pages → aviech → Deployments) se deja al 100%.
 
 ## ✅ La app funciona (local y en internet)
 
-- Login, alta y borrado de clientes.
+- Login (sin registro público), alta y borrado de clientes.
 - App local: `npm run dev` → http://localhost:5173
 - Supabase: tabla `clientes` con seguridad RLS; registro público cerrado
   (los usuarios solo se crean desde Supabase: Authentication → Users).
@@ -37,6 +40,8 @@
 
 ## 📋 Próximos pasos
 
-1. Ajuste en Supabase: Authentication → URL Configuration → Site URL = dirección del Worker.
-2. Mejoras del panel: más campos/módulos y pulidos de interfaz
-   (login ya sin pestaña de registro: solo el administrador crea usuarios en Supabase).
+1. Ajuste en Supabase: Authentication → URL Configuration → Site URL =
+   `https://aviech.avismael-eg.workers.dev`.
+2. Revisar (cuando se pueda) los despliegues de Cloudflare para reactivar la publicación
+   automática con cada `git push` (hoy se publica a mano con `npx wrangler deploy`).
+3. Mejoras del panel: más campos/módulos y pulidos de interfaz.
