@@ -6,13 +6,14 @@
 
 - Publicado con **Cloudflare** (plan gratuito), como proyecto tipo **Worker** llamado **`aviech`**.
 - **Dirección pública: `https://aviech.avismael-eg.workers.dev`** ✅ (verificada, responde bien).
-- Publicar cambios a mano (2 comandos, desde este PC): `npm run build` y `npx wrangler deploy`
-  (la herramienta quedó autorizada con tu cuenta de Cloudflare y guarda la sesión en este PC).
+- **La publicación es automática**: cada `git push` a `main` se compila y publica solo,
+  en menos de 1 minuto (verificado el 18-oct: 5 pushes → 5 publicaciones automáticas). ✅
+- Alternativa manual (respaldo): `npm run build` + `npx wrangler deploy` — la herramienta
+  quedó autorizada en este PC (guarda la sesión de Cloudflare).
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
-  del repositorio — por eso no hay que configurar nada dentro de Cloudflare.
-- ⚠️ La compilación automática de Cloudflare (Workers Builds) quedó enredada: nunca alcanzó
-  a publicar. El repo ya incluye `wrangler.jsonc` (la configuración que faltaba); cuando se
-  pueda revisar el panel (Workers & Pages → aviech → Deployments) se deja al 100%.
+  del repositorio — no hay que configurar nada dentro de Cloudflare.
+- ⚠️ Cuidado con direcciones parecidas: `avitech.workers.dev` **no** es de este proyecto
+  (es de otra empresa; da `error code: 1042`). La nuestra termina en `avismael-eg.workers.dev`.
 
 ## ✅ La app funciona (local y en internet)
 
@@ -42,6 +43,5 @@
 
 1. Ajuste en Supabase: Authentication → URL Configuration → Site URL =
    `https://aviech.avismael-eg.workers.dev`.
-2. Revisar (cuando se pueda) los despliegues de Cloudflare para reactivar la publicación
-   automática con cada `git push` (hoy se publica a mano con `npx wrangler deploy`).
+2. Abrir el panel publicado y entrar con tu usuario (verificación visual).
 3. Mejoras del panel: más campos/módulos y pulidos de interfaz.

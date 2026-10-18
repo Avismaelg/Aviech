@@ -7,35 +7,36 @@
 
 **`https://aviech.avismael-eg.workers.dev`** ✅ (verificada: responde HTTP 200)
 
-## Cómo se publica HOY (método confiable)
+- El subdominio de la cuenta en Cloudflare es **`avismael-eg`**.
+- ⚠️ `avitech.workers.dev` **no** es de este proyecto: es de otra empresa y cualquier
+  dirección bajo ella responde `error code: 1042`. No confundirlas.
 
-Desde este PC, en la carpeta del proyecto:
+## La publicación es automática (verificado)
+
+- Cada `git push` a `main` dispara compilación **y publicación automática** (Workers Builds).
+- Verificado el 18-oct-2026: 5 pushes → 5 publicaciones automáticas, cada una en menos de 1 minuto.
+- Historial visible en: panel de Cloudflare → **Workers & Pages → aviech → pestaña Deployments**.
+- Las llaves de Supabase para la compilación se leen del archivo **`.env.production`**
+  del repositorio (solo contiene la clave *publishable*, pública por diseño).
+  ⚠️ No hace falta ni conviene guardar secretos en Cloudflare ni en ese archivo.
+
+## Publicación manual (respaldo)
+
+Por si algún día hace falta publicar sin esperar la compilación:
 
 ```powershell
 npm run build
 npx wrangler deploy
 ```
 
-- La herramienta `wrangler` ya quedó autorizada con tu cuenta de Cloudflare
-  (el permiso se guarda en este PC; no hay que volver a iniciar sesión).
-- El archivo `wrangler.jsonc` (raíz del repo) le indica a Cloudflare qué publicar:
-  la carpeta `dist/` como sitio estático con rutas de app (SPA).
-
-## La compilación automática (pendiente de revisar)
-
-- La idea original: cada `git push` a `main` dispara compilación en Cloudflare
-  (Workers Builds). **Nunca alcanzó a publicar** (el sitio respondía error 1042).
-- Ya se agregó al repo la pieza que faltaba (`wrangler.jsonc`); falta revisar en el
-  panel → **Workers & Pages → aviech → pestaña Deployments** el estado y relanzar.
-- Las llaves de Supabase para la compilación se leen del archivo **`.env.production`**
-  del repositorio (solo contiene la clave *publishable*, pública por diseño).
-  ⚠️ No hace falta ni conviene guardar secretos en Cloudflare ni en ese archivo.
+- `wrangler` quedó autorizado con tu cuenta de Cloudflare en este PC (la sesión se guarda).
+- El archivo `wrangler.jsonc` (raíz del repo) indica qué publicar: la carpeta `dist/` como sitio SPA.
 
 ## Problemas conocidos y solución
 
 | Síntoma | Causa | Solución |
 |---|---|---|
 | El sitio carga pero dice "Falta conectar Supabase" | La compilación no incluyó las llaves | Verificar que `.env.production` esté en el repo y volver a publicar |
-| El sitio muestra "error code: 1042" | No hay ningún Worker sirviendo esa dirección | Publicar con `npx wrangler deploy` (o relanzar el despliegue en el panel) |
+| Un push no aparece publicado tras varios minutos | Compilación fallida | Ver logs en la pestaña Deployments; o publicar a mano con `npx wrangler deploy` |
+| Aparece "error code: 1042" | Se está abriendo `avitech.workers.dev`, que es ajena | Usar siempre `aviech.avismael-eg.workers.dev` |
 | La compilación falla al instalar dependencias | Archivos dañados en el repo | Probar `npm ci && npm run build` en local y revisar el commit |
-| Un despliegue no arranca solo | Trigger desactivado | Relanzar desde la pestaña Deployments, o hacer un push nuevo |
