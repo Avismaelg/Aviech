@@ -1,6 +1,6 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 18-oct-2026 (tarde)
+> Última actualización: 18-oct-2026
 
 ## ✅ ¡El panel está PUBLICADO en internet!
 
@@ -18,6 +18,15 @@
 - Supabase: tabla `clientes` con seguridad RLS; registro público cerrado
   (los usuarios solo se crean desde Supabase: Authentication → Users).
 
+## ✅ Respaldos automáticos de la base de datos
+
+- El panel genera **solo** una copia completa de la base **cada lunes ~8:00 AM (CDMX)**.
+- Las copias viven en un repositorio privado: `https://github.com/Avismaelg/Aviech-backup`
+  (carpeta `respaldos/`, formato `backup-AAAA-MM-DD_HHMM.sql.gz`).
+- Se conservan los últimos ~120 días; los más viejos se borran solos.
+- Respaldo manual: repo de respaldos → **Actions** → *Respaldo de la base de datos* → **Run workflow**.
+- Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
+
 ## ⚠️ Reglas de oro
 
 1. Ningún limpiador de disco ni antivirus debe tocar `C:\Users\User\avitech`.
@@ -28,7 +37,6 @@
 
 ## 📋 Próximos pasos
 
-1. **Respaldos automáticos** de la base de datos (en curso — repositorio privado en GitHub).
-2. Ajuste en Supabase: Authentication → URL Configuration → Site URL = dirección del Worker.
-3. Mejoras del panel: más campos/módulos y pulidos de interfaz
+1. Ajuste en Supabase: Authentication → URL Configuration → Site URL = dirección del Worker.
+2. Mejoras del panel: más campos/módulos y pulidos de interfaz
    (ej.: quitar la pestaña "Crear cuenta" del login, ya que el registro está cerrado).
