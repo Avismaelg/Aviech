@@ -4,45 +4,29 @@ import { supabase } from '../lib/supabase'
 function mensajeDeError(mensaje: string): string {
   if (mensaje.includes('Invalid login credentials')) return 'Correo o contraseña incorrectos.'
   if (mensaje.includes('Email not confirmed')) return 'Debes confirmar tu correo antes de entrar.'
-  if (mensaje.includes('User already registered')) return 'Ese correo ya está registrado.'
   if (mensaje.includes('at least 6 characters')) return 'La contraseña debe tener al menos 6 caracteres.'
   if (mensaje.includes('is invalid')) return 'El formato del correo no es válido.'
   return mensaje
 }
 
 export function Login() {
-  const [modo, setModo] = useState<'entrar' | 'crear'>('entrar')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [aviso, setAviso] = useState<string | null>(null)
 
   async function enviar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
     if (!supabase || cargando) return
     setCargando(true)
     setError(null)
-    setAviso(null)
 
-    if (modo === 'entrar') {
-      const { error: err } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      })
-      if (err) setError(mensajeDeError(err.message))
-    } else {
-      const { error: err } = await supabase.auth.signUp({ email: email.trim(), password })
-      if (err) setError(mensajeDeError(err.message))
-      else setAviso('Cuenta creada. Si la confirmación por correo está activa, revisa tu bandeja para confirmarla.')
-    }
+    const { error: err } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
+    if (err) setError(mensajeDeError(err.message))
     setCargando(false)
-  }
-
-  function cambiarModo() {
-    setModo(modo === 'entrar' ? 'crear' : 'entrar')
-    setError(null)
-    setAviso(null)
   }
 
   return (
@@ -54,7 +38,7 @@ export function Login() {
         </header>
 
         <form onSubmit={enviar} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-900">{modo === 'entrar' ? 'Entrar' : 'Crear cuenta'}</h2>
+          <h2 className="text-lg font-medium text-slate-900">Entrar</h2>
 
           <label className="block text-sm">
             <span className="mb-1 block font-medium text-slate-700">Correo</span>
@@ -74,33 +58,27 @@ export function Login() {
             <input
               type="password"
               required
-              minLength={6}
-              autoComplete={modo === 'entrar' ? 'current-password' : 'new-password'}
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mínimo 6 caracteres"
+              placeholder="Tu contraseña"
               className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
             />
           </label>
 
           {error && <p className="rounded-md bg-red-50 p-2 text-sm text-red-700">{error}</p>}
-          {aviso && <p className="rounded-md bg-emerald-50 p-2 text-sm text-emerald-700">{aviso}</p>}
 
           <button
             type="submit"
             disabled={cargando}
             className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
           >
-            {cargando ? 'Procesando…' : modo === 'entrar' ? 'Entrar' : 'Crear cuenta'}
+            {cargando ? 'Procesando…' : 'Entrar'}
           </button>
 
-          <button
-            type="button"
-            onClick={cambiarModo}
-            className="w-full text-center text-sm text-slate-500 underline-offset-2 hover:underline"
-          >
-            {modo === 'entrar' ? '¿No tienes cuenta? Crear una' : '¿Ya tienes cuenta? Entrar'}
-          </button>
+          <p className="text-center text-xs text-slate-400">
+            ¿Necesitas acceso? Pídele al administrador que cree tu usuario.
+          </p>
         </form>
       </div>
     </div>

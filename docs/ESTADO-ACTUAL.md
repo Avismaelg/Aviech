@@ -39,4 +39,4 @@
 
 1. Ajuste en Supabase: Authentication → URL Configuration → Site URL = dirección del Worker.
 2. Mejoras del panel: más campos/módulos y pulidos de interfaz
-   (ej.: quitar la pestaña "Crear cuenta" del login, ya que el registro está cerrado).
+   (login ya sin pestaña de registro: solo el administrador crea usuarios en Supabase).

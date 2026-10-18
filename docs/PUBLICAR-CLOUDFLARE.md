@@ -25,6 +25,7 @@
 | El sitio carga pero dice "Falta conectar Supabase" | La compilación no incluyó las llaves | Verificar que `.env.production` esté en el repo y relanzar el despliegue |
 | La compilación falla al instalar dependencias | Archivos dañados en el repo | Probar `npm ci && npm run build` en local y revisar el commit |
 | Un despliegue no arranca solo | Trigger desactivado | Relanzar desde la pestaña Deployments, o hacer un push nuevo |
+| El sitio muestra "error code: 1042" | El Worker no tiene un despliegue activo | Relanzar el despliegue desde la pestaña Deployments; el repo ya incluye `wrangler.jsonc` con la configuración correcta (assets → `dist/`) |
 
 ## Nota
 

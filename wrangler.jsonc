@@ -1,0 +1,10 @@
+{
+  // Configuracion del Worker de Cloudflare para el panel AviTech.
+  // Publica el resultado de "npm run build" (carpeta dist/) como sitio estatico.
+  "name": "aviech",
+  "compatibility_date": "2026-01-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
