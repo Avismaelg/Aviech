@@ -1,0 +1,119 @@
+name: Migrar base de datos
+
+# Aplica los archivos supabase/sql/*.sql (en orden) contra la base de datos de
+# Supabase y publica un reporte de verificación.
+#
+# - Se ejecuta solo cuando cambia algo en supabase/sql/ (o a mano desde la
+#   pestaña Actions → "Migrar base de datos" → Run workflow).
+# - Necesita el secreto SUPABASE_DBURL (cadena de conexión al pooler).
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'supabase/sql/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: migrar-bd
+  cancel-in-progress: false
+
+jobs:
+  migrar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar cliente PostgreSQL
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client
+
+      - name: Comprobar el secreto
+        env:
+          DB: ${{ secrets.SUPABASE_DBURL }}
+        run: |
+          if [ -z "$DB" ]; then
+            echo "::error::Falta el secreto SUPABASE_DBURL en este repositorio (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+          echo "Secreto presente. Aplicando migraciones…"
+
+      - name: Aplicar migraciones (supabase/sql en orden)
+        env:
+          DB: ${{ secrets.SUPABASE_DBURL }}
+        run: |
+          cd supabase/sql
+          for archivo in $(ls [0-9][0-9][0-9]_*.sql | sort); do
+            echo "== Aplicando $archivo =="
+            psql "$DB" -v ON_ERROR_STOP=1 -q -f "$archivo"
+          done
+          echo "Migraciones aplicadas sin errores."
+
+      - name: Verificar la base de datos (reporte)
+        env:
+          DB: ${{ secrets.SUPABASE_DBURL }}
+        run: |
+          REPORTE=supabase/verificacion-ultima.txt
+          {
+            echo "# Verificación de la base de datos"
+            echo ""
+            echo "Fecha: $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo ""
+            echo "## Tablas de public"
+            psql "$DB" -c '\dt public.*'
+            echo "## Columnas de clientes, servicios y pagos"
+            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos') order by table_name, ordinal_position;"
+            echo "## Conteos"
+            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos;"
+            echo "## Prueba de inserciones (se revierte al final)"
+            psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
+          begin;
+          do $$
+          declare c uuid;
+          begin
+            insert into public.clientes (nombre, empresa, estado) values ('__prueba_migracion__', 'Prueba', 'prospecto') returning id into c;
+            insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
+            insert into public.pagos (cliente_id, concepto, monto) values (c, '__prueba__', 5);
+            raise notice 'Inserciones de prueba: OK';
+          end $$;
+          rollback;
+          SQL
+            echo "## RLS: lectura simulando usuario autenticado"
+            psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
+          begin;
+          set local role authenticated;
+          set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated"}';
+          select (select count(*) from public.clientes) as clientes,
+                 (select count(*) from public.servicios) as servicios,
+                 (select count(*) from public.pagos) as pagos;
+          rollback;
+          SQL
+            echo "## RLS: lectura como anónimo (debe dar 0 en todo)"
+            psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
+          begin;
+          set local role anon;
+          select (select count(*) from public.clientes) as clientes,
+                 (select count(*) from public.servicios) as servicios,
+                 (select count(*) from public.pagos) as pagos;
+          rollback;
+          SQL
+          } > "$REPORTE" 2>&1
+          cat "$REPORTE"
+
+      - name: Publicar el reporte en el repositorio
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add supabase/verificacion-ultima.txt
+          if git diff --cached --quiet; then
+            echo "Sin cambios en el reporte."
+          else
+            git commit -m "reporte de migracion [skip ci]"
+            git push
+          fi
