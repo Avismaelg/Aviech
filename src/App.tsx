@@ -1,7 +1,12 @@
-import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { useEffect, useState } from 'react'
+import { Clientes } from './components/Clientes'
+import { Inicio } from './components/Inicio'
+import { Layout, type Seccion } from './components/Layout'
 import { Login } from './components/Login'
-import { Panel } from './components/Panel'
+import { Pagos } from './components/Pagos'
+import { Servicios } from './components/Servicios'
+import { ProveedorAvisos } from './components/toast'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 
 function SinConfigurar() {
@@ -12,24 +17,26 @@ function SinConfigurar() {
         <p className="mt-2 text-sm text-slate-600">Falta conectar Supabase. Pasos:</p>
         <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-slate-700">
           <li>
-            Crea un proyecto gratuito en{' '}
-            <a className="underline" href="https://supabase.com" target="_blank" rel="noreferrer">
-              supabase.com
-            </a>
-            .
+            Copia <code>.env.example</code> como <code>.env</code> y completa los valores del proyecto.
           </li>
           <li>
-            Pega el contenido de <code>supabase/sql/001_clientes.sql</code> en el SQL Editor y
-            ejecútalo.
+            Aplica las migraciones de <code>supabase/sql</code> en orden — o usa el workflow «Migrar base de datos» en GitHub.
           </li>
           <li>
-            Copia <code>.env.example</code> a <code>.env</code> con la URL y la clave anónima del
-            proyecto.
-          </li>
-          <li>
-            Reinicia <code>npm run dev</code>.
+            Reinicia el servidor de desarrollo: <code>npm run dev</code>.
           </li>
         </ol>
+      </div>
+    </div>
+  )
+}
+
+function Comprobando() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-100">
+      <div className="flex items-center gap-3 text-sm text-slate-500">
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-500" />
+        Cargando…
       </div>
     </div>
   )
@@ -38,34 +45,39 @@ function SinConfigurar() {
 function App() {
   const [sesion, setSesion] = useState<Session | null>(null)
   const [comprobando, setComprobando] = useState(isSupabaseConfigured)
+  const [seccion, setSeccion] = useState<Seccion>('inicio')
 
   useEffect(() => {
     if (!supabase) return
-
     void supabase.auth.getSession().then(({ data }) => {
       setSesion(data.session)
       setComprobando(false)
     })
-
     const { data } = supabase.auth.onAuthStateChange((_evento, sesionNueva) => {
       setSesion(sesionNueva)
+      if (!sesionNueva) setSeccion('inicio')
       setComprobando(false)
     })
-
     return () => data.subscription.unsubscribe()
   }, [])
 
   if (!isSupabaseConfigured) return <SinConfigurar />
+  if (comprobando) return <Comprobando />
 
-  if (comprobando) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-sm text-slate-500">Cargando…</p>
-      </div>
-    )
-  }
-
-  return sesion ? <Panel sesion={sesion} /> : <Login />
+  return (
+    <ProveedorAvisos>
+      {sesion ? (
+        <Layout sesion={sesion} seccion={seccion} onSeccion={setSeccion}>
+          {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
+          {seccion === 'clientes' && <Clientes />}
+          {seccion === 'servicios' && <Servicios />}
+          {seccion === 'pagos' && <Pagos />}
+        </Layout>
+      ) : (
+        <Login />
+      )}
+    </ProveedorAvisos>
+  )
 }
 
 export default App

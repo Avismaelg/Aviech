@@ -1,13 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabase'
-
-function mensajeDeError(mensaje: string): string {
-  if (mensaje.includes('Invalid login credentials')) return 'Correo o contraseña incorrectos.'
-  if (mensaje.includes('Email not confirmed')) return 'Debes confirmar tu correo antes de entrar.'
-  if (mensaje.includes('at least 6 characters')) return 'La contraseña debe tener al menos 6 caracteres.'
-  if (mensaje.includes('is invalid')) return 'El formato del correo no es válido.'
-  return mensaje
-}
+import { Boton, Campo, Entrada } from './ui'
 
 export function Login() {
   const [email, setEmail] = useState('')
@@ -17,69 +10,61 @@ export function Login() {
 
   async function enviar(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault()
-    if (!supabase || cargando) return
+    if (!supabase) return
     setCargando(true)
     setError(null)
-
-    const { error: err } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    })
-    if (err) setError(mensajeDeError(err.message))
+    const { error: errorAcceso } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    if (errorAcceso) {
+      setError(
+        errorAcceso.message === 'Invalid login credentials'
+          ? 'Correo o contraseña incorrectos.'
+          : `No se pudo entrar: ${errorAcceso.message}`,
+      )
+    }
     setCargando(false)
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-100 via-slate-50 to-indigo-50 px-4">
+      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5">
         <header className="mb-6 text-center">
+          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-xl font-bold text-white shadow-lg shadow-slate-900/20">
+            A
+          </span>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">AviTech Panel</h1>
           <p className="mt-1 text-sm text-slate-500">Acceso del personal</p>
         </header>
 
-        <form onSubmit={enviar} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-medium text-slate-900">Entrar</h2>
-
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium text-slate-700">Correo</span>
-            <input
+        <form onSubmit={enviar} className="space-y-4">
+          <Campo etiqueta="Correo">
+            <Entrada
               type="email"
-              required
               autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="nombre@correo.com"
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
-            />
-          </label>
-
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium text-slate-700">Contraseña</span>
-            <input
-              type="password"
               required
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Tu contraseña"
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              value={email}
+              onChange={(evento) => setEmail(evento.target.value)}
+              placeholder="tu@correo.com"
             />
-          </label>
+          </Campo>
+          <Campo etiqueta="Contraseña">
+            <Entrada
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(evento) => setPassword(evento.target.value)}
+              placeholder="••••••••"
+            />
+          </Campo>
 
-          {error && <p className="rounded-md bg-red-50 p-2 text-sm text-red-700">{error}</p>}
+          {error && <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={cargando}
-            className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50"
-          >
-            {cargando ? 'Procesando…' : 'Entrar'}
-          </button>
-
-          <p className="text-center text-xs text-slate-400">
-            ¿Necesitas acceso? Pídele al administrador que cree tu usuario.
-          </p>
+          <Boton type="submit" disabled={cargando} className="w-full">
+            {cargando ? 'Entrando…' : 'Entrar'}
+          </Boton>
         </form>
+
+        <p className="mt-5 text-center text-xs text-slate-400">¿Necesitas acceso? Pídele al administrador que cree tu usuario.</p>
       </div>
     </div>
   )
