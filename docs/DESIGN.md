@@ -11,9 +11,12 @@
 
 ## 1. Identidad
 
-- **Concepto:** oscuro premium tecnológico — azul noche profundo, auroras suaves,
-  rejilla tenue de fondo y cristal (desenfoque) en barras y flotantes.
-- **Acento de marca:** violeta / índigo (gradiente `indigo-500 → violet-600`).
+- **Concepto (v2 «Azul profesional», 19-oct-2026):** oscuro nítido de herramienta
+  financiera — azul noche profundo, superficies sólidas con bordes finos y **un solo
+  acento azul**. Se retiraron las auroras, la rejilla y los degradados violeta: la firma
+  ahora es limpieza, densidad de datos y jerarquía.
+- **Acento de marca:** azul (`blue-500 → blue-600`); marca gráfica en degradado
+  `sky-400 → blue-600`.
 - **Personalidad:** seria (auditoría y consultoría), moderna, legible y rápida.
 - **Tipografía de marca:** **Inter** (variable, autoalojada con `@fontsource-variable/inter` — sin CDN, funciona offline y en la PWA) con respaldo a fuentes del sistema.
 
@@ -21,14 +24,14 @@
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--color-fondo` | `#070b15` | Fondo general de la app |
-| `--color-superficie` | `#0d1424` | Tarjetas, modales, paneles |
-| `--color-superficie-2` | `#172139` | Zonas elevadas, hover, chips, esqueletos |
-| `--color-borde` | `#21304f` | Bordes principales |
-| `--color-borde-suave` | `#182238` | Divisores internos |
-| `--color-tinta` | `#eef2fb` | Texto principal |
-| `--color-tinta-suave` | `#9aa7c4` | Texto secundario |
-| `--color-tinta-tenue` | `#6b7ca0` | Texto terciario, placeholders |
+| `--color-fondo` | `#070c17` | Fondo general de la app |
+| `--color-superficie` | `#0e1626` | Tarjetas, modales, paneles |
+| `--color-superficie-2` | `#172136` | Zonas elevadas, hover, chips, esqueletos |
+| `--color-borde` | `#22304b` | Bordes principales |
+| `--color-borde-suave` | `#19233a` | Divisores internos |
+| `--color-tinta` | `#f2f5fa` | Texto principal |
+| `--color-tinta-suave` | `#9fb0ca` | Texto secundario |
+| `--color-tinta-tenue` | `#7b8aa5` | Texto terciario, placeholders |
 
 Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta`,
 `border-borde`, `bg-fondo/70`… **Nunca** poner hex crudos para superficies o texto.
@@ -37,7 +40,8 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 
 | Acento | Significado | Ejemplo |
 |---|---|---|
-| indigo / violet | Marca, selección, botón primario | `bg-indigo-500/10`, barra activa |
+| blue | Marca, selección, botón primario | `bg-blue-500/10`, barra activa |
+| cyan | Etapas intermedias (CRM/actividades) | "Negociación", "Reunión" |
 | emerald | Cobrado, pagado, positivo | insignia "Pagado" |
 | amber | Pendiente, advertencia | insignia "Pendiente", gastos |
 | rose / red | Vencido, peligro, anulado | "vencido hace 9 días", botón peligro |
@@ -46,18 +50,18 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 
 ## 3. Fondos y atmósfera (`body`)
 
-- Tres **auroras radiales**: índigo 22 % arriba-izquierda, violeta 16 % arriba-derecha,
-  celeste 8 % abajo — + **rejilla** de `3.25rem` al 5 % de opacidad, fija.
-- Barras (`aside`, `header`): `#0a1120` al 75–85 % con `backdrop-blur-2xl` y un
-  brillo radial índigo arriba (constante `BRILLO_LATERAL` en `Layout.tsx`).
-- Selección de texto: índigo al 40 %.
+- **Un solo resplandor radial azul** muy tenue arriba (12 % de opacidad), fijo. Sin rejilla
+  ni auroras.
+- Barras (`aside`, `header`): **sólidas** `#0a101d` con borde fino `--color-borde`; sin blur.
+- Selección de texto: azul al 35 %. Foco de teclado: azul claro (`#60a5fa`).
+- Tarjetas y tablas sobre superficie sólida (sin `backdrop-blur`).
 
 ## 4. Tipografía y datos
 
 - **Familia:** Inter Variable (`--font-sans` en `index.css`), autoalojada: cero llamadas a CDN y disponible sin internet.
 - Jerarquía: título de sección `text-2xl font-semibold tracking-tight`;
   descripción `text-sm text-tinta-suave`; etiquetas `text-xs`; detalles `text-[11px]`.
-- **Números**: monedas con `tabular-nums` (no bailan al animarse).
+- **Números**: `tabular-nums` global en `body` (los montos alinean en tarjetas y tablas y no bailan al animarse).
 - **Montos y fechas** siempre con `lib/formato.ts`:
   `formatoDinero` (es-DO, `RD$1,234.56`), `formatoFecha` ("18 oct 2026"),
   `fechaCompleta`, `formatoMes`. Nunca formatear a mano.
@@ -66,15 +70,15 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 
 ## 5. Formas, sombras y movimiento
 
-- **Radios:** controles `rounded-xl`; tarjetas y modales `rounded-2xl`;
-  insignias y avatares `rounded-full`.
-- **Sombras:** suaves y profundas solo en tarjetas/modales
-  (`shadow-[0_24px_60px_-40px_rgba(0,0,0,0.9)]`, `shadow-2xl`). En impresión se eliminan.
+- **Radios:** controles `rounded-lg`; tarjetas y modales `rounded-xl`; tarjeta de acceso
+  `rounded-2xl`; insignias y avatares `rounded-full`.
+- **Sombras:** bajas y sobrias (`0 1px 2px` + `0 18px 40px -32px` en tarjetas;
+  `shadow-2xl/50` en modales). Sin resplandores de color. En impresión se eliminan.
 - **Animaciones** (definidas en `index.css`): `aparecer` (entradas),
   `escalar` (modales), `deslizar` (avisos), `fundido`, `crecer-barra` (gráfico).
   Duraciones 0.2–0.6 s con `ease-out` o `cubic-bezier(0.16, 1, 0.3, 1)`.
 - **Interacción:** hover `-translate-y-0.5` en tarjetas; botones con
-  `active:scale-[0.97]`; transiciones de 150 ms.
+  `active:scale-[0.98]`; transiciones de 150 ms.
 - Las tarjetas de datos del Inicio usan **contador animado** (`useContador`).
 - `prefers-reduced-motion`: todas las animaciones se desactivan. ✅
 
@@ -82,16 +86,17 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 
 | Componente | Notas |
 |---|---|
-| `Boton` | Variantes: `primario` (gradiente índigo), `secundario` (cristal), `peligro` (gradiente rojo), `fantasma`. `rounded-xl`, `px-3.5 py-2`, `text-sm`. |
+| `Boton` | Variantes: `primario` (azul sólido `bg-blue-600` con brillo interior de 1 px), `secundario` (superficie con borde), `peligro` (rojo sólido), `fantasma`. `rounded-lg`, `px-3.5 py-2`, `text-sm`. |
 | `Insignia` | Pill con borde + fondo translúcido. Recibe `color` del mapa de acentos. |
-| `Tarjeta` | `rounded-2xl`, borde, `bg-superficie/90`, `backdrop-blur-sm`. |
+| `Tarjeta` | `rounded-xl`, borde `--color-borde`, `bg-superficie` sólido y sombra baja. |
 | `CabeceraSeccion` | Título + descripción + acciones alineadas. |
-| `Campo` / `Entrada` / `Selector` / `AreaTexto` | Comparten `claseEntrada` (`lib/estilos.ts`): foco con borde y anillo índigo. |
-| `Modal` | Fondo `#03060d/75` + blur; se cierra con Escape, clic fuera o la X; cabecera fija; entrada `animar-modal`; **bloquea el scroll del fondo** y **auto-enfoca el primer campo** al abrir. |
+| `Campo` / `Entrada` / `Selector` / `AreaTexto` | Comparten `claseEntrada` (`lib/estilos.ts`): fondo `bg-fondo/60`, hover de borde azul al 30 % y foco con borde y anillo azul. |
+| `Modal` | Fondo `#02060f/80` + blur; se cierra con Escape, clic fuera o la X; cabecera fija y sólida; panel `rounded-xl`; entrada `animar-modal`; **bloquea el scroll del fondo** y **auto-enfoca el primer campo** al abrir. |
 | `Confirmar` | Modal pequeño con botón de peligro. |
 | `BotonIcono` | Acción de solo icono con etiqueta accesible (`title` + `aria-label`). Obligatorio en tablas en vez de botones sueltos. |
 | `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío (acepta `accion` opcional para un CTA), esqueleto `animate-pulse` y aviso ámbar. |
-| `Layout` | Barra lateral fija con navegación (activo: fondo índigo 10 % + barra lateral con brillo + `aria-current`), chip de usuario; en móvil, cabecera con blur + navegación desplazable (utilidades `.sin-barra` y `.mascara-desvanecida`). |
+| `Layout` | Barra lateral sólida `#0a101d` con **grupos** (Operación / Herramientas / Finanzas); activo: azul 10 % + barra azul + `aria-current`; chip de usuario. En móvil, cabecera sólida + navegación desplazable (utilidades `.sin-barra` y `.mascara-desvanecida`). |
+| `Login` | Dos columnas: marca (degradado `sky-400 → blue-600`) y tarjeta sólida `rounded-2xl`; resplandores azules muy tenues. |
 | `CRM` | Pestañas accesibles (`role="tablist"`, flechas ←/→) para Pipeline, Empresas, Contactos y Actividades. El pipeline es un kanban horizontal con columnas de 16 rem, arrastre nativo y edición en modal; en móvil la etapa se cambia desde el modal. Las tarjetas y métricas usan `tabular-nums`. |
 | `Auditor SEO` | Formulario de dirección + informe con **puntaje 0–100** (verde ≥ 80, ámbar ≥ 50, rojo < 50) y comprobaciones agrupadas en contenido / técnico / archivos. Columna lateral con la tarjeta de **PageSpeed** (4 puntajes + LCP/CLS) y ficha técnica. El informe se anuncia con `aria-live="polite"` y el historial usa `BotonIcono` para ver, medir, reanalizar y eliminar. |
 | `Prospección` | Formulario de dirección con **validación en línea** (mensaje bajo el campo, `aria-invalid`) + tarjeta de resultados con **correos / teléfonos / redes** (chips; WhatsApp en verde) y columna lateral con la acción **Guardar en el CRM** (modal con aviso si la empresa ya existe) y **Páginas revisadas**. La búsqueda muestra fases con esqueleto `animate-pulse` y `aria-busy`. |
@@ -104,7 +109,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
   (la factura se ve como una hoja blanca dentro de la app oscura).
 - `@media print`: tokens claros, se ocultan `aside`, `header` y `.no-imprimir`,
   se quitan sombras, los acentos vuelven a tonos legibles sobre papel
-  (`#047857`, `#b45309`, `#be123c`, `#b91c1c`, `#4338ca`, `#0369a1`, `#6d28d9`, `#0f766e`),
+  (`#047857`, `#b45309`, `#be123c`, `#b91c1c`, `#1d4ed8`, `#0369a1`, `#0e7490`, `#0f766e`),
   insignias en gris claro, y `@page` con margen de 12 mm.
 - `.solo-impresion`: bloques que solo existen en el papel.
 
@@ -114,7 +119,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - Íconos: `lucide-react` (nada de emojis como íconos 😉 — salvo guiños de texto).
 - Probar siempre en **375 / 768 / 1024 / 1440 px** y con **Ctrl+P** (impresión).
 - Mantener el contraste: texto normal ≥ 4.5:1, texto grande ≥ 3:1.
-- Focus visible en todo lo interactivo: anillo índigo en campos + regla global `:focus-visible` para botones y enlaces de icono.
+- Focus visible en todo lo interactivo: anillo azul en campos + regla global `:focus-visible` para botones y enlaces de icono.
 
 ## 9. Don'ts (anti-patrones)
 
@@ -123,7 +128,9 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - ❌ Sombras duras, bordes negros, radios mezclados por componente.
 - ❌ Texto tenue sobre fondo tenue (`tinta-tenue` como texto principal).
 - ❌ Animaciones de más de 0.6 s o que ignoren `prefers-reduced-motion`.
-- ❌ Quitar el cristal (blur) de las barras o el fondo con auroras: es la firma visual.
+- ❌ Volver a las auroras, la rejilla o los degradados violeta/índigo (firma antigua).
+- ❌ Usar `backdrop-blur` en barras o tarjetas: la v2 usa superficies sólidas.
+- ❌ Resplandores de color en botones (`shadow-blue-500/40`): sombra neutra y sobria.
 
 ## 10. Checklist antes de entregar
 
@@ -146,4 +153,4 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 
 > Esta guía sigue el enfoque de "sistema de diseño" que promueven las
 > herramientas modernas (tokens → componentes → reglas → checklist).
-> Última revisión: 19-oct-2026.
+> Última revisión: 19-oct-2026 (v2 «Azul profesional»).

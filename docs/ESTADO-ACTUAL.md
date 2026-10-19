@@ -1,13 +1,13 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la cuarta sesión)
+> Última actualización: 19-oct-2026 (cierre de la cuarta sesión: PWA, pruebas y rediseño v2)
 
 ## 📌 Punto de continuación
 
 - **Todo guardado en GitHub:** `main` = `origin/main`, sin cambios pendientes
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
-  optimizaciones** en `83860bb`).
+  optimizaciones** en `83860bb` y **rediseño v2** en `88d9378`).
 - **PWA con service worker (4.ª sesión):** el panel guarda su armazón y **abre sin
   conexión**; las visitas repetidas cargan al instante. La API y Supabase **nunca** entran
   en la caché. Verificado en producción (`/sw.js` servido y el bundle lo registra) y con la
@@ -15,6 +15,11 @@
 - **Pruebas completas (4.ª sesión):** las **4 pruebas** de navegador (CRM, Auditor SEO,
   Prospección y PWA) en verde, `npm run build` y `npm run lint` limpios, y el Worker
   re-probado contra sitios reales.
+- **Rediseño v2 «Azul profesional» (4.ª sesión):** toda la interfaz cambió de piel —
+  superficies sólidas con bordes finos, un solo acento azul (se retiraron las auroras y los
+  degradados violeta), barra lateral con grupos (Operación / Herramientas / Finanzas),
+  botones sólidos y cifras tabulares. Módulos, impresión y PWA intactos. Guía:
+  **`docs/DESIGN.md`**; capturas: `capturas-diseno` (acceso, tablero y móvil).
 - **Prospección integrada y en vivo:** busca **correos, teléfonos y redes sociales** de una web
   (página principal + hasta 2 páginas de contacto) y con un clic los guarda como **empresa y
   contacto en el CRM**, avisando si la empresa ya existe. **Gratis y sin claves**; no necesitó
@@ -83,9 +88,10 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   anillo de estado de cobro, transiciones suaves y app instalable (PWA con **service worker**:
   se puede «Añadir a pantalla de inicio» y **abrir sin conexión**; las visitas repetidas
   cargan al instante).
-- **Interfaz oscura premium** (19-oct): fondo con auroras y rejilla sutil, barra lateral de
-  cristal, botones con gradiente, tarjetas elevadas e insignias translúcidas. La impresión y
-  las facturas se mantienen en claro (las hojas salen perfectas).
+- **Interfaz v2 «Azul profesional»** (19-oct): superficies sólidas con bordes finos, un solo
+  acento azul (sin auroras ni degradados violeta), barra lateral con grupos
+  (Operación / Herramientas / Finanzas), botones sólidos, cifras tabulares y marca
+  `sky → blue`. La impresión y las facturas se mantienen en claro (las hojas salen perfectas).
 - **Mejora de interfaz integral** (19-oct, con el skill UI UX Pro Max): tipografía **Inter**
   autoalojada, foco visible en todo lo interactivo, acciones de tabla con etiqueta accesible
   (`BotonIcono`), modales con bloqueo del fondo y auto-foco, **login rediseñado** (panel de
@@ -213,12 +219,10 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 
 ## 📋 Próximos pasos
 
-1. **Rediseño de la interfaz (pedido del dueño, 19-oct):** decidir el camino —
-   **(a)** rediseñar el panel actual (React, con UI UX Pro Max): conserva módulos, pruebas,
-   impresión y PWA; o **(b)** reescribir todo en **Flutter** (Dart): se empieza de cero, las
-   pruebas actuales dejan de servir (Flutter dibuja en lienzo) y la impresión y la PWA se
-   rehacen; además habría que instalar el SDK de Flutter en la laptop. *La decisión define
-   la próxima fase.*
+1. **Rediseño de la interfaz (hecho, 19-oct):** se eligió el camino **(a)**: rediseñar el
+   panel actual (React) con UI UX Pro Max, sin migrar a Flutter. Entregado el tema v2 «Azul
+   profesional» (ver `docs/DESIGN.md`) y las 4 pruebas siguen en verde. Pendiente: tu visto
+   bueno y ajustes finos de gusto (matiz del azul, densidad, tamaños).
 2. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
    Dominicana = 17:00 UTC). Los del 19-oct se hicieron manuales (1:04 PM, 1:42 PM y
    2:25 PM) y quedaron verificados.

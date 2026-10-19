@@ -11,7 +11,7 @@ y reportes, con tablero de resumen. Pensado para **República Dominicana**: mont
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
-Interfaz **oscura premium**: tokens de diseño, cristal, gradientes índigo→violeta y fondo con auroras.
+Interfaz **oscura profesional** (v2 «Azul»): superficies sólidas con bordes finos, un solo acento azul, cifras tabulares y barra lateral con grupos.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
