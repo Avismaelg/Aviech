@@ -60,6 +60,10 @@
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
   repos se actualizaron y el **respaldo + las migraciones quedaron verificados en
   verde** con la clave nueva. Procedimiento: **`docs/ROTAR-CLAVE-BD.md`**.
+- **Prueba completa 19-oct-2026** (con datos simulados, sin tocar la base real): las 7
+  secciones, factura (con NCF, RNC e ITBIS), impresión siempre en claro, vista móvil y
+  navegación — **0 errores de consola**. Capturas guardadas en el PC, carpeta
+  `capturas-prueba`.
 
 ## ✅ Respaldos automáticos de la base de datos
 
