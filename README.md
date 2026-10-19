@@ -117,6 +117,9 @@ src/
   types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM, SEO y Prospección
 worker/
   index.js                # API del panel en Cloudflare (auditoría SEO y prospección)
+public/
+  sw.js                   # service worker: abre sin conexión y repite visitas al instante
+  manifest.webmanifest    # datos de la app instalable (PWA)
 supabase/sql/             # migraciones (001…008)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
@@ -128,7 +131,7 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)
 - `docs/PROSPECCION.md` — guía de Prospección (contactos de una web → CRM; gratis)
-- `docs/pruebas/README.md` — pruebas de humo del CRM, del Auditor SEO y de Prospección con datos simulados
+- `docs/pruebas/README.md` — pruebas de humo del CRM, del Auditor SEO, de Prospección y de la PWA con datos simulados
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

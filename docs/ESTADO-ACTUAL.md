@@ -1,12 +1,20 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la tercera sesión)
+> Última actualización: 19-oct-2026 (cierre de la cuarta sesión)
 
 ## 📌 Punto de continuación
 
 - **Todo guardado en GitHub:** `main` = `origin/main`, sin cambios pendientes
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
-  3.ª sesión: **Prospección** en `34a6459`).
+  3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
+  optimizaciones** en `83860bb`).
+- **PWA con service worker (4.ª sesión):** el panel guarda su armazón y **abre sin
+  conexión**; las visitas repetidas cargan al instante. La API y Supabase **nunca** entran
+  en la caché. Verificado en producción (`/sw.js` servido y el bundle lo registra) y con la
+  prueba nueva `docs/pruebas/prueba-pwa.js`.
+- **Pruebas completas (4.ª sesión):** las **4 pruebas** de navegador (CRM, Auditor SEO,
+  Prospección y PWA) en verde, `npm run build` y `npm run lint` limpios, y el Worker
+  re-probado contra sitios reales.
 - **Prospección integrada y en vivo:** busca **correos, teléfonos y redes sociales** de una web
   (página principal + hasta 2 páginas de contacto) y con un clic los guarda como **empresa y
   contacto en el CRM**, avisando si la empresa ya existe. **Gratis y sin claves**; no necesitó
@@ -22,7 +30,8 @@
 - **Sitio:** https://aviech.avismael-eg.workers.dev — sirve la compilación con el CRM, el
   Auditor SEO y Prospección.
 - **Respaldo manual al cerrar** (19-oct, 6:25 PM UTC): `backup-2026-10-19_1825.sql.gz`
-  verificado; ver la sección de respaldos (la 3.ª sesión no cambió la base de datos).
+  verificado; ver la sección de respaldos (las sesiones 3.ª y 4.ª no cambiaron la base
+  de datos).
 - **Para retomar:** sigue los pasos de abajo (2 minutos).
 
 ## 🔄 Cómo retomar al encender la laptop
@@ -37,12 +46,14 @@
    - `Avismaelg/Aviech` → **Actions** → «Migrar base de datos».
    - `Avismaelg/Aviech-backup` → **Actions** → «Respaldo de la base de datos».
 7. Lee **`docs/CRM.md`**, **`docs/SEO.md`** y **`docs/PROSPECCION.md`** para usar esos
-   módulos y este archivo para el estado general.
+   módulos, **`docs/pruebas/README.md`** para las 4 pruebas de humo y este archivo para el
+   estado general.
 8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
 9. Si agregas una migración, créala como `supabase/sql/009_....sql`; el push la aplica.
 
-**Prueba del CRM guardada:** `docs/pruebas/prueba-crm.js` (instrucciones en
-`docs/pruebas/README.md`). No usa la base real: simula Supabase y no contiene secretos.
+**Pruebas guardadas:** cuatro pruebas de humo en `docs/pruebas/` (CRM, Auditor SEO,
+Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la base real
+(datos simulados) ni contienen secretos.
 
 ## ✅ El panel está PUBLICADO y en uso
 
@@ -69,8 +80,9 @@
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
   campo **RNC** para facturación formal (DGII) y teléfonos con formato local (809 / 829 / 849).
 - **Toque tecnológico**: contadores que se animan, gráfica de ingresos de los últimos 6 meses,
-  anillo de estado de cobro, transiciones suaves y app instalable (PWA: se puede «Añadir a
-  pantalla de inicio» desde el teléfono).
+  anillo de estado de cobro, transiciones suaves y app instalable (PWA con **service worker**:
+  se puede «Añadir a pantalla de inicio» y **abrir sin conexión**; las visitas repetidas
+  cargan al instante).
 - **Interfaz oscura premium** (19-oct): fondo con auroras y rejilla sutil, barra lateral de
   cristal, botones con gradiente, tarjetas elevadas e insignias translúcidas. La impresión y
   las facturas se mantienen en claro (las hojas salen perfectas).
@@ -110,6 +122,10 @@
   Con un clic crea la **empresa y el contacto en el CRM** (o añade el contacto si la empresa
   ya existe; avisa antes). Gratis, sin claves, con el mismo login. Guía:
   **`docs/PROSPECCION.md`**.
+- **Sin conexión y optimización (nuevo, 4.ª sesión):** service worker propio — el armazón
+  queda en caché, la app **abre sin internet** y repetir visita carga al instante; la API y
+  Supabase **nunca** se guardan. Además el Worker analiza enlaces y metadatos en **una sola
+  pasada** por página (menos CPU del plan gratis).
 - Login solo para personal (sin registro público). Los usuarios se crean en
   Supabase → Authentication → Users.
 - App local: `npm run dev` → http://localhost:5173
@@ -150,6 +166,9 @@
   duplicarla), salto al CRM, validación, recarga y vista móvil — **0 errores de consola**.
   Script: `docs/pruebas/prueba-prospeccion.js`; capturas en `capturas-prospeccion`
   (7 pantallas).
+- **Prueba de la PWA** (19-oct, 4.ª sesión): 5 pasos con datos simulados — service worker
+  activo con alcance raíz, recarga bajo su control y **apertura sin conexión** — **0 errores
+  de consola**. Script: `docs/pruebas/prueba-pwa.js`; capturas en `capturas-pwa` (2 pantallas).
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -167,8 +186,8 @@
 - **Respaldo manual adicional al cerrar la segunda sesión (19-oct, 6:25 PM UTC):**
   `backup-2026-10-19_1825.sql.gz` verificado (gzip válido, 277,330 bytes descomprimidos,
   7,796 líneas) e incluye las 12 tablas, entre ellas **`seo_auditorias`**. Run #9 en verde.
-- **3.ª sesión (Prospección):** sin cambios de base de datos (el módulo usa las tablas del
-  CRM), así que el respaldo de las 6:25 PM UTC sigue siendo el más reciente.
+- **3.ª y 4.ª sesión (Prospección, PWA y optimizaciones):** sin cambios de base de datos
+  (ninguna tocó la base), así que el respaldo de las 6:25 PM UTC sigue siendo el más reciente.
 - Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
 
 ## 🎨 Herramientas de diseño (UI UX Pro Max)
@@ -194,21 +213,27 @@
 
 ## 📋 Próximos pasos
 
-1. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
+1. **Rediseño de la interfaz (pedido del dueño, 19-oct):** decidir el camino —
+   **(a)** rediseñar el panel actual (React, con UI UX Pro Max): conserva módulos, pruebas,
+   impresión y PWA; o **(b)** reescribir todo en **Flutter** (Dart): se empieza de cero, las
+   pruebas actuales dejan de servir (Flutter dibuja en lienzo) y la impresión y la PWA se
+   rehacen; además habría que instalar el SDK de Flutter en la laptop. *La decisión define
+   la próxima fase.*
+2. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
    Dominicana = 17:00 UTC). Los del 19-oct se hicieron manuales (1:04 PM, 1:42 PM y
    2:25 PM) y quedaron verificados.
-2. Revisar en Supabase → **Account → Access Tokens** y borrar el token
+3. Revisar en Supabase → **Account → Access Tokens** y borrar el token
    `cli_User@ThinkBook-15IIL_1792390971` (se creó el 19-oct solo para rotar la
    contraseña; ya no hace falta). En este PC ya no queda copia.
-3. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
+4. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
    dirección, teléfono y correo) y, cuando estén, conectar el **e-CF** con el certificado
    digital de DGII (ver `docs/FACTURACION.md`).
-4. CRM fase 2: recordatorios de actividades atrasadas (correo o notificación), sincronización
+5. CRM fase 2: recordatorios de actividades atrasadas (correo o notificación), sincronización
    de correo/WhatsApp y resúmenes con IA (evaluar costo antes de activar).
-5. Auditor SEO fase 2 (solo si algún día se decide pagar): palabras clave, backlinks y
+6. Auditor SEO fase 2 (solo si algún día se decide pagar): palabras clave, backlinks y
    seguimiento de posiciones con OpenSEO hospedado (US$10/mes) o DataForSEO (recarga mínima
    US$50). Hoy: no pagar.
-6. Prospección fase 2 (solo si se pide): rastrear más páginas por sitio, exportar los
+7. Prospección fase 2 (solo si se pide): rastrear más páginas por sitio, exportar los
    hallazgos a CSV y marcar empresas ya descartadas.
-7. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
+8. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
    recordatorios de vencimientos y más analítica del tablero.

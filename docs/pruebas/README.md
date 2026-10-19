@@ -1,6 +1,6 @@
 # Pruebas de navegador
 
-> Tres pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Cuatro pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
 ## CRM (`prueba-crm.js`)
@@ -65,3 +65,17 @@ los pasos y los errores de consola (debe ser `[]`).
 5181 y pide en OpenCode `docs/pruebas/prueba-prospeccion.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
 `C:\Users\User\avitech\capturas-prospeccion` (7 imágenes).
+
+## PWA sin conexión (`prueba-pwa.js`)
+
+Prueba de humo del **service worker** (PWA) con la app compilada; no usa Supabase ni datos
+reales. Desactiva la red del navegador un momento (la vuelve a activar al terminar).
+
+**Qué comprueba:** que el service worker se registre con alcance raíz, que la recarga quede
+bajo su control y que, **sin conexión**, el panel siga abriendo (se ve el acceso) sin errores
+de consola. Devuelve JSON con `ok`, los pasos y los errores (debe ser `[]`).
+
+**Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el puerto
+5181 y pide en OpenCode `docs/pruebas/prueba-pwa.js` con la herramienta de Playwright
+(`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
+`C:\Users\User\avitech\capturas-pwa` (2 imágenes).

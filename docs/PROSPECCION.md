@@ -47,6 +47,9 @@ Consejos:
   final** (el pie de página suele tener los contactos).
 - **CRM**: usa las tablas `crm_empresas` y `crm_contactos` con RLS — **no hizo falta
   migración**. Las notas del contacto guardan el resumen del hallazgo con la fecha.
+- **Sitios que bloquean**: algunos portales con protección anti-bots (por ejemplo, bancos)
+  responden con una página de bloqueo en vez de su contenido; la búsqueda no falla — sale
+  vacía y en «Páginas revisadas» se ve el título de esa página («Access Denied», etc.).
 - **Límite del plan gratis**: si Cloudflare se queda corto de CPU en sitios gigantes, el
   panel lo avisa con un error claro; se puede ajustar el límite o pasar al plan de
   US$5/mes (solo si algún día hace falta).
@@ -67,8 +70,11 @@ de prospección (por ejemplo, los *lead finders* de los CRM); no se copió códi
   `docs/pruebas/README.md`). Verifica búsqueda, guardado (empresa nueva y empresa existente),
   validación, recarga y vista móvil; deja 7 capturas en `capturas-prospeccion`.
 - **Worker (real, con Node)**: probado contra sitios reales — `openseo.so` (2 correos, 1
-  teléfono y 6 redes) y `banreservas.com` (3 correos, 2 teléfonos en formato dominicano y 5
-  redes); errores correctos: `401` sin sesión, `400` sin dirección o privada, `404` ruta
-  desconocida y `405` método no permitido.
+  teléfono y 6 redes), `astro.build`, `claro.com.do` y `example.com`; errores correctos:
+  `401` sin sesión, `400` sin dirección o privada, `404` ruta desconocida, `405` método no
+  permitido y `502` cuando el sitio no abre. Re-probado el 19-oct con las optimizaciones
+  (una sola pasada de enlaces y metadatos por página) con los mismos resultados. Nota:
+  `banreservas.com` pasó a responder con una página de bloqueo «Access Denied» (403); el
+  panel lo maneja sin fallar.
 - **Real (producción)**: busca un sitio conocido del cliente y revisa los hallazgos antes de
   guardar nada.
