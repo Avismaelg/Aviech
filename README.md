@@ -4,10 +4,22 @@ Startup de auditoría y consultoría.
 
 ---
 
-## AviTech Panel — primer producto (Fase 1)
+## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group.
-Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
+Panel de gestión de AviTech Solutions Group: clientes, servicios y pagos, con tablero
+de resumen. Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
+
+- Dirección pública: **https://aviech.avismael-eg.workers.dev**
+- Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
+
+### Módulos
+
+| Módulo | Qué hace |
+|---|---|
+| **Inicio** | Resumen: clientes activos, servicios en curso, cobrado del mes y por cobrar; últimos clientes y pagos pendientes |
+| **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado) |
+| **Servicios** | Trabajos por cliente con tipo, estado, monto y fechas |
+| **Pagos** | Ingresos por cliente; cobrado vs. pendiente y «marcar como pagado» en un clic |
 
 ### Requisitos
 
@@ -26,46 +38,61 @@ npm run lint       # revisión de código (oxlint)
 
 > Regla del equipo: **un solo servidor de desarrollo a la vez**. Al terminar, `Ctrl+C`.
 
-### Puesta en marcha con Supabase (solo la primera vez)
+### Base de datos y migraciones
 
-1. Crea un proyecto en https://supabase.com (plan gratuito, sin tarjeta). Elige la región
-   más cercana a tus clientes.
-2. En **SQL Editor → New query**, pega el contenido de `supabase/sql/001_clientes.sql` y pulsa
-   **Run**. Esto crea la tabla `clientes` con seguridad RLS activada.
-3. En **Project Settings → API**, copia la **URL** y la **clave anónima**.
-4. Copia `.env.example` a `.env` y pega los valores.
-5. Para entrar rápido durante el desarrollo: en **Authentication → Sign In / Providers → Email**,
-   desactiva *Confirm email* (activar de nuevo antes de trabajar con clientes reales).
-6. `npm run dev` → abre http://localhost:5173 → crea tu cuenta en la pantalla de acceso.
-
-> Cuando ya tengas tus usuarios creados, revisa en **Authentication → Settings** la opción
-> *Allow new users to sign up*: desactívala para que nadie más pueda registrarse.
+- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001, 002, …).
+- Se aplican solos con el workflow **«Migrar base de datos»** cada vez que cambia
+  `supabase/sql/` (o a mano: GitHub → Actions → Run workflow).
+- Cada ejecución deja un reporte en `supabase/verificacion-ultima.txt`
+  (tablas, columnas, conteos, prueba de inserciones y simulación de permisos RLS).
+- Detalles y alternativa manual: **`docs/MIGRACIONES.md`**.
 
 ### Seguridad (recordatorio permanente)
 
-- La clave anónima es pública por diseño; la seguridad real vive en **RLS** en cada tabla.
-- La clave `service_role` **nunca** va en el frontend ni en Git; solo en Edge Functions.
-- `.env` está excluido de Git. No lo subas nunca.
+- La clave «publishable» es pública por diseño; la seguridad real vive en **RLS** en cada tabla.
+- RLS activado en `clientes`, `servicios` y `pagos`: solo usuarios autenticados del panel.
+- El registro público está cerrado; los usuarios se crean desde Supabase → Authentication → Users.
+- La clave `service_role` **nunca** va en el frontend ni en Git.
+- `.env` está excluido de Git; el repositorio solo contiene `.env.production` con valores públicos.
 
-### Despliegue (cuando toque)
+### Despliegue
 
-El contenido de `dist/` se publica gratis en **Cloudflare Pages** conectando el
-repositorio de GitHub (build en la nube, sin consumir RAM local).
+Automático con Cloudflare Workers al hacer `git push` a `main`.
+Alternativa manual: `npm run build` + `npx wrangler deploy`.
+Detalles y solución de problemas: **`docs/PUBLICAR-CLOUDFLARE.md`**.
+
+### Respaldos
+
+Copia semanal automática de la base (lunes ~8:00 CDMX) en el repositorio privado
+`Avismaelg/Aviech-backup`. Ver **`docs/RESPALDOS.md`**.
 
 ### Estructura
 
 ```
 src/
-  App.tsx                 # sesión de Supabase → muestra Login o Panel
+  App.tsx                 # sesión de Supabase → Login o panel
   components/
-    Login.tsx             # acceso y creación de cuenta
-    Panel.tsx             # cabecera + cierre de sesión
-    Clientes.tsx          # listado y alta de clientes
-  lib/supabase.ts         # cliente compartido de Supabase
-  types/cliente.ts        # tipo Cliente
-  index.css               # Tailwind CSS
-supabase/
-  sql/001_clientes.sql    # tabla + políticas RLS (pegar en SQL Editor)
-docs/
-  PLAN-TECNOLOGICO.md     # plan completo: stack, costos, fases y reglas
+    Layout.tsx            # barra lateral + navegación
+    Inicio.tsx            # tablero de resumen
+    Clientes.tsx          # CRUD de clientes
+    Servicios.tsx         # CRUD de servicios
+    Pagos.tsx             # CRUD de pagos
+    Login.tsx             # acceso del personal
+    ui.tsx / toast.tsx    # piezas de interfaz compartidas
+  lib/
+    supabase.ts           # cliente compartido de Supabase
+    useTabla.ts           # carga/guardado genérico por tabla
+    formato.ts            # moneda, fechas e iniciales
+    etiquetas.ts          # estados, tipos y colores
+  types/                  # tipos Cliente, Servicio y Pago
+supabase/sql/             # migraciones (001, 002, …)
+docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
+
+### Documentación
+
+- `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
+- `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
+- `docs/MIGRACIONES.md` — cómo cambia la base de datos
+- `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
+- `docs/RESPALDOS.md` — respaldos y restauración

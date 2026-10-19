@@ -2,12 +2,12 @@
 
 > Última actualización: 18-oct-2026
 
-## ✅ ¡El panel está PUBLICADO en internet!
+## ✅ El panel está PUBLICADO en internet
 
 - Publicado con **Cloudflare** (plan gratuito), como proyecto tipo **Worker** llamado **`aviech`**.
 - **Dirección pública: `https://aviech.avismael-eg.workers.dev`** ✅ (verificada, responde bien).
 - **La publicación es automática**: cada `git push` a `main` se compila y publica solo,
-  en menos de 1 minuto (verificado el 18-oct: 5 pushes → 5 publicaciones automáticas). ✅
+  en menos de 1 minuto. ✅
 - Alternativa manual (respaldo): `npm run build` + `npx wrangler deploy` — la herramienta
   quedó autorizada en este PC (guarda la sesión de Cloudflare).
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
@@ -17,10 +17,22 @@
 
 ## ✅ La app funciona (local y en internet)
 
-- Login (sin registro público), alta y borrado de clientes.
+- Módulos: **Inicio** (tablero de resumen), **Clientes** (búsqueda, filtros por estado,
+  edición y borrado), **Servicios** y **Pagos** (con «marcar como pagado» en un clic).
+- Diseño renovado: menú lateral, versión móvil, avisos flotantes y ventanas de edición.
+- Login solo para personal (sin registro público). Los usuarios se crean en
+  Supabase → Authentication → Users.
 - App local: `npm run dev` → http://localhost:5173
-- Supabase: tabla `clientes` con seguridad RLS; registro público cerrado
-  (los usuarios solo se crean desde Supabase: Authentication → Users).
+
+## ✅ Base de datos al día (migraciones automáticas)
+
+- Tablas: `clientes` (ahora con **empresa** y **estado**), `servicios` y `pagos`.
+  Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
+- Las migraciones viven en **`supabase/sql/`** y se aplican solas con el workflow
+  **«Migrar base de datos»** en cada push que cambie esa carpeta.
+- Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
+  (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
+- Detalles: **`docs/MIGRACIONES.md`**.
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -43,5 +55,7 @@
 
 1. Ajuste en Supabase: Authentication → URL Configuration → Site URL =
    `https://aviech.avismael-eg.workers.dev`.
-2. Abrir el panel publicado y entrar con tu usuario (verificación visual).
-3. Mejoras del panel: más campos/módulos y pulidos de interfaz.
+2. Entrar al panel y probar: crear un **servicio** y un **pago** de prueba.
+3. Verificar el primer respaldo programado (lunes 19-oct ~8:00 AM CDMX).
+4. Cuando se pueda: rotar la contraseña de la base de datos (se pegó en el chat una vez).
+5. Ideas para después: módulo de gastos (regla del dinero ×3), reportes y vencimientos.
