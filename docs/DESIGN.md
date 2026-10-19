@@ -28,7 +28,7 @@
 | `--color-borde-suave` | `#182238` | Divisores internos |
 | `--color-tinta` | `#eef2fb` | Texto principal |
 | `--color-tinta-suave` | `#9aa7c4` | Texto secundario |
-| `--color-tinta-tenue` | `#5d6c8d` | Texto terciario, placeholders |
+| `--color-tinta-tenue` | `#6b7ca0` | Texto terciario, placeholders |
 
 Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta`,
 `border-borde`, `bg-fondo/70`… **Nunca** poner hex crudos para superficies o texto.
@@ -92,6 +92,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 | `BotonIcono` | Acción de solo icono con etiqueta accesible (`title` + `aria-label`). Obligatorio en tablas en vez de botones sueltos. |
 | `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío (acepta `accion` opcional para un CTA), esqueleto `animate-pulse` y aviso ámbar. |
 | `Layout` | Barra lateral fija con navegación (activo: fondo índigo 10 % + barra lateral con brillo + `aria-current`), chip de usuario; en móvil, cabecera con blur + navegación desplazable (utilidades `.sin-barra` y `.mascara-desvanecida`). |
+| `CRM` | Pestañas accesibles (`role="tablist"`, flechas ←/→) para Pipeline, Empresas, Contactos y Actividades. El pipeline es un kanban horizontal con columnas de 16 rem, arrastre nativo y edición en modal; en móvil la etapa se cambia desde el modal. Las tarjetas y métricas usan `tabular-nums`. |
 
 - **Enlaces profundos:** la sección activa vive en la URL (`#inicio`, `#clientes`, `#igualas`…). Recargar, compartir el enlace o usar Atrás conserva la sección.
 

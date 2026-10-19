@@ -48,6 +48,11 @@
   contratado / cobrado / por cobrar) y **resumen mensual** (12 meses: cobrado, por cobrar,
   gastos y balance). Botones **Imprimir / PDF** (limpia la pantalla: sin menús, con encabezado
   de AviTech) y **CSV** para Excel.
+- **CRM** (nuevo): pipeline kanban con 7 etapas (prospecto → ganado/perdido), empresas,
+  contactos y actividades (llamadas, correos, reuniones, tareas y notas). Incluye búsqueda,
+  métricas de pipeline abierto / ponderado / ganado, alertas de actividades atrasadas,
+  arrastre de tarjetas y conversión de una empresa en cliente con un clic. Guía:
+  **`docs/CRM.md`**.
 - Login solo para personal (sin registro público). Los usuarios se crean en
   Supabase → Authentication → Users.
 - App local: `npm run dev` → http://localhost:5173
@@ -55,9 +60,11 @@
 ## ✅ Base de datos al día (migraciones automáticas)
 
 - Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `igualas`
-  (categoría, monto mensual y día de cobro), `pagos`, `gastos`, `facturas` y `factura_items`
-  (líneas de factura). Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
-- Las migraciones viven en **`supabase/sql/`** (001…006) y se aplican solas con el
+  (categoría, monto mensual y día de cobro), `pagos`, `gastos`, `facturas`, `factura_items`
+  (líneas de factura) y las cuatro del CRM (`crm_empresas`, `crm_contactos`,
+  `crm_oportunidades`, `crm_actividades`). Todas con RLS: solo usuarios autenticados; un
+  visitante anónimo no ve nada.
+- Las migraciones viven en **`supabase/sql/`** (001…007) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -66,10 +73,10 @@
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
   repos se actualizaron y el **respaldo + las migraciones quedaron verificados en
   verde** con la clave nueva. Procedimiento: **`docs/ROTAR-CLAVE-BD.md`**.
-- **Prueba completa 19-oct-2026** (con datos simulados, sin tocar la base real): las 8
-  secciones (incluida **Igualas**), factura (con NCF, RNC e ITBIS), impresión siempre en
-  claro, vista móvil, login y navegación — **0 errores de consola**. Capturas en la
-  carpeta `capturas-mejora` (14 pantallas).
+- **Prueba completa 19-oct-2026** (con datos simulados, sin tocar la base real): las 9
+  secciones (incluidas **Igualas** y **CRM**), factura (con NCF, RNC e ITBIS), impresión
+  siempre en claro, vista móvil, login y navegación — **0 errores de consola**. Capturas en
+  `capturas-mejora` (14 pantallas) y `capturas-crm` (5 pantallas).
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -114,5 +121,7 @@
 3. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
    dirección, teléfono y correo) y, cuando estén, conectar el **e-CF** con el certificado
    digital de DGII (ver `docs/FACTURACION.md`).
-4. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
+4. CRM fase 2: recordatorios de actividades atrasadas (correo o notificación), sincronización
+   de correo/WhatsApp y resúmenes con IA (evaluar costo antes de activar).
+5. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
    recordatorios de vencimientos y más analítica del tablero.

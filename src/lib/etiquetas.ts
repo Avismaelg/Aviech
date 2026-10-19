@@ -1,4 +1,4 @@
-export type ColorInsignia = 'emerald' | 'amber' | 'sky' | 'red' | 'slate' | 'indigo'
+export type ColorInsignia = 'emerald' | 'amber' | 'sky' | 'red' | 'slate' | 'indigo' | 'violet'
 
 // ---------- Clientes ----------
 export const ESTADOS_CLIENTE = ['activo', 'prospecto', 'pausado'] as const
@@ -147,4 +147,48 @@ export const colorEstadoIguala: Record<string, ColorInsignia> = {
   activa: 'emerald',
   pausada: 'amber',
   cancelada: 'slate',
+}
+
+// ---------- CRM ----------
+export const ETAPAS_CRM = ['prospecto', 'contactado', 'reunion', 'propuesta', 'negociacion', 'ganado', 'perdido'] as const
+
+/** Etapas que cuentan como pipeline abierto (aún no ganado ni perdido). */
+export const ETAPAS_CRM_ABIERTAS = ['prospecto', 'contactado', 'reunion', 'propuesta', 'negociacion'] as const
+
+export const etiquetaEtapaCrm: Record<string, string> = {
+  prospecto: 'Prospecto',
+  contactado: 'Contactado',
+  reunion: 'Reunión',
+  propuesta: 'Propuesta',
+  negociacion: 'Negociación',
+  ganado: 'Ganado',
+  perdido: 'Perdido',
+}
+
+export const colorEtapaCrm: Record<string, ColorInsignia> = {
+  prospecto: 'slate',
+  contactado: 'sky',
+  reunion: 'indigo',
+  propuesta: 'amber',
+  negociacion: 'violet',
+  ganado: 'emerald',
+  perdido: 'red',
+}
+
+export const TIPOS_ACTIVIDAD_CRM = ['llamada', 'correo', 'reunion', 'tarea', 'nota'] as const
+
+export const etiquetaTipoActividadCrm: Record<string, string> = {
+  llamada: 'Llamada',
+  correo: 'Correo',
+  reunion: 'Reunión',
+  tarea: 'Tarea',
+  nota: 'Nota',
+}
+
+export const colorTipoActividadCrm: Record<string, ColorInsignia> = {
+  llamada: 'sky',
+  correo: 'indigo',
+  reunion: 'violet',
+  tarea: 'amber',
+  nota: 'slate',
 }

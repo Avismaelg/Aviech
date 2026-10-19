@@ -22,6 +22,7 @@ Interfaz **oscura premium**: tokens de diseño, cristal, gradientes índigo→vi
 |---|---|
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
+| **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
 | **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas |
 | **Pagos** | Ingresos por cliente; cobrado vs. pendiente, **vencidos** y «marcar como pagado» en un clic |
 | **Facturación** | Facturas con **NCF / e-NCF** e **ITBIS 18%**; líneas de detalle, estados borrador → emitida → pagada, **anulación**, impresión/PDF y pago registrado automáticamente al cobrar |
@@ -82,6 +83,12 @@ src/
     Layout.tsx            # barra lateral + navegación
     Inicio.tsx            # tablero: contadores, gráfica, anillo de cobro y balance
     Clientes.tsx          # CRUD de clientes (con RNC)
+    crm/
+      Crm.tsx             # sección CRM: pestañas, métricas y carga de datos
+      Pipeline.tsx        # tablero kanban de oportunidades
+      Empresas.tsx        # CRUD de empresas + conversión a cliente
+      Contactos.tsx       # CRUD de contactos
+      Actividades.tsx     # llamadas, correos, reuniones, tareas y notas
     Servicios.tsx         # CRUD de servicios
     Pagos.tsx             # CRUD de pagos (con vencidos)
     Facturacion.tsx       # facturas con NCF/e-NCF, ITBIS y PDF
@@ -92,13 +99,14 @@ src/
   lib/
     supabase.ts           # cliente compartido de Supabase
     useTabla.ts           # carga/guardado genérico por tabla
+    crm.ts                # convierte una empresa del CRM en cliente
     formato.ts            # moneda (RD$), fechas e iniciales
     etiquetas.ts          # estados, tipos y colores
     useContador.ts        # animación de números del tablero
     csv.ts                # exportar tablas a Excel (CSV)
     empresa.ts            # datos fiscales de la empresa (encabezado de facturas)
-  types/                  # tipos Cliente, Servicio, Pago, Gasto y Factura
-supabase/sql/             # migraciones (001, 002, 003, 004, …)
+  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala y CRM
+supabase/sql/             # migraciones (001…007)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 
@@ -106,6 +114,7 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
+- `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

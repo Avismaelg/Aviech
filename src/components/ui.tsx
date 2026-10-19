@@ -65,6 +65,7 @@ const coloresInsignia: Record<ColorInsignia, string> = {
   red: 'border-red-400/25 bg-red-400/10 text-red-300',
   slate: 'border-slate-400/20 bg-slate-400/10 text-slate-300',
   indigo: 'border-indigo-400/25 bg-indigo-400/10 text-indigo-300',
+  violet: 'border-violet-400/25 bg-violet-400/10 text-violet-300',
 }
 
 export function Insignia({ color = 'slate', children }: { color?: ColorInsignia; children: ReactNode }) {
@@ -140,11 +141,18 @@ export function Modal({
   ancho?: string
 }) {
   const contenedor = useRef<HTMLDivElement>(null)
+  // La referencia evita reiniciar el efecto (y robar el foco) cada vez que el
+  // formulario se vuelve a renderizar por una tecla.
+  const cerrarRef = useRef(onCerrar)
+
+  useEffect(() => {
+    cerrarRef.current = onCerrar
+  }, [onCerrar])
 
   useEffect(() => {
     if (!abierto) return
     function alTeclear(evento: KeyboardEvent) {
-      if (evento.key === 'Escape') onCerrar()
+      if (evento.key === 'Escape') cerrarRef.current()
     }
     const desbordeAnterior = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -160,7 +168,7 @@ export function Modal({
       window.removeEventListener('keydown', alTeclear)
       window.clearTimeout(enfoque)
     }
-  }, [abierto, onCerrar])
+  }, [abierto])
 
   if (!abierto) return null
   return (

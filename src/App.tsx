@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 import { Clientes } from './components/Clientes'
+import { Crm } from './components/crm/Crm'
 import { Facturacion } from './components/Facturacion'
 import { Gastos } from './components/Gastos'
 import { Igualas } from './components/Igualas'
@@ -51,7 +52,7 @@ function Comprobando() {
   )
 }
 
-const SECCIONES: Seccion[] = ['inicio', 'clientes', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
+const SECCIONES: Seccion[] = ['inicio', 'clientes', 'crm', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
 
 /** Enlace profundo: la sección activa vive en la URL (#igualas), así se puede recargar, compartir y usar el botón Atrás. */
 function seccionDesdeHash(): Seccion {
@@ -107,6 +108,7 @@ function App() {
           <div key={seccion} className="animar-entrada">
             {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
             {seccion === 'clientes' && <Clientes />}
+            {seccion === 'crm' && <Crm />}
             {seccion === 'servicios' && <Servicios />}
             {seccion === 'igualas' && <Igualas />}
             {seccion === 'pagos' && <Pagos />}

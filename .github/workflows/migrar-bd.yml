@@ -67,14 +67,14 @@ jobs:
             echo "## Tablas de public"
             psql "$DB" -c '\dt public.*'
             echo "## Columnas de todas las tablas"
-            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas') order by table_name, ordinal_position;"
+            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades') order by table_name, ordinal_position;"
             echo "## Conteos"
-            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas;"
+            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas union all select 'crm_empresas', count(*) from public.crm_empresas union all select 'crm_contactos', count(*) from public.crm_contactos union all select 'crm_oportunidades', count(*) from public.crm_oportunidades union all select 'crm_actividades', count(*) from public.crm_actividades;"
             echo "## Prueba de inserciones (se revierte al final)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
           do $$
-          declare c uuid; f uuid;
+          declare c uuid; f uuid; e uuid; ct uuid; o uuid;
           begin
             insert into public.clientes (nombre, empresa, estado) values ('__prueba_migracion__', 'Prueba', 'prospecto') returning id into c;
             insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
@@ -83,6 +83,10 @@ jobs:
             insert into public.igualas (cliente_id, descripcion, monto_mensual) values (c, '__prueba__', 7);
             insert into public.facturas (cliente_id, cliente_nombre, numero, tipo, subtotal, itbis, total) values (c, '__prueba__', 'B0200000001', 'B02', 100, 18, 118) returning id into f;
             insert into public.factura_items (factura_id, descripcion, precio) values (f, '__prueba__', 100);
+            insert into public.crm_empresas (nombre) values ('__prueba__') returning id into e;
+            insert into public.crm_contactos (empresa_id, nombre) values (e, '__prueba__') returning id into ct;
+            insert into public.crm_oportunidades (empresa_id, contacto_id, titulo, monto) values (e, ct, '__prueba__', 11) returning id into o;
+            insert into public.crm_actividades (oportunidad_id, contacto_id, titulo) values (o, ct, '__prueba__');
             raise notice 'Inserciones de prueba: OK';
           end $$;
           rollback;
@@ -98,7 +102,11 @@ jobs:
                  (select count(*) from public.gastos) as gastos,
                  (select count(*) from public.facturas) as facturas,
                  (select count(*) from public.factura_items) as factura_items,
-                 (select count(*) from public.igualas) as igualas;
+                 (select count(*) from public.igualas) as igualas,
+                 (select count(*) from public.crm_empresas) as crm_empresas,
+                 (select count(*) from public.crm_contactos) as crm_contactos,
+                 (select count(*) from public.crm_oportunidades) as crm_oportunidades,
+                 (select count(*) from public.crm_actividades) as crm_actividades;
           rollback;
           SQL
             echo "## RLS: lectura como anónimo (debe dar 0 en todo)"
@@ -111,7 +119,11 @@ jobs:
                  (select count(*) from public.gastos) as gastos,
                  (select count(*) from public.facturas) as facturas,
                  (select count(*) from public.factura_items) as factura_items,
-                 (select count(*) from public.igualas) as igualas;
+                 (select count(*) from public.igualas) as igualas,
+                 (select count(*) from public.crm_empresas) as crm_empresas,
+                 (select count(*) from public.crm_contactos) as crm_contactos,
+                 (select count(*) from public.crm_oportunidades) as crm_oportunidades,
+                 (select count(*) from public.crm_actividades) as crm_actividades;
           rollback;
           SQL
           } > "$REPORTE" 2>&1
