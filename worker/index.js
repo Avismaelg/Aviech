@@ -1,22 +1,32 @@
 /**
- * AviTech Panel · API del Auditor SEO.
+ * AviTech Panel · API interna (mismo Worker que publica el panel).
  *
- * Vive en el mismo Worker que publica el panel (Cloudflare) y analiza una página
- * en el servidor: así no hay problemas de CORS y el sitio auditado se ve tal como
- * lo ve un buscador. No usa claves de pago: todo el análisis es propio.
+ * Rutas (ambas GET, con ?url=…):
+ * - /api/seo/auditar       → Auditor SEO: informe con puntaje 0–100.
+ * - /api/scraper/contactos → Prospección: correos, teléfonos y redes sociales.
  *
- * - Ruta: GET /api/seo/auditar?url=https://ejemplo.com
+ * Funciona en el servidor: sin problemas de CORS y el sitio se ve tal como lo ve
+ * un visitante. No usa claves de pago: todo el análisis es propio.
+ *
  * - Seguridad: exige el token de sesión de Supabase (Authorization: Bearer …).
- * - Límite de CPU: se analizan como máximo los primeros 400 000 caracteres del HTML
- *   (el plan gratis de Cloudflare tiene 10 ms de CPU por petición).
+ * - Límite de CPU: el plan gratis de Cloudflare da 10 ms por petición; por eso
+ *   todo el análisis usa expresiones regulares y recorta el HTML.
  */
 
 const LIMITE_HTML = 400_000
+const LIMITE_SCRAPER = 200_000
 const TIMEOUT_PAGINA = 15_000
 const TIMEOUT_ARCHIVO = 8_000
+const TIMEOUT_SCRAPER = 12_000
 const MAX_ENLACES = 800
+const MAX_PAGINAS_CONTACTO = 2
 const MAX_PALABRAS_HTML = LIMITE_HTML
 const ORIGENES_EXACTOS = ['https://aviech.avismael-eg.workers.dev']
+
+const RUTAS = {
+  '/api/seo/auditar': auditar,
+  '/api/scraper/contactos': buscarContactos,
+}
 
 export default {
   async fetch(request, env) {
@@ -26,7 +36,8 @@ export default {
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cabecerasCors(origen) })
     }
-    if (url.pathname !== '/api/seo/auditar') {
+    const ruta = RUTAS[url.pathname]
+    if (!ruta) {
       return json({ error: 'Ruta no encontrada.' }, 404, origen)
     }
     if (request.method !== 'GET') {
@@ -39,7 +50,7 @@ export default {
         return json({ error: 'Tu sesión no es válida. Vuelve a iniciar sesión e inténtalo otra vez.' }, 401, origen)
       }
       const destino = validarUrl(url.searchParams.get('url') || '')
-      const resultado = await auditar(destino)
+      const resultado = await ruta(destino)
       return json(resultado, 200, origen)
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'Ocurrió un error inesperado.'
@@ -62,7 +73,7 @@ async function estaAutenticado(request, env) {
 
 function validarUrl(entrada) {
   const texto = entrada.trim()
-  if (!texto) throw conEstado('Escribe la dirección de un sitio para auditarlo.', 400)
+  if (!texto) throw conEstado('Escribe la dirección de un sitio.', 400)
   const conEsquema = /^https?:\/\//i.test(texto) ? texto : `https://${texto}`
   let url
   try {
@@ -71,7 +82,7 @@ function validarUrl(entrada) {
     throw conEstado('La dirección no tiene un formato válido.', 400)
   }
   if (!/^https?:$/.test(url.protocol)) {
-    throw conEstado('Solo se pueden auditar direcciones http o https.', 400)
+    throw conEstado('Solo se pueden visitar direcciones http o https.', 400)
   }
   const host = url.hostname.toLowerCase()
   const privados = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]']
@@ -81,7 +92,7 @@ function validarUrl(entrada) {
     /^(10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host) ||
     /^\d+$/.test(host)
   ) {
-    throw conEstado('Esa dirección es privada y no se puede auditar.', 400)
+    throw conEstado('Esa dirección es privada y no se puede visitar.', 400)
   }
   return url
 }
@@ -346,6 +357,266 @@ async function traerTexto(direccion) {
     return { ok: false, estado: 0, texto: '' }
   } finally {
     clearTimeout(temporizador)
+  }
+}
+
+// ---------------------------------------------------------------- prospección
+
+const REDES_SOCIALES = [
+  { red: 'LinkedIn', patron: /(^|\.)linkedin\.com$/i, ignorar: /\/share|\/sharing/i },
+  { red: 'Instagram', patron: /(^|\.)instagram\.com$/i, ignorar: /^$/ },
+  { red: 'Facebook', patron: /(^|\.)facebook\.com$/i, ignorar: /\/sharer|\/share\.php|\/plugins|\/tr\b/i },
+  { red: 'X (Twitter)', patron: /(^|\.)(twitter|x)\.com$/i, ignorar: /\/intent\/|\/share|\/i\/lists/i },
+  { red: 'TikTok', patron: /(^|\.)tiktok\.com$/i, ignorar: /^$/ },
+  { red: 'YouTube', patron: /(^|\.)(youtube\.com|youtu\.be)$/i, ignorar: /^$/ },
+  { red: 'WhatsApp', patron: /(^|\.)(wa\.me|whatsapp\.com)$/i, ignorar: /^$/ },
+]
+
+const PALABRAS_CONTACTO = /(contact|nosotros|quienes|qui[eé]nes|sobre|about|empresa|company|equipo|team|soporte|support|ayuda|help)/i
+// Rutas con restos de plantillas JavaScript (comillas, corchetes…): ruido de frameworks.
+const BASURA_EN_RUTA = /[\[\]{}'"`]|%5B|%5D|%27|%22|%7B|%7D|\.\./
+const RE_EMAIL = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi
+const RE_TELEFONO =
+  /(?:\+?1[\s.-]?)?\(?(?:809|829|849)\)?[\s.-]?\d{3}[\s.-]?\d{4}\b|\+\d{1,3}(?:[\s.-]?\(?\d{1,4}\)?){2,4}|\b\d{3}[\s.-]\d{3}[\s.-]\d{4}\b/g
+const DOMINIOS_IGNORADOS = /@(example|ejemplo|dominio|domain|empresa|email|correo|test|prueba|tudominio|tusitio|misitio|website|site)\.(com|org|net|do|io|dev|test)$|@(sentry\.io|sentry-next\.wixpress\.com|wixpress\.com|schema\.org|w3\.org)$/i
+const LOCALES_IGNORADOS = /^(no-?reply|donotreply|mailer-daemon|postmaster|test|prueba|tu|you|your|nombre|name|usuario|username|ejemplo)@/i
+const EXTENSIONES_IGNORADAS = /\.(png|jpe?g|gif|webp|svg|ico|css|js|woff2?)$/i
+
+/**
+ * Prospección: visita la página principal y hasta 2 páginas de contacto/nosotros
+ * del mismo dominio, y extrae correos, teléfonos y redes sociales.
+ * Todo con expresiones regulares (CPU limitada en el plan gratis).
+ */
+async function buscarContactos(destino) {
+  const inicio = Date.now()
+  const visitadas = new Set([destino.href])
+  const paginas = []
+  const emails = new Map()
+  const telefonos = new Map()
+  const redes = new Map()
+
+  const primera = await traerPaginaScraper(destino.href)
+  if (!primera.ok) {
+    if ([401, 403, 429, 503].includes(primera.estado)) {
+      throw conEstado('Esa web bloqueó la visita automática (protección antibots). Ábrela a mano o prueba con otra dirección.', 502)
+    }
+    throw conEstado(
+      primera.estado
+        ? `No se pudo abrir el sitio (HTTP ${primera.estado}). Revisa la dirección o inténtalo de nuevo.`
+        : 'No se pudo abrir el sitio. Revisa la dirección o inténtalo de nuevo.',
+      502,
+    )
+  }
+  const urlFinal = primera.urlFinal.href
+  visitadas.add(urlFinal)
+  paginas.push({ url: urlFinal, estado: primera.estado, titulo: primera.titulo })
+  recolectarContactos(primera, emails, telefonos, redes)
+
+  let agregadas = 0
+  for (const candidata of primera.enlaces.propios) {
+    if (agregadas >= MAX_PAGINAS_CONTACTO) break
+    if (Date.now() - inicio > 20_000) break
+    if (visitadas.has(candidata)) continue
+    agregadas++
+    const pagina = await traerPaginaScraper(candidata)
+    const direccion = pagina.urlFinal ? pagina.urlFinal.href : candidata
+    if (visitadas.has(direccion)) continue
+    visitadas.add(direccion)
+    if (!pagina.ok) {
+      paginas.push({ url: direccion, estado: pagina.estado, titulo: '' })
+      continue
+    }
+    paginas.push({ url: direccion, estado: pagina.estado, titulo: pagina.titulo })
+    recolectarContactos(pagina, emails, telefonos, redes)
+  }
+
+  return {
+    url: destino.href,
+    urlFinal,
+    dominio: new URL(urlFinal).hostname.replace(/^www\./, ''),
+    nombre: primera.nombreSitio,
+    paginas,
+    emails: [...emails.values()],
+    telefonos: [...telefonos.values()],
+    redes: ordenarRedes([...redes.values()]),
+    tiempoMs: Date.now() - inicio,
+    fecha: new Date().toISOString(),
+  }
+}
+
+async function traerPaginaScraper(direccion) {
+  const control = new AbortController()
+  const temporizador = setTimeout(() => control.abort(), TIMEOUT_SCRAPER)
+  try {
+    const respuesta = await fetch(direccion, {
+      redirect: 'follow',
+      signal: control.signal,
+      headers: {
+        'user-agent': 'Mozilla/5.0 (compatible; AviTechProspeccion/1.0; +https://aviech.avismael-eg.workers.dev)',
+        accept: 'text/html,application/xhtml+xml',
+        'accept-language': 'es-DO,es;q=0.9,en;q=0.8',
+      },
+    })
+    const urlFinal = new URL(respuesta.url || direccion)
+    const html = await respuesta.text()
+    const tipo = respuesta.headers.get('content-type') || ''
+    if (!/html|xml/i.test(tipo) && !/<html|<!doctype html/i.test(html.slice(0, 2000))) {
+      return paginaVacia(respuesta.status, urlFinal)
+    }
+    const trozo = recortarHtml(html, LIMITE_SCRAPER)
+    const titulo = limpiar(textoDe(trozo, 'title')).slice(0, 200)
+    const nombreSitio = (leerMeta(trozo, 'og:site_name') || leerMeta(trozo, 'og:title') || titulo).slice(0, 150)
+    return {
+      ok: true,
+      estado: respuesta.status,
+      urlFinal,
+      html: trozo,
+      titulo,
+      nombreSitio,
+      enlaces: extraerEnlaces(trozo, urlFinal),
+    }
+  } catch {
+    return paginaVacia(0, null)
+  } finally {
+    clearTimeout(temporizador)
+  }
+}
+
+function paginaVacia(estado, urlFinal) {
+  return { ok: false, estado, urlFinal, html: '', titulo: '', nombreSitio: '', enlaces: { propios: [], externos: [] } }
+}
+
+function recolectarContactos(pagina, emails, telefonos, redes) {
+  const origen = pagina.urlFinal ? rutaCorta(pagina.urlFinal) : ''
+  const html = pagina.html
+
+  for (const etiqueta of html.match(/<a\b[^>]*>/gi) || []) {
+    const href = atributo(etiqueta, 'href') || ''
+    const correo = /^mailto:([^?]+)/i.exec(href)
+    if (correo) agregarEmail(emails, decodificar(correo[1]), origen)
+    const tel = /^tel:([^?]+)/i.exec(href)
+    if (tel) agregarTelefono(telefonos, decodificar(tel[1]), origen)
+  }
+
+  for (const correo of html.match(RE_EMAIL) || []) agregarEmail(emails, correo, origen)
+  for (const telefono of html.match(RE_TELEFONO) || []) agregarTelefono(telefonos, telefono, origen)
+
+  // Datos estructurados (schema.org): correo y teléfono declarados.
+  const bloques = html.match(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi) || []
+  for (const bloque of bloques.slice(0, 4)) {
+    const correo = /"email"\s*:\s*"([^"]+)"/i.exec(bloque)
+    if (correo) agregarEmail(emails, correo[1], origen)
+    const telefono = /"telephone"\s*:\s*"([^"]+)"/i.exec(bloque)
+    if (telefono) agregarTelefono(telefonos, telefono[1], origen)
+  }
+
+  for (const externo of pagina.enlaces.externos) agregarRed(redes, externo, origen)
+}
+
+function extraerEnlaces(html, base) {
+  const propios = []
+  const externos = []
+  const host = base.hostname.replace(/^www\./, '')
+  let vistos = 0
+  for (const etiqueta of html.match(/<a\b[^>]*>/gi) || []) {
+    if (++vistos > MAX_ENLACES) break
+    const href = atributo(etiqueta, 'href')
+    if (!href || /^(#|mailto:|tel:|javascript:)/i.test(href)) continue
+    let enlace
+    try {
+      enlace = new URL(href, base)
+    } catch {
+      continue
+    }
+    if (!/^https?:$/.test(enlace.protocol)) continue
+    if (enlace.hostname.replace(/^www\./, '') === host) {
+      if (PALABRAS_CONTACTO.test(enlace.pathname) && !BASURA_EN_RUTA.test(enlace.pathname)) propios.push(enlace.href)
+    } else if (externos.length < 400) {
+      externos.push(enlace.href)
+    }
+  }
+  return { propios: [...new Set(propios)].slice(0, 5), externos }
+}
+
+/** Si la página es enorme, conserva el 60 % inicial y el 40 % final (el pie suele tener los contactos). */
+function recortarHtml(html, limite) {
+  if (html.length <= limite) return html
+  const inicio = Math.floor(limite * 0.6)
+  return `${html.slice(0, inicio)}\n${html.slice(-(limite - inicio))}`
+}
+
+function leerMeta(html, clave) {
+  for (const etiqueta of extraerCabeza(html).match(/<meta\b[^>]*>/gi) || []) {
+    const nombre = atributo(etiqueta, 'name') || atributo(etiqueta, 'property')
+    const contenido = atributo(etiqueta, 'content')
+    if (nombre && nombre.toLowerCase() === clave && contenido !== null) return limpiar(contenido)
+  }
+  return ''
+}
+
+function agregarEmail(mapa, valor, origen) {
+  const correo = valor.trim().replace(/^["'<]+|["'>]+$/g, '').toLowerCase()
+  if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(correo)) return
+  if (correo.length > 80 || EXTENSIONES_IGNORADAS.test(correo)) return
+  if (DOMINIOS_IGNORADOS.test(correo) || LOCALES_IGNORADOS.test(correo)) return
+  if (mapa.size >= 12 || mapa.has(correo)) return
+  mapa.set(correo, { valor: correo, origen })
+}
+
+function agregarTelefono(mapa, valor, origen) {
+  const crudo = valor.trim().replace(/\s+/g, ' ')
+  const digitos = crudo.replace(/\D/g, '')
+  if (digitos.length < 8 || digitos.length > 15) return
+  if (/^(19|20)\d{6}$/.test(digitos)) return
+  const clave = digitos.length === 11 && digitos.startsWith('1') ? digitos.slice(1) : digitos
+  if (mapa.size >= 12 || mapa.has(clave)) return
+  mapa.set(clave, { valor: formatearTelefono(clave, crudo), origen })
+}
+
+function formatearTelefono(clave, crudo) {
+  if (clave.length === 10) {
+    const base = `(${clave.slice(0, 3)}) ${clave.slice(3, 6)}-${clave.slice(6)}`
+    return crudo.startsWith('+') ? `+1 ${base}` : base
+  }
+  if (crudo.startsWith('+')) return `+${clave}`
+  return crudo.slice(0, 30)
+}
+
+function agregarRed(mapa, direccion, origen) {
+  let enlace
+  try {
+    enlace = new URL(direccion)
+  } catch {
+    return
+  }
+  const host = enlace.hostname.replace(/^www\./, '')
+  const regla = REDES_SOCIALES.find((candidata) => candidata.patron.test(host))
+  if (!regla) return
+  if (!enlace.pathname || enlace.pathname === '/' || regla.ignorar.test(enlace.pathname)) return
+  const limpia = `${enlace.origin}${enlace.pathname.replace(/\/+$/, '')}`
+  if (mapa.size >= 12 || mapa.has(limpia)) return
+  mapa.set(limpia, { red: regla.red, url: limpia, origen })
+}
+
+/** Las redes de empresa (LinkedIn /company/…) van antes que los perfiles personales. */
+function ordenarRedes(redes) {
+  return redes.sort((a, b) => prioridadRed(a.url) - prioridadRed(b.url))
+}
+
+function prioridadRed(url) {
+  return /linkedin\.com\/(company|school)\//i.test(url) ? 0 : 1
+}
+
+function rutaCorta(url) {
+  const ruta = url.pathname === '/' ? 'inicio' : url.pathname.replace(/^\/+/, '')
+  return ruta.length > 60 ? `${ruta.slice(0, 59)}…` : ruta
+}
+
+function decodificar(texto) {
+  try {
+    return decodeURIComponent(texto)
+  } catch {
+    return texto
   }
 }
 

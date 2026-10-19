@@ -7,29 +7,6 @@ import type { DatosSeo, VelocidadSeo } from '../types/seo'
  */
 const BASE_API = import.meta.env.DEV ? 'https://aviech.avismael-eg.workers.dev' : ''
 
-export function normalizarUrl(entrada: string): string {
-  const texto = entrada.trim()
-  if (!texto) throw new Error('Escribe la dirección de un sitio para auditarlo.')
-  const conEsquema = /^https?:\/\//i.test(texto) ? texto : `https://${texto}`
-  let url: URL
-  try {
-    url = new URL(conEsquema)
-  } catch {
-    throw new Error('La dirección no tiene un formato válido.')
-  }
-  if (!/^https?:$/.test(url.protocol)) throw new Error('Solo se pueden auditar direcciones http o https.')
-  if (!url.hostname.includes('.')) throw new Error('Escribe un dominio completo, por ejemplo: misitio.com')
-  return url.href
-}
-
-export function dominioDe(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '')
-  } catch {
-    return url
-  }
-}
-
 /** Llama al Worker del panel (mismo dominio en producción) con la sesión del usuario. */
 export async function auditarSitio(url: string, token: string): Promise<DatosSeo> {
   const respuesta = await fetch(`${BASE_API}/api/seo/auditar?url=${encodeURIComponent(url)}`, {

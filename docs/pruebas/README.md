@@ -1,6 +1,6 @@
 # Pruebas de navegador
 
-> Dos pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Tres pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
 ## CRM (`prueba-crm.js`)
@@ -48,3 +48,20 @@ vista móvil. Devuelve JSON con `ok`, los pasos y los errores de consola (debe s
 puerto 5181 y pide en OpenCode `docs/pruebas/prueba-seo.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
 `C:\Users\User\avitech\capturas-seo` (6 imágenes).
+
+## Prospección (`prueba-prospeccion.js`)
+
+Prueba de humo de **Prospección** (contactos de una web → CRM) con datos simulados:
+intercepta `**/rest/v1/**`, `**/auth/v1/**` y `**/api/scraper/contactos**` (la API del Worker).
+
+**Qué comprueba:** estado vacío, búsqueda de contactos (correos, teléfonos y redes con sus
+páginas de origen), guardado en el CRM como **empresa nueva** (verifica el payload enviado a
+Supabase), salto al CRM con «Ver en el CRM», guardado cuando la **empresa ya existe** (no
+duplica la empresa y avisa con «Ya tienes …»), validación de direcciones inválidas sin llamar
+a la API, recarga con enlace profundo (`#prospeccion`) y vista móvil. Devuelve JSON con `ok`,
+los pasos y los errores de consola (debe ser `[]`).
+
+**Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el puerto
+5181 y pide en OpenCode `docs/pruebas/prueba-prospeccion.js` con la herramienta de Playwright
+(`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
+`C:\Users\User\avitech\capturas-prospeccion` (7 imágenes).

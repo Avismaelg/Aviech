@@ -94,6 +94,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 | `Layout` | Barra lateral fija con navegación (activo: fondo índigo 10 % + barra lateral con brillo + `aria-current`), chip de usuario; en móvil, cabecera con blur + navegación desplazable (utilidades `.sin-barra` y `.mascara-desvanecida`). |
 | `CRM` | Pestañas accesibles (`role="tablist"`, flechas ←/→) para Pipeline, Empresas, Contactos y Actividades. El pipeline es un kanban horizontal con columnas de 16 rem, arrastre nativo y edición en modal; en móvil la etapa se cambia desde el modal. Las tarjetas y métricas usan `tabular-nums`. |
 | `Auditor SEO` | Formulario de dirección + informe con **puntaje 0–100** (verde ≥ 80, ámbar ≥ 50, rojo < 50) y comprobaciones agrupadas en contenido / técnico / archivos. Columna lateral con la tarjeta de **PageSpeed** (4 puntajes + LCP/CLS) y ficha técnica. El informe se anuncia con `aria-live="polite"` y el historial usa `BotonIcono` para ver, medir, reanalizar y eliminar. |
+| `Prospección` | Formulario de dirección con **validación en línea** (mensaje bajo el campo, `aria-invalid`) + tarjeta de resultados con **correos / teléfonos / redes** (chips; WhatsApp en verde) y columna lateral con la acción **Guardar en el CRM** (modal con aviso si la empresa ya existe) y **Páginas revisadas**. La búsqueda muestra fases con esqueleto `animate-pulse` y `aria-busy`. |
 
 - **Enlaces profundos:** la sección activa vive en la URL (`#inicio`, `#clientes`, `#igualas`…). Recargar, compartir el enlace o usar Atrás conserva la sección.
 

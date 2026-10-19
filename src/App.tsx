@@ -9,6 +9,7 @@ import { Inicio } from './components/Inicio'
 import { Layout, type Seccion } from './components/Layout'
 import { Login } from './components/Login'
 import { Pagos } from './components/Pagos'
+import { Prospeccion } from './components/prospeccion/Prospeccion'
 import { Reportes } from './components/Reportes'
 import { Seo } from './components/seo/Seo'
 import { Servicios } from './components/Servicios'
@@ -53,7 +54,7 @@ function Comprobando() {
   )
 }
 
-const SECCIONES: Seccion[] = ['inicio', 'clientes', 'crm', 'seo', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
+const SECCIONES: Seccion[] = ['inicio', 'clientes', 'crm', 'seo', 'prospeccion', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
 
 /** Enlace profundo: la sección activa vive en la URL (#igualas), así se puede recargar, compartir y usar el botón Atrás. */
 function seccionDesdeHash(): Seccion {
@@ -111,6 +112,7 @@ function App() {
             {seccion === 'clientes' && <Clientes />}
             {seccion === 'crm' && <Crm />}
             {seccion === 'seo' && <Seo />}
+            {seccion === 'prospeccion' && <Prospeccion onIrAlCrm={() => setSeccion('crm')} />}
             {seccion === 'servicios' && <Servicios />}
             {seccion === 'igualas' && <Igualas />}
             {seccion === 'pagos' && <Pagos />}
