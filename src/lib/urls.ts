@@ -14,11 +14,3 @@ export function normalizarUrl(entrada: string): string {
   if (!url.hostname.includes('.')) throw new Error('Escribe un dominio completo, por ejemplo: misitio.com')
   return url.href
 }
-
-export function dominioDe(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '')
-  } catch {
-    return url
-  }
-}

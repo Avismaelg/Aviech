@@ -199,6 +199,7 @@ function leerMetas(cabeza) {
     viewport: '',
     charset: '',
     ogTitulo: '',
+    ogSitio: '',
     ogDescripcion: '',
     ogImagen: '',
     canonical: '',
@@ -213,6 +214,7 @@ function leerMetas(cabeza) {
     else if (clave === 'robots') metas.robots = contenido
     else if (clave === 'viewport') metas.viewport = contenido
     else if (clave === 'og:title') metas.ogTitulo = contenido
+    else if (clave === 'og:site_name') metas.ogSitio = contenido
     else if (clave === 'og:description') metas.ogDescripcion = contenido
     else if (clave === 'og:image') metas.ogImagen = contenido
   }
@@ -465,7 +467,8 @@ async function traerPaginaScraper(direccion) {
     }
     const trozo = recortarHtml(html, LIMITE_SCRAPER)
     const titulo = limpiar(textoDe(trozo, 'title')).slice(0, 200)
-    const nombreSitio = (leerMeta(trozo, 'og:site_name') || leerMeta(trozo, 'og:title') || titulo).slice(0, 150)
+    const metas = leerMetas(extraerCabeza(trozo))
+    const nombreSitio = (limpiar(metas.ogSitio || metas.ogTitulo) || titulo).slice(0, 150)
     return {
       ok: true,
       estado: respuesta.status,
@@ -483,14 +486,14 @@ async function traerPaginaScraper(direccion) {
 }
 
 function paginaVacia(estado, urlFinal) {
-  return { ok: false, estado, urlFinal, html: '', titulo: '', nombreSitio: '', enlaces: { propios: [], externos: [] } }
+  return { ok: false, estado, urlFinal, html: '', titulo: '', nombreSitio: '', enlaces: { propios: [], externos: [], anclas: [] } }
 }
 
 function recolectarContactos(pagina, emails, telefonos, redes) {
   const origen = pagina.urlFinal ? rutaCorta(pagina.urlFinal) : ''
   const html = pagina.html
 
-  for (const etiqueta of html.match(/<a\b[^>]*>/gi) || []) {
+  for (const etiqueta of pagina.enlaces.anclas) {
     const href = atributo(etiqueta, 'href') || ''
     const correo = /^mailto:([^?]+)/i.exec(href)
     if (correo) agregarEmail(emails, decodificar(correo[1]), origen)
@@ -517,8 +520,10 @@ function extraerEnlaces(html, base) {
   const propios = []
   const externos = []
   const host = base.hostname.replace(/^www\./, '')
+  // Las anclas se analizan una sola vez por página y se devuelven para reutilizarlas.
+  const anclas = html.match(/<a\b[^>]*>/gi) || []
   let vistos = 0
-  for (const etiqueta of html.match(/<a\b[^>]*>/gi) || []) {
+  for (const etiqueta of anclas) {
     if (++vistos > MAX_ENLACES) break
     const href = atributo(etiqueta, 'href')
     if (!href || /^(#|mailto:|tel:|javascript:)/i.test(href)) continue
@@ -535,7 +540,7 @@ function extraerEnlaces(html, base) {
       externos.push(enlace.href)
     }
   }
-  return { propios: [...new Set(propios)].slice(0, 5), externos }
+  return { propios: [...new Set(propios)].slice(0, 5), externos, anclas }
 }
 
 /** Si la página es enorme, conserva el 60 % inicial y el 40 % final (el pie suele tener los contactos). */
@@ -543,15 +548,6 @@ function recortarHtml(html, limite) {
   if (html.length <= limite) return html
   const inicio = Math.floor(limite * 0.6)
   return `${html.slice(0, inicio)}\n${html.slice(-(limite - inicio))}`
-}
-
-function leerMeta(html, clave) {
-  for (const etiqueta of extraerCabeza(html).match(/<meta\b[^>]*>/gi) || []) {
-    const nombre = atributo(etiqueta, 'name') || atributo(etiqueta, 'property')
-    const contenido = atributo(etiqueta, 'content')
-    if (nombre && nombre.toLowerCase() === clave && contenido !== null) return limpiar(contenido)
-  }
-  return ''
 }
 
 function agregarEmail(mapa, valor, origen) {
