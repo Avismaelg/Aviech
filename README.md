@@ -6,9 +6,10 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, servicios, pagos, gastos y reportes,
-con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$** (pesos
-dominicanos), **RNC** de clientes y teléfonos con formato local (809/829/849).
+Panel de gestión de AviTech Solutions Group: clientes, servicios, pagos, facturación, gastos
+y reportes, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
+(pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
+formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
@@ -22,6 +23,7 @@ Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas |
 | **Pagos** | Ingresos por cliente; cobrado vs. pendiente, **vencidos** y «marcar como pagado» en un clic |
+| **Facturación** | Facturas con **NCF / e-NCF** e **ITBIS 18%**; líneas de detalle, estados borrador → emitida → pagada, **anulación**, impresión/PDF y pago registrado automáticamente al cobrar |
 | **Gastos** | Salidas por categoría (regla del dinero ×3); total del mes e histórico |
 | **Reportes** | Estado de cuenta por cliente y resumen mensual (12 meses) con **Imprimir / PDF** y exportación **CSV** |
 
@@ -81,6 +83,7 @@ src/
     Clientes.tsx          # CRUD de clientes (con RNC)
     Servicios.tsx         # CRUD de servicios
     Pagos.tsx             # CRUD de pagos (con vencidos)
+    Facturacion.tsx       # facturas con NCF/e-NCF, ITBIS y PDF
     Gastos.tsx            # CRUD de gastos (regla ×3)
     Reportes.tsx          # estado de cuenta y resumen mensual (imprimir / CSV)
     Login.tsx             # acceso del personal
@@ -92,7 +95,8 @@ src/
     etiquetas.ts          # estados, tipos y colores
     useContador.ts        # animación de números del tablero
     csv.ts                # exportar tablas a Excel (CSV)
-  types/                  # tipos Cliente, Servicio, Pago y Gasto
+    empresa.ts            # datos fiscales de la empresa (encabezado de facturas)
+  types/                  # tipos Cliente, Servicio, Pago, Gasto y Factura
 supabase/sql/             # migraciones (001, 002, 003, 004, …)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```

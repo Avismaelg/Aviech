@@ -269,6 +269,9 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         <Boton variante="secundario" onClick={() => onIr('pagos')}>
           <Plus size={16} /> Pago
         </Boton>
+        <Boton variante="secundario" onClick={() => onIr('facturacion')}>
+          <Plus size={16} /> Factura
+        </Boton>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

@@ -89,3 +89,33 @@ export const colorCategoriaGasto: Record<string, ColorInsignia> = {
   personal: 'emerald',
   otro: 'slate',
 }
+
+// ---------- Facturas ----------
+export const TIPOS_FACTURA = ['B01', 'B02', 'B14', 'B15', 'E31', 'E32', 'E44', 'E45'] as const
+
+export const etiquetaTipoFactura: Record<string, string> = {
+  B01: 'Crédito fiscal',
+  B02: 'Consumo',
+  B14: 'Regímenes especiales',
+  B15: 'Gubernamental',
+  E31: 'Crédito fiscal · e-CF',
+  E32: 'Consumo · e-CF',
+  E44: 'Regímenes especiales · e-CF',
+  E45: 'Gubernamental · e-CF',
+}
+
+export const ESTADOS_FACTURA = ['borrador', 'emitida', 'pagada', 'anulada'] as const
+
+export const etiquetaEstadoFactura: Record<string, string> = {
+  borrador: 'Borrador',
+  emitida: 'Emitida',
+  pagada: 'Pagada',
+  anulada: 'Anulada',
+}
+
+export const colorEstadoFactura: Record<string, ColorInsignia> = {
+  borrador: 'slate',
+  emitida: 'indigo',
+  pagada: 'emerald',
+  anulada: 'red',
+}

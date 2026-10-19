@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 import { Clientes } from './components/Clientes'
+import { Facturacion } from './components/Facturacion'
 import { Gastos } from './components/Gastos'
 import { Inicio } from './components/Inicio'
 import { Layout, type Seccion } from './components/Layout'
@@ -75,6 +76,7 @@ function App() {
             {seccion === 'clientes' && <Clientes />}
             {seccion === 'servicios' && <Servicios />}
             {seccion === 'pagos' && <Pagos />}
+            {seccion === 'facturacion' && <Facturacion />}
             {seccion === 'gastos' && <Gastos />}
             {seccion === 'reportes' && <Reportes />}
           </div>

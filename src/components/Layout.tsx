@@ -1,17 +1,18 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, FileText, LayoutDashboard, LogOut, Receipt, Users, Wallet } from 'lucide-react'
+import { Briefcase, FileText, LayoutDashboard, LogOut, Receipt, ReceiptText, Users, Wallet } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cx } from '../lib/estilos'
 import { supabase } from '../lib/supabase'
 
-export type Seccion = 'inicio' | 'clientes' | 'servicios' | 'pagos' | 'gastos' | 'reportes'
+export type Seccion = 'inicio' | 'clientes' | 'servicios' | 'pagos' | 'facturacion' | 'gastos' | 'reportes'
 
 const NAVEGACION: Array<{ id: Seccion; etiqueta: string; Icono: LucideIcon }> = [
   { id: 'inicio', etiqueta: 'Inicio', Icono: LayoutDashboard },
   { id: 'clientes', etiqueta: 'Clientes', Icono: Users },
   { id: 'servicios', etiqueta: 'Servicios', Icono: Briefcase },
   { id: 'pagos', etiqueta: 'Pagos', Icono: Wallet },
+  { id: 'facturacion', etiqueta: 'Facturación', Icono: ReceiptText },
   { id: 'gastos', etiqueta: 'Gastos', Icono: Receipt },
   { id: 'reportes', etiqueta: 'Reportes', Icono: FileText },
 ]

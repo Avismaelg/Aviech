@@ -4,17 +4,21 @@ import { descargarCSV } from '../lib/csv'
 import { cx } from '../lib/estilos'
 import {
   colorEstadoCliente,
+  colorEstadoFactura,
   colorEstadoPago,
   colorEstadoServicio,
   etiquetaEstadoCliente,
+  etiquetaEstadoFactura,
   etiquetaEstadoPago,
   etiquetaEstadoServicio,
   etiquetaMetodoPago,
+  etiquetaTipoFactura,
   etiquetaTipoServicio,
 } from '../lib/etiquetas'
 import { diasDeAtraso, fechaCompleta, formatoDinero, formatoFecha, formatoMes, hoyISO, iniciales } from '../lib/formato'
 import { supabase } from '../lib/supabase'
 import type { Cliente } from '../types/cliente'
+import type { Factura } from '../types/factura'
 import type { Gasto } from '../types/gasto'
 import type { Pago } from '../types/pago'
 import type { Servicio } from '../types/servicio'
@@ -25,6 +29,7 @@ interface Datos {
   servicios: Servicio[]
   pagos: Pago[]
   gastos: Gasto[]
+  facturas: Factura[]
 }
 
 /** Últimos N meses en formato "YYYY-MM", del más reciente al más viejo. */
@@ -59,13 +64,15 @@ export function Reportes() {
       supabase.from('servicios').select('*').order('created_at', { ascending: false }),
       supabase.from('pagos').select('*, clientes(nombre)').order('fecha', { ascending: false }),
       supabase.from('gastos').select('*').order('fecha', { ascending: false }),
-    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos]) => {
+      supabase.from('facturas').select('*').order('fecha', { ascending: false }),
+    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos, consultaFacturas]) => {
       if (consultaClientes.error || consultaServicios.error || consultaPagos.error) setErrorTablas(true)
       setDatos({
         clientes: (consultaClientes.data ?? []) as Cliente[],
         servicios: (consultaServicios.data ?? []) as Servicio[],
         pagos: (consultaPagos.data ?? []) as Pago[],
         gastos: (consultaGastos.error ? [] : (consultaGastos.data ?? [])) as Gasto[],
+        facturas: (consultaFacturas.error ? [] : (consultaFacturas.data ?? [])) as Factura[],
       })
     })
   }, [])
@@ -84,18 +91,22 @@ export function Reportes() {
       const gastos = datos.gastos
         .filter((gasto) => (gasto.fecha ?? '').slice(0, 7) === clave)
         .reduce((total, gasto) => total + Number(gasto.monto), 0)
-      return { clave, cobrado, porCobrar, gastos, balance: cobrado - gastos }
+      const facturado = datos.facturas
+        .filter((factura) => factura.estado !== 'anulada' && (factura.fecha ?? '').slice(0, 7) === clave)
+        .reduce((total, factura) => total + Number(factura.total), 0)
+      return { clave, facturado, cobrado, porCobrar, gastos, balance: cobrado - gastos }
     })
   }, [datos, meses])
 
   const totales = filasMensuales.reduce(
     (acumulado, fila) => ({
+      facturado: acumulado.facturado + fila.facturado,
       cobrado: acumulado.cobrado + fila.cobrado,
       porCobrar: acumulado.porCobrar + fila.porCobrar,
       gastos: acumulado.gastos + fila.gastos,
       balance: acumulado.balance + fila.balance,
     }),
-    { cobrado: 0, porCobrar: 0, gastos: 0, balance: 0 },
+    { facturado: 0, cobrado: 0, porCobrar: 0, gastos: 0, balance: 0 },
   )
 
   if (errorTablas) {
@@ -126,6 +137,7 @@ export function Reportes() {
   const cliente = datos.clientes.find((registro) => registro.id === clienteId) ?? null
   const serviciosCliente = cliente ? datos.servicios.filter((servicio) => servicio.cliente_id === cliente.id) : []
   const pagosCliente = cliente ? datos.pagos.filter((pago) => pago.cliente_id === cliente.id) : []
+  const facturasCliente = cliente ? datos.facturas.filter((factura) => factura.cliente_id === cliente.id) : []
   const contratado = serviciosCliente.reduce((total, servicio) => total + Number(servicio.monto ?? 0), 0)
   const cobradoCliente = pagosCliente
     .filter((pago) => pago.estado === 'pagado')
@@ -153,6 +165,15 @@ export function Reportes() {
         estaVencido(pago) ? 'Vencido' : (etiquetaEstadoPago[pago.estado] ?? pago.estado),
         Number(pago.monto),
       ]),
+      [],
+      ['NCF', 'Tipo', 'Fecha', 'Estado', 'Total'],
+      ...facturasCliente.map((factura) => [
+        factura.numero ?? '',
+        factura.tipo,
+        factura.fecha,
+        etiquetaEstadoFactura[factura.estado] ?? factura.estado,
+        Number(factura.total),
+      ]),
     ]
     descargarCSV(`estado-cuenta-${cliente.nombre}-${hoyISO()}`, filas)
   }
@@ -162,9 +183,16 @@ export function Reportes() {
       ['Reporte mensual', 'AviTech Solutions Group'],
       ['Generado', fechaCompleta()],
       [],
-      ['Mes', 'Cobrado', 'Por cobrar', 'Gastos', 'Balance'],
-      ...filasMensuales.map((fila) => [formatoMes(fila.clave), fila.cobrado, fila.porCobrar, fila.gastos, fila.balance]),
-      ['Total', totales.cobrado, totales.porCobrar, totales.gastos, totales.balance],
+      ['Mes', 'Facturado', 'Cobrado', 'Por cobrar', 'Gastos', 'Balance'],
+      ...filasMensuales.map((fila) => [
+        formatoMes(fila.clave),
+        fila.facturado,
+        fila.cobrado,
+        fila.porCobrar,
+        fila.gastos,
+        fila.balance,
+      ]),
+      ['Total', totales.facturado, totales.cobrado, totales.porCobrar, totales.gastos, totales.balance],
     ]
     descargarCSV(`reporte-mensual-${hoyISO()}`, filas)
   }
@@ -370,6 +398,51 @@ export function Reportes() {
               </div>
             </Tarjeta>
           </div>
+
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-slate-700">Facturas</h3>
+            <Tarjeta className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-left text-xs text-slate-400">
+                      <th className="px-4 py-2.5 font-medium">NCF / e-NCF</th>
+                      <th className="px-4 py-2.5 font-medium">Tipo</th>
+                      <th className="px-4 py-2.5 font-medium">Fecha</th>
+                      <th className="px-4 py-2.5 font-medium">Estado</th>
+                      <th className="px-4 py-2.5 text-right font-medium">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {facturasCliente.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-6 text-center text-sm text-slate-400">
+                          Sin facturas registradas.
+                        </td>
+                      </tr>
+                    )}
+                    {facturasCliente.map((factura) => (
+                      <tr key={factura.id}>
+                        <td className="px-4 py-2.5 text-slate-800">{factura.numero ?? '—'}</td>
+                        <td className="px-4 py-2.5 text-slate-500">
+                          {factura.tipo} · {etiquetaTipoFactura[factura.tipo] ?? ''}
+                        </td>
+                        <td className="px-4 py-2.5 text-slate-500">{formatoFecha(factura.fecha)}</td>
+                        <td className="px-4 py-2.5">
+                          <Insignia color={colorEstadoFactura[factura.estado] ?? 'slate'}>
+                            {etiquetaEstadoFactura[factura.estado] ?? factura.estado}
+                          </Insignia>
+                        </td>
+                        <td className="px-4 py-2.5 text-right">
+                          <Monto valor={factura.total} clase="text-slate-800" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Tarjeta>
+          </div>
         </div>
       )}
 
@@ -381,6 +454,7 @@ export function Reportes() {
                 <thead>
                   <tr className="border-b border-slate-100 text-left text-xs text-slate-400">
                     <th className="px-4 py-2.5 font-medium">Mes</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Facturado</th>
                     <th className="px-4 py-2.5 text-right font-medium">Cobrado</th>
                     <th className="px-4 py-2.5 text-right font-medium">Por cobrar</th>
                     <th className="px-4 py-2.5 text-right font-medium">Gastos</th>
@@ -391,6 +465,9 @@ export function Reportes() {
                   {filasMensuales.map((fila) => (
                     <tr key={fila.clave}>
                       <td className="px-4 py-2.5 text-slate-800">{formatoMes(fila.clave)}</td>
+                      <td className="px-4 py-2.5 text-right">
+                        <Monto valor={fila.facturado} clase="text-indigo-600" />
+                      </td>
                       <td className="px-4 py-2.5 text-right">
                         <Monto valor={fila.cobrado} clase="text-emerald-600" />
                       </td>
@@ -409,6 +486,7 @@ export function Reportes() {
                 <tfoot>
                   <tr className="border-t border-slate-200 bg-slate-50">
                     <td className="px-4 py-2.5 font-semibold text-slate-700">Total (12 meses)</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-indigo-700">{formatoDinero(totales.facturado)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-emerald-700">{formatoDinero(totales.cobrado)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-amber-700">{formatoDinero(totales.porCobrar)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-rose-700">{formatoDinero(totales.gastos)}</td>
@@ -418,7 +496,10 @@ export function Reportes() {
               </table>
             </div>
           </Tarjeta>
-          <p className="text-xs text-slate-400">Balance = cobrado − gastos del mes. «Por cobrar» son pagos pendientes con fecha en ese mes.</p>
+          <p className="text-xs text-slate-400">
+            «Facturado» son las facturas no anuladas con fecha en ese mes. «Por cobrar» son pagos pendientes con fecha en
+            ese mes. Balance = cobrado − gastos del mes.
+          </p>
         </div>
       )}
     </section>

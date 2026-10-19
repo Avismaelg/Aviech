@@ -19,7 +19,7 @@
 ## ✅ La app está completa (local y en internet)
 
 - Módulos: **Inicio** (tablero), **Clientes** (con RNC), **Servicios**, **Pagos**,
-  **Gastos** y **Reportes**.
+  **Facturación**, **Gastos** y **Reportes**.
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
   campo **RNC** para facturación formal (DGII) y teléfonos con formato local (809 / 829 / 849).
 - **Toque tecnológico**: contadores que se animan, gráfica de ingresos de los últimos 6 meses,
@@ -27,6 +27,12 @@
   pantalla de inicio» desde el teléfono).
 - **Gastos** con la regla del dinero ×3: cada gasto se cubre con ingresos reales;
   el tablero muestra **Gastos del mes** y **Balance del mes** (cobrado − gastos).
+- **Facturación**: facturas con **NCF/e-NCF** (B01, B02, B14, B15 y e-CF E31/E32/E44/E45),
+  **ITBIS 18%** opcional, líneas de detalle, estados borrador → emitida → pagada/anulada y
+  **impresión/PDF** con formato de la empresa. Al marcar una factura como pagada, el ingreso
+  se registra solo en Pagos. ⚠️ El **envío real a DGII (e-CF)** se conecta cuando estén el
+  certificado digital y la certificación; antes de entregar facturas a clientes, completar
+  los datos fiscales en `src/lib/empresa.ts`. Detalles: **`docs/FACTURACION.md`**.
 - **Vencimientos**: los pagos pendientes con fecha pasada se marcan en rojo («Vencido») en
   Pagos, en el tablero y en los reportes; hay tarjeta de «Vencidos» con el monto total.
 - **Reportes** listos para el cliente: **estado de cuenta por cliente** (servicios, pagos,
@@ -39,8 +45,9 @@
 
 ## ✅ Base de datos al día (migraciones automáticas)
 
-- Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `pagos` y `gastos`.
-  Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
+- Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `pagos`, `gastos`,
+  `facturas` y `factura_items` (líneas de factura). Todas con RLS: solo usuarios
+  autenticados; un visitante anónimo no ve nada.
 - Las migraciones viven en **`supabase/sql/`** (001…004) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
@@ -68,5 +75,8 @@
 
 1. Verificar el primer respaldo programado (lunes 19-oct ~8:00 AM hora del Este).
 2. Cuando se pueda: rotar la contraseña de la base de datos (se pegó en el chat una vez).
-3. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
+3. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
+   dirección, teléfono y correo) y, cuando estén, conectar el **e-CF** con el certificado
+   digital de DGII (ver `docs/FACTURACION.md`).
+4. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
    recordatorios de vencimientos y más analítica del tablero.
