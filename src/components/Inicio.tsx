@@ -44,11 +44,11 @@ function TarjetaDato({
 }) {
   const animado = useContador(valor)
   return (
-    <Tarjeta className="group p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-400/30 hover:shadow-lg hover:shadow-indigo-950/40">
+    <Tarjeta className="group p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:shadow-lg hover:shadow-blue-950/40">
       <div className="flex items-center gap-3">
         <span
           className={cx(
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105',
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-transform duration-200 group-hover:scale-105',
             claseIcono,
           )}
         >
@@ -101,13 +101,13 @@ function GraficoIngresos({ serie }: { serie: PuntoSerie[] }) {
             </div>
             <div
               className={cx(
-                'animar-barra absolute right-0 bottom-0 left-0 rounded-t-md bg-gradient-to-t from-indigo-600 to-violet-400 shadow-[0_0_24px_rgba(129,140,248,0.3)] transition-[filter] duration-150 group-hover:brightness-110',
-                punto.actual && 'from-indigo-500 to-violet-300',
+                'animar-barra absolute right-0 bottom-0 left-0 rounded-t-md bg-gradient-to-t from-blue-600 to-cyan-400 shadow-[0_0_24px_rgba(129,140,248,0.3)] transition-[filter] duration-150 group-hover:brightness-110',
+                punto.actual && 'from-blue-500 to-cyan-300',
               )}
               style={{ height: `${Math.max((punto.valor / maximo) * 100, punto.valor > 0 ? 8 : 3)}%` }}
             />
           </div>
-          <span className={cx('text-center text-[10px]', punto.actual ? 'font-semibold text-indigo-300' : 'text-tinta-tenue')}>
+          <span className={cx('text-center text-[10px]', punto.actual ? 'font-semibold text-blue-300' : 'text-tinta-tenue')}>
             {punto.etiqueta}
           </span>
         </div>
@@ -285,9 +285,9 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         </Boton>
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-400/20 bg-teal-400/[0.06] px-4 py-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-400/20 bg-teal-400/[0.06] px-4 py-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-400/10 text-teal-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-400/10 text-teal-300">
             <Handshake size={17} />
           </span>
           <div>
@@ -313,7 +313,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <TarjetaDato
           Icono={Users}
-          claseIcono="bg-indigo-400/10 text-indigo-300"
+          claseIcono="bg-blue-400/10 text-blue-300"
           titulo="Clientes activos"
           valor={activos}
           detalle={`de ${clientes.length} en total`}
@@ -351,7 +351,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         />
         <TarjetaDato
           Icono={PiggyBank}
-          claseIcono="bg-violet-400/10 text-violet-300"
+          claseIcono="bg-cyan-400/10 text-cyan-300"
           titulo="Balance del mes"
           valor={balanceMes}
           formatear={(numero) => formatoDinero(Math.round(numero))}
@@ -369,7 +369,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
                 Total del periodo: <span className="font-medium text-tinta-suave">{formatoDinero(totalPeriodo)}</span>
               </p>
             </div>
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
               <TrendingUp size={17} />
             </span>
           </div>
@@ -392,7 +392,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
             <button
               type="button"
               onClick={() => onIr('clientes')}
-              className="flex items-center gap-1 text-xs font-medium text-indigo-300 hover:text-indigo-200"
+              className="flex items-center gap-1 text-xs font-medium text-blue-300 hover:text-blue-200"
             >
               Ver todos <ArrowRight size={13} />
             </button>
@@ -403,7 +403,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
             <ul className="divide-y divide-borde-suave">
               {recientes.map((cliente) => (
                 <li key={cliente.id} className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-superficie-2">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-[11px] font-semibold text-indigo-300">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-400/10 text-[11px] font-semibold text-blue-300">
                     {iniciales(cliente.nombre)}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -425,7 +425,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
             <button
               type="button"
               onClick={() => onIr('pagos')}
-              className="flex items-center gap-1 text-xs font-medium text-indigo-300 hover:text-indigo-200"
+              className="flex items-center gap-1 text-xs font-medium text-blue-300 hover:text-blue-200"
             >
               Ver todos <ArrowRight size={13} />
             </button>

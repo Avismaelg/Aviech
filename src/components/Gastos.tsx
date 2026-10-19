@@ -112,7 +112,7 @@ export function Gastos() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-400/10 text-rose-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-400/10 text-rose-300">
             <TrendingDown size={17} />
           </span>
           <div>
@@ -121,7 +121,7 @@ export function Gastos() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-superficie-2 text-tinta-suave">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-superficie-2 text-tinta-suave">
             <Wallet size={17} />
           </span>
           <div>

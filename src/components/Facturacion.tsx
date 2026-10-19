@@ -504,7 +504,7 @@ export function Facturacion() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-400/10 text-blue-300">
             <ReceiptText size={17} />
           </span>
           <div>
@@ -513,7 +513,7 @@ export function Facturacion() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-400/10 text-amber-300">
             <Printer size={17} />
           </span>
           <div>
@@ -522,7 +522,7 @@ export function Facturacion() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-400/10 text-sky-300">
             <Check size={17} />
           </span>
           <div>
@@ -573,7 +573,7 @@ export function Facturacion() {
           <ul className="divide-y divide-borde-suave">
             {filtradas.map((factura) => (
               <li key={factura.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-indigo-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-400/10 text-blue-300">
                   <ReceiptText size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -707,7 +707,7 @@ export function Facturacion() {
               <button
                 type="button"
                 onClick={agregarLinea}
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-400/10"
+                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-blue-300 transition-colors hover:bg-blue-400/10"
               >
                 <Plus size={13} /> Agregar línea
               </button>
@@ -760,7 +760,7 @@ export function Facturacion() {
               type="checkbox"
               checked={formulario.aplica_itbis}
               onChange={(evento) => setFormulario({ ...formulario, aplica_itbis: evento.target.checked })}
-              className="h-4 w-4 rounded accent-indigo-500"
+              className="h-4 w-4 rounded accent-blue-500"
             />
             Aplica ITBIS (18%)
           </label>

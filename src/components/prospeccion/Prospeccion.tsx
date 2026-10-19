@@ -341,13 +341,13 @@ function CargandoProspeccion() {
       <div className="flex items-center gap-3 text-sm text-tinta-suave">
         <span
           aria-hidden
-          className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-borde border-t-indigo-400"
+          className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-borde border-t-blue-400"
         />
         <span aria-live="polite">{FASES[fase]}</span>
       </div>
       <div className="mt-4 grid gap-2.5 sm:grid-cols-3">
         {[0, 1, 2].map((indice) => (
-          <div key={indice} className="h-16 animate-pulse rounded-xl bg-superficie-2" />
+          <div key={indice} className="h-16 animate-pulse rounded-lg bg-superficie-2" />
         ))}
       </div>
     </Tarjeta>
@@ -375,7 +375,7 @@ function Resultado({
         <div className="border-b border-borde p-5">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="min-w-0 truncate text-lg font-semibold text-tinta">{datos.nombre || datos.dominio}</h3>
-            <Insignia color={total ? 'indigo' : 'slate'}>
+            <Insignia color={total ? 'blue' : 'slate'}>
               {total} hallazgo{total === 1 ? '' : 's'}
             </Insignia>
           </div>
@@ -383,7 +383,7 @@ function Resultado({
             href={datos.urlFinal}
             target="_blank"
             rel="noreferrer"
-            className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-indigo-300 transition-colors hover:text-indigo-200"
+            className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-blue-300 transition-colors hover:text-blue-200"
           >
             <span className="truncate">{datos.urlFinal}</span>
             <ExternalLink size={12} aria-hidden className="shrink-0" />
@@ -400,9 +400,9 @@ function Resultado({
               <li key={hallazgo.valor}>
                 <a
                   href={`mailto:${hallazgo.valor}`}
-                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-indigo-200"
+                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-blue-200"
                 >
-                  <AtSign size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-indigo-300" />
+                  <AtSign size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-blue-300" />
                   <span className="truncate">{hallazgo.valor}</span>
                 </a>
                 {hallazgo.origen && <p className="pl-6 text-[11px] text-tinta-tenue">en {hallazgo.origen}</p>}
@@ -415,9 +415,9 @@ function Resultado({
               <li key={hallazgo.valor}>
                 <a
                   href={`tel:${hallazgo.valor.replace(/[^\d+]/g, '')}`}
-                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-indigo-200"
+                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-blue-200"
                 >
-                  <Phone size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-indigo-300" />
+                  <Phone size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-blue-300" />
                   <span className="truncate">{hallazgo.valor}</span>
                 </a>
                 {hallazgo.origen && <p className="pl-6 text-[11px] text-tinta-tenue">en {hallazgo.origen}</p>}
@@ -442,7 +442,7 @@ function Resultado({
                     'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs transition-colors',
                     hallazgo.red === 'WhatsApp'
                       ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/20'
-                      : 'border-borde bg-superficie-2/60 text-tinta-suave hover:border-indigo-400/30 hover:text-tinta',
+                      : 'border-borde bg-superficie-2/60 text-tinta-suave hover:border-blue-400/30 hover:text-tinta',
                   )}
                 >
                   {hallazgo.red}
@@ -522,7 +522,7 @@ function BloqueHallazgos({
   return (
     <section className={className}>
       <h4 className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.14em] text-tinta-tenue uppercase">
-        <span className="text-indigo-300">{icono}</span>
+        <span className="text-blue-300">{icono}</span>
         {titulo}
       </h4>
       {sinDatos ? (

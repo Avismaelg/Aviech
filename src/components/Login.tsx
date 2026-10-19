@@ -34,18 +34,18 @@ export function Login() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10 lg:px-10">
-      <div aria-hidden className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-indigo-600/25 blur-[110px]" />
-      <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-32 h-96 w-96 rounded-full bg-violet-600/25 blur-[110px]" />
+      <div aria-hidden className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-blue-600/20 blur-[120px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-32 h-96 w-96 rounded-full bg-sky-500/15 blur-[120px]" />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/50 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"
       />
 
       <div className="animar-entrada relative grid w-full max-w-5xl items-center gap-10 lg:grid-cols-[1.15fr_1fr]">
         {/* Panel de marca (escritorio) */}
         <aside className="hidden lg:block">
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/40 ring-1 ring-white/20">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-xl font-bold text-white shadow-md shadow-blue-600/25 ring-1 ring-white/15">
               A
             </span>
             <div>
@@ -72,9 +72,9 @@ export function Login() {
         </aside>
 
         {/* Tarjeta de acceso */}
-        <div className="w-full rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/60 backdrop-blur-2xl">
+        <div className="w-full rounded-2xl border border-borde bg-superficie p-8 shadow-2xl shadow-black/40">
           <header className="mb-7 text-center">
-            <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/40 ring-1 ring-white/20 lg:hidden">
+            <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-xl font-bold text-white shadow-md shadow-blue-600/25 ring-1 ring-white/15 lg:hidden">
               A
             </span>
             <h2 className="text-2xl font-semibold tracking-tight text-white">AviTech Panel</h2>
@@ -117,7 +117,7 @@ export function Login() {
             </Campo>
 
             {error && (
-              <p role="alert" className="rounded-xl border border-red-400/25 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+              <p role="alert" className="rounded-lg border border-red-400/25 bg-red-500/10 px-3 py-2 text-sm text-red-300">
                 {error}
               </p>
             )}

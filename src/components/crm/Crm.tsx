@@ -139,7 +139,7 @@ export function Crm() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-400/10 text-blue-300">
             <Target size={17} />
           </span>
           <div>
@@ -151,7 +151,7 @@ export function Crm() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-400/10 text-sky-300">
             <Gauge size={17} />
           </span>
           <div>
@@ -161,7 +161,7 @@ export function Crm() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
             <Trophy size={17} />
           </span>
           <div>
@@ -173,7 +173,7 @@ export function Crm() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-400/10 text-amber-300">
             <CalendarClock size={17} />
           </span>
           <div>
@@ -190,7 +190,7 @@ export function Crm() {
         role="tablist"
         aria-label="Secciones del CRM"
         onKeyDown={alTeclearPestana}
-        className="mb-4 flex gap-1 overflow-x-auto rounded-xl border border-borde bg-superficie/70 p-1"
+        className="mb-4 flex gap-1 overflow-x-auto rounded-lg border border-borde bg-superficie/70 p-1"
       >
         {PESTANAS.map(({ id, etiqueta }) => {
           const activa = pestana === id
@@ -207,7 +207,7 @@ export function Crm() {
               className={cx(
                 'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150',
                 activa
-                  ? 'bg-indigo-500/15 text-white shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]'
+                  ? 'bg-blue-500/15 text-white shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]'
                   : 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
               )}
             >
@@ -215,7 +215,7 @@ export function Crm() {
               <span
                 className={cx(
                   'rounded-full px-1.5 py-0.5 text-[10px] tabular-nums',
-                  activa ? 'bg-indigo-400/15 text-indigo-200' : 'bg-superficie-2 text-tinta-tenue',
+                  activa ? 'bg-blue-400/15 text-blue-200' : 'bg-superficie-2 text-tinta-tenue',
                 )}
               >
                 {contadores[id]}

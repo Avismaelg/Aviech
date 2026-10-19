@@ -46,9 +46,9 @@ const FORMULARIO_VACIO: FormularioOportunidad = {
 const ACENTO_ETAPA: Record<string, string> = {
   prospecto: 'bg-slate-400',
   contactado: 'bg-sky-400',
-  reunion: 'bg-indigo-400',
+  reunion: 'bg-blue-400',
   propuesta: 'bg-amber-400',
-  negociacion: 'bg-violet-400',
+  negociacion: 'bg-cyan-400',
   ganado: 'bg-emerald-400',
   perdido: 'bg-red-400',
 }
@@ -254,8 +254,8 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                     }}
                     onDrop={(evento) => soltar(evento, etapa)}
                     className={cx(
-                      'w-64 shrink-0 rounded-2xl border bg-superficie/60 transition-colors',
-                      columnaActiva === etapa ? 'border-indigo-400/40 bg-indigo-400/5' : 'border-borde',
+                      'w-64 shrink-0 rounded-xl border bg-superficie/60 transition-colors',
+                      columnaActiva === etapa ? 'border-blue-400/40 bg-blue-400/5' : 'border-borde',
                     )}
                   >
                     <div className="flex items-center gap-2 border-b border-borde-suave px-3 py-2.5">
@@ -284,7 +284,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                             setColumnaActiva(null)
                           }}
                           className={cx(
-                            'group relative rounded-xl border border-borde-suave bg-superficie-2/80 transition-opacity',
+                            'group relative rounded-lg border border-borde-suave bg-superficie-2/80 transition-opacity',
                             arrastrandoId === oportunidad.id && 'opacity-50',
                           )}
                         >
@@ -292,7 +292,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                             type="button"
                             onClick={() => abrirEdicion(oportunidad)}
                             aria-label={`Editar ${oportunidad.titulo}`}
-                            className="block w-full rounded-xl p-3 pr-9 text-left"
+                            className="block w-full rounded-lg p-3 pr-9 text-left"
                           >
                             <p className="truncate text-sm font-medium text-tinta">{oportunidad.titulo}</p>
                             <p className="mt-0.5 truncate text-xs text-tinta-suave">
@@ -442,7 +442,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
             />
           </Campo>
           {formulario.etapa === 'ganado' && empresaSeleccionada && !empresaSeleccionada.cliente_id && (
-            <div className="rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-3 sm:col-span-2">
+            <div className="rounded-lg border border-emerald-400/25 bg-emerald-400/10 p-3 sm:col-span-2">
               <p className="text-sm font-medium text-emerald-200">Oportunidad ganada</p>
               <p className="mt-0.5 text-xs text-emerald-200/80">
                 Convierte {empresaSeleccionada.nombre} en cliente para empezar a facturarle.

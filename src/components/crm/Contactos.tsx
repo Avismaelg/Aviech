@@ -181,7 +181,7 @@ export function Contactos({ contactos, empresas, refrescar, onIrAEmpresas }: Pro
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((contacto) => (
               <li key={contacto.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-400/10 text-xs font-semibold text-violet-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cyan-400/10 text-xs font-semibold text-cyan-300">
                   {iniciales(contacto.nombre)}
                 </span>
                 <div className="min-w-0 flex-1">

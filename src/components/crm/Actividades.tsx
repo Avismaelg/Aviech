@@ -235,7 +235,7 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
                       'mt-0.5 shrink-0 rounded-full p-0.5 transition-colors',
                       actividad.completada
                         ? 'text-emerald-300 hover:text-emerald-200'
-                        : 'text-tinta-tenue hover:text-indigo-300',
+                        : 'text-tinta-tenue hover:text-blue-300',
                     )}
                   >
                     {actividad.completada ? <CheckCircle2 size={19} /> : <Circle size={19} />}
@@ -243,7 +243,7 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
                   <span
                     className={cx(
                       'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                      actividad.completada ? 'bg-superficie-2 text-tinta-tenue' : 'bg-indigo-400/10 text-indigo-300',
+                      actividad.completada ? 'bg-superficie-2 text-tinta-tenue' : 'bg-blue-400/10 text-blue-300',
                     )}
                   >
                     <Icono size={15} />
@@ -367,7 +367,7 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
               type="checkbox"
               checked={formulario.completada}
               onChange={(evento) => setFormulario({ ...formulario, completada: evento.target.checked })}
-              className="h-4 w-4 rounded border-borde bg-superficie-2 accent-indigo-500"
+              className="h-4 w-4 rounded border-borde bg-superficie-2 accent-blue-500"
             />
             Marcar como completada
           </label>

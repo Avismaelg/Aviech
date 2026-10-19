@@ -13,11 +13,11 @@ import type { ColorInsignia } from '../lib/etiquetas'
 
 const variantesBoton = {
   primario:
-    'border border-indigo-400/30 bg-gradient-to-b from-indigo-500 to-indigo-600 text-white shadow-lg shadow-indigo-600/25 hover:from-indigo-400 hover:to-indigo-500 hover:shadow-indigo-500/35',
+    'border border-blue-500/50 bg-blue-600 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_1px_2px_rgba(2,6,23,0.5)] hover:bg-blue-500',
   secundario:
-    'border border-borde bg-superficie-2/60 text-tinta hover:border-indigo-400/30 hover:bg-superficie-2',
+    'border border-borde bg-superficie-2/50 text-tinta hover:border-blue-500/40 hover:bg-superficie-2',
   peligro:
-    'border border-red-400/30 bg-gradient-to-b from-red-500 to-red-600 text-white shadow-lg shadow-red-600/25 hover:from-red-400 hover:to-red-500 hover:shadow-red-500/35',
+    'border border-red-500/50 bg-red-600 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] hover:bg-red-500',
   fantasma: 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
 }
 
@@ -30,7 +30,7 @@ export function Boton({
     <button
       {...propiedades}
       className={cx(
-        'inline-flex items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50',
         variantesBoton[variante],
         className,
       )}
@@ -64,8 +64,8 @@ const coloresInsignia: Record<ColorInsignia, string> = {
   sky: 'border-sky-400/25 bg-sky-400/10 text-sky-300',
   red: 'border-red-400/25 bg-red-400/10 text-red-300',
   slate: 'border-slate-400/20 bg-slate-400/10 text-slate-300',
-  indigo: 'border-indigo-400/25 bg-indigo-400/10 text-indigo-300',
-  violet: 'border-violet-400/25 bg-violet-400/10 text-violet-300',
+  blue: 'border-blue-400/25 bg-blue-400/10 text-blue-300',
+  cyan: 'border-cyan-400/25 bg-cyan-400/10 text-cyan-300',
 }
 
 export function Insignia({ color = 'slate', children }: { color?: ColorInsignia; children: ReactNode }) {
@@ -85,7 +85,7 @@ export function Tarjeta({ className, children }: { className?: string; children:
   return (
     <div
       className={cx(
-        'rounded-2xl border border-borde bg-superficie/90 shadow-[0_24px_60px_-40px_rgba(0,0,0,0.9)] backdrop-blur-sm',
+        'rounded-xl border border-borde bg-superficie shadow-[0_1px_2px_rgba(2,6,23,0.35),0_18px_40px_-32px_rgba(2,6,23,0.9)]',
         className,
       )}
     >
@@ -175,7 +175,7 @@ export function Modal({
     <div
       role="presentation"
       onMouseDown={onCerrar}
-      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-[#03060d]/75 p-4 backdrop-blur-sm sm:items-center"
+      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-[#02060f]/80 p-4 backdrop-blur-sm sm:items-center"
     >
       <div
         ref={contenedor}
@@ -184,11 +184,11 @@ export function Modal({
         aria-label={titulo}
         onMouseDown={(evento) => evento.stopPropagation()}
         className={cx(
-          'animar-modal max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-borde bg-superficie shadow-2xl shadow-black/60',
+          'animar-modal max-h-[90vh] w-full overflow-y-auto rounded-xl border border-borde bg-superficie shadow-2xl shadow-black/50',
           ancho,
         )}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-borde-suave bg-superficie/95 px-5 py-4 backdrop-blur-md">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-borde-suave bg-superficie px-5 py-4">
           <h3 className="text-base font-semibold text-tinta">{titulo}</h3>
           <button
             type="button"
@@ -248,7 +248,7 @@ export function Vacio({
 }) {
   return (
     <div className="flex flex-col items-center gap-1 px-6 py-14 text-center">
-      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl border border-borde-suave bg-superficie-2 text-tinta-tenue">
+      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-borde-suave bg-superficie-2 text-tinta-tenue">
         {icono}
       </div>
       <p className="text-sm font-medium text-tinta">{titulo}</p>
@@ -262,7 +262,7 @@ export function FilasCargando({ filas = 4 }: { filas?: number }) {
   return (
     <div className="space-y-2.5 p-4">
       {Array.from({ length: filas }).map((_, indice) => (
-        <div key={indice} className="h-11 animate-pulse rounded-xl bg-superficie-2" />
+        <div key={indice} className="h-11 animate-pulse rounded-lg bg-superficie-2" />
       ))}
     </div>
   )
@@ -270,7 +270,7 @@ export function FilasCargando({ filas = 4 }: { filas?: number }) {
 
 export function ErrorTabla({ mensaje }: { mensaje: string }) {
   return (
-    <div className="m-4 rounded-xl border border-amber-400/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+    <div className="m-4 rounded-lg border border-amber-400/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
       {mensaje}
     </div>
   )

@@ -154,7 +154,7 @@ export function Clientes() {
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((cliente) => (
               <li key={cliente.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-xs font-semibold text-indigo-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-400/10 text-xs font-semibold text-blue-300">
                   {iniciales(cliente.nombre)}
                 </span>
                 <div className="min-w-0 flex-1">

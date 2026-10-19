@@ -32,7 +32,7 @@ export function ProveedorAvisos({ children }: { children: ReactNode }) {
           <div
             key={aviso.id}
             className={cx(
-              'animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-xl border bg-superficie/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl',
+              'animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-lg border bg-superficie/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl',
               aviso.tipo === 'ok' ? 'border-emerald-400/30' : 'border-red-400/30',
             )}
           >

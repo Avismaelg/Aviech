@@ -233,7 +233,7 @@ export function Reportes() {
             aria-pressed={vista === 'cliente'}
             className={cx(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150',
-              vista === 'cliente' ? 'bg-indigo-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
+              vista === 'cliente' ? 'bg-blue-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
             )}
           >
             Por cliente
@@ -244,7 +244,7 @@ export function Reportes() {
             aria-pressed={vista === 'mensual'}
             className={cx(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150',
-              vista === 'mensual' ? 'bg-indigo-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
+              vista === 'mensual' ? 'bg-blue-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
             )}
           >
             Resumen mensual
@@ -277,7 +277,7 @@ export function Reportes() {
         <div className="space-y-4">
           <Tarjeta className="flex flex-wrap items-center justify-between gap-3 p-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-sm font-semibold text-indigo-300">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-400/10 text-sm font-semibold text-blue-300">
                 {iniciales(cliente.nombre)}
               </span>
               <div className="min-w-0">
@@ -468,7 +468,7 @@ export function Reportes() {
                     <tr key={fila.clave}>
                       <td className="px-4 py-2.5 text-tinta">{formatoMes(fila.clave)}</td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.facturado} clase="text-indigo-300" />
+                        <Monto valor={fila.facturado} clase="text-blue-300" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
                         <Monto valor={fila.cobrado} clase="text-emerald-300" />
@@ -488,7 +488,7 @@ export function Reportes() {
                 <tfoot>
                   <tr className="border-t border-borde bg-superficie-2">
                     <td className="px-4 py-2.5 font-semibold text-tinta">Total (12 meses)</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-indigo-300">{formatoDinero(totales.facturado)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-blue-300">{formatoDinero(totales.facturado)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-emerald-300">{formatoDinero(totales.cobrado)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-amber-300">{formatoDinero(totales.porCobrar)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-rose-300">{formatoDinero(totales.gastos)}</td>

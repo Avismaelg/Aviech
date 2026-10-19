@@ -4,8 +4,8 @@
   "description": "Panel interno de AviTech: clientes, servicios, pagos, facturación, gastos y reportes.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#070b15",
-  "theme_color": "#070b15",
+  "background_color": "#070c17",
+  "theme_color": "#070c17",
   "icons": [
     {
       "src": "/favicon.svg",

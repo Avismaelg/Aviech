@@ -1,4 +1,4 @@
-export type ColorInsignia = 'emerald' | 'amber' | 'sky' | 'red' | 'slate' | 'indigo' | 'violet'
+export type ColorInsignia = 'emerald' | 'amber' | 'sky' | 'red' | 'slate' | 'blue' | 'cyan'
 
 // ---------- Clientes ----------
 export const ESTADOS_CLIENTE = ['activo', 'prospecto', 'pausado'] as const
@@ -84,7 +84,7 @@ export const etiquetaCategoriaGasto: Record<string, string> = {
 export const colorCategoriaGasto: Record<string, ColorInsignia> = {
   operativo: 'slate',
   herramientas: 'sky',
-  marketing: 'indigo',
+  marketing: 'blue',
   impuestos: 'amber',
   personal: 'emerald',
   otro: 'slate',
@@ -115,7 +115,7 @@ export const etiquetaEstadoFactura: Record<string, string> = {
 
 export const colorEstadoFactura: Record<string, ColorInsignia> = {
   borrador: 'slate',
-  emitida: 'indigo',
+  emitida: 'blue',
   pagada: 'emerald',
   anulada: 'red',
 }
@@ -132,7 +132,7 @@ export const etiquetaCategoriaIguala: Record<string, string> = {
 export const colorCategoriaIguala: Record<string, ColorInsignia> = {
   contabilidad: 'emerald',
   software: 'sky',
-  asesoria_legal: 'indigo',
+  asesoria_legal: 'blue',
 }
 
 export const ESTADOS_IGUALA = ['activa', 'pausada', 'cancelada'] as const
@@ -168,9 +168,9 @@ export const etiquetaEtapaCrm: Record<string, string> = {
 export const colorEtapaCrm: Record<string, ColorInsignia> = {
   prospecto: 'slate',
   contactado: 'sky',
-  reunion: 'indigo',
+  reunion: 'blue',
   propuesta: 'amber',
-  negociacion: 'violet',
+  negociacion: 'cyan',
   ganado: 'emerald',
   perdido: 'red',
 }
@@ -187,8 +187,8 @@ export const etiquetaTipoActividadCrm: Record<string, string> = {
 
 export const colorTipoActividadCrm: Record<string, ColorInsignia> = {
   llamada: 'sky',
-  correo: 'indigo',
-  reunion: 'violet',
+  correo: 'blue',
+  reunion: 'cyan',
   tarea: 'amber',
   nota: 'slate',
 }

@@ -1,19 +1,19 @@
 @import "@fontsource-variable/inter";
 @import "tailwindcss";
 
-/* ---------- Tokens del tema (oscuro premium) ----------
+/* ---------- Tokens del tema (azul profesional) ----------
    Las utilidades (bg-superficie, text-tinta, border-borde…) usan estas
    variables. En impresión y dentro de .documento-factura se redefinen a
    valores claros, así los reportes y las facturas imprimen perfectos. */
 @theme {
-  --color-fondo: #070b15;
-  --color-superficie: #0d1424;
-  --color-superficie-2: #172139;
-  --color-borde: #21304f;
-  --color-borde-suave: #182238;
-  --color-tinta: #eef2fb;
-  --color-tinta-suave: #9aa7c4;
-  --color-tinta-tenue: #6b7ca0;
+  --color-fondo: #070c17;
+  --color-superficie: #0e1626;
+  --color-superficie-2: #172136;
+  --color-borde: #22304b;
+  --color-borde-suave: #19233a;
+  --color-tinta: #f2f5fa;
+  --color-tinta-suave: #9fb0ca;
+  --color-tinta-tenue: #7b8aa5;
 
   /* Tipografía: Inter (recomendada por el motor de diseño para paneles financieros) */
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -30,27 +30,22 @@ html {
 body {
   min-height: 100%;
   font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background-color: var(--color-fondo);
-  background-image:
-    radial-gradient(56rem 34rem at 12% -10%, rgb(79 70 229 / 0.22), transparent 62%),
-    radial-gradient(48rem 30rem at 102% -6%, rgb(139 92 246 / 0.16), transparent 60%),
-    radial-gradient(46rem 30rem at 50% 118%, rgb(14 165 233 / 0.08), transparent 62%),
-    linear-gradient(rgb(148 163 184 / 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(148 163 184 / 0.05) 1px, transparent 1px);
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
+  background-image: radial-gradient(52rem 28rem at 50% -12%, rgb(37 99 235 / 0.12), transparent 62%);
+  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: auto, auto, auto, 3.25rem 3.25rem, 3.25rem 3.25rem;
 }
 
 ::selection {
-  background: rgb(99 102 241 / 0.4);
+  background: rgb(37 99 235 / 0.35);
 }
 
 /* Accesibilidad: anillo de foco visible al navegar con teclado */
 :where(a, button, [role='button'], summary):focus-visible {
-  outline: 2px solid rgb(129 140 248 / 0.85);
+  outline: 2px solid rgb(96 165 250 / 0.9);
   outline-offset: 2px;
 }
 
@@ -240,14 +235,14 @@ body {
   [class*="text-red"] {
     color: #b91c1c !important;
   }
-  [class*="text-indigo"] {
-    color: #4338ca !important;
+  [class*="text-blue"] {
+    color: #1d4ed8 !important;
   }
   [class*="text-sky"] {
     color: #0369a1 !important;
   }
-  [class*="text-violet"] {
-    color: #6d28d9 !important;
+  [class*="text-cyan"] {
+    color: #0e7490 !important;
   }
   [class*="text-teal"] {
     color: #0f766e !important;

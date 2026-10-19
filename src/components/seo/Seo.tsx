@@ -175,7 +175,7 @@ export function Seo() {
       <div aria-live="polite" className="mt-4">
         {analizando ? (
           <Tarjeta className="flex items-center gap-3 p-5 text-sm text-tinta-suave">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-borde border-t-indigo-400" />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-borde border-t-blue-400" />
             Revisando la página, los encabezados, los enlaces y los archivos del sitio…
           </Tarjeta>
         ) : resultado ? (
@@ -214,12 +214,12 @@ export function Seo() {
                 key={fila.id}
                 className={cx(
                   'flex flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2/40',
-                  resultado?.id === fila.id && 'bg-indigo-500/5',
+                  resultado?.id === fila.id && 'bg-blue-500/5',
                 )}
               >
                 <span
                   className={cx(
-                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border text-sm font-semibold',
+                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold',
                     clasePuntaje(fila.puntaje),
                   )}
                 >
@@ -301,7 +301,7 @@ function Informe({
         <div className="flex flex-wrap items-start gap-4 border-b border-borde p-5">
           <div
             className={cx(
-              'flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-2xl border',
+              'flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-xl border',
               clasePuntaje(datos.puntaje),
             )}
           >
@@ -317,7 +317,7 @@ function Informe({
               href={datos.urlFinal}
               target="_blank"
               rel="noreferrer"
-              className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-indigo-300 hover:text-indigo-200"
+              className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-blue-300 hover:text-blue-200"
             >
               <span className="truncate">{datos.urlFinal}</span>
               <ExternalLink size={12} className="shrink-0" />
@@ -402,7 +402,7 @@ function TarjetaVelocidad({ datos, midiendo, onMedir }: { datos: DatosSeo; midie
   return (
     <Tarjeta className="p-5">
       <div className="flex items-center gap-2">
-        <Zap size={16} className="text-indigo-300" aria-hidden />
+        <Zap size={16} className="text-blue-300" aria-hidden />
         <h4 className="text-sm font-semibold text-tinta">Velocidad (PageSpeed móvil)</h4>
       </div>
       {velocidad ? (
@@ -422,7 +422,7 @@ function TarjetaVelocidad({ datos, midiendo, onMedir }: { datos: DatosSeo; midie
             type="button"
             onClick={onMedir}
             disabled={midiendo}
-            className="mt-3 inline-flex items-center gap-1.5 text-xs text-indigo-300 transition-colors hover:text-indigo-200 disabled:opacity-50"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs text-blue-300 transition-colors hover:text-blue-200 disabled:opacity-50"
           >
             <RefreshCw size={12} /> {midiendo ? 'Midiendo…' : 'Medir de nuevo'}
           </button>
@@ -443,7 +443,7 @@ function TarjetaVelocidad({ datos, midiendo, onMedir }: { datos: DatosSeo; midie
 
 function PuntajeMini({ etiqueta, valor }: { etiqueta: string; valor: number }) {
   return (
-    <div className="rounded-xl border border-borde bg-superficie-2/50 px-3 py-2">
+    <div className="rounded-lg border border-borde bg-superficie-2/50 px-3 py-2">
       <p className="text-[10px] tracking-wide text-tinta-tenue uppercase">{etiqueta}</p>
       <p
         className={cx(
