@@ -14,6 +14,8 @@ const NAVEGACION: Array<{ id: Seccion; etiqueta: string; Icono: LucideIcon }> = 
   { id: 'pagos', etiqueta: 'Pagos', Icono: Wallet },
 ]
 
+const BRILLO_LATERAL = 'radial-gradient(120% 55% at 50% -10%, rgba(99, 102, 241, 0.22), transparent)'
+
 function salir() {
   void supabase?.auth.signOut()
 }
@@ -34,9 +36,9 @@ export function Layout({
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800">
       {/* Barra lateral (escritorio) */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col bg-slate-900 md:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col bg-slate-900 md:flex" style={{ backgroundImage: BRILLO_LATERAL }}>
         <div className="flex items-center gap-2.5 px-5 py-5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500 text-lg font-bold text-white shadow-lg shadow-indigo-500/40">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-lg font-bold text-white shadow-lg shadow-indigo-500/40">
             A
           </span>
           <div>
@@ -52,10 +54,15 @@ export function Layout({
               type="button"
               onClick={() => onSeccion(id)}
               className={cx(
-                'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                seccion === id ? 'bg-indigo-500/15 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100',
+                'relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+                seccion === id
+                  ? 'bg-indigo-500/15 text-white shadow-[inset_0_0_0_1px_rgba(99,102,241,0.25)]'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100',
               )}
             >
+              {seccion === id && (
+                <span aria-hidden className="absolute top-1/2 left-0 h-4 w-1 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-indigo-400 to-violet-400" />
+              )}
               <Icono size={17} className={seccion === id ? 'text-indigo-400' : ''} />
               {etiqueta}
             </button>
@@ -83,16 +90,21 @@ export function Layout({
       </aside>
 
       {/* Barra superior (móvil) */}
-      <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-900 md:hidden">
+      <header
+        className="sticky top-0 z-40 border-b border-slate-800 bg-slate-900 md:hidden"
+        style={{ backgroundImage: 'radial-gradient(100% 160% at 50% -40%, rgba(99, 102, 241, 0.25), transparent)' }}
+      >
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500 text-sm font-bold text-white">A</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">
+              A
+            </span>
             <span className="text-sm font-semibold text-white">AviTech</span>
           </div>
           <button
             type="button"
             onClick={salir}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-700 px-2.5 py-1.5 text-xs text-slate-300"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-700 px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:bg-slate-800"
           >
             <LogOut size={13} /> Salir
           </button>
@@ -104,8 +116,8 @@ export function Layout({
               type="button"
               onClick={() => onSeccion(id)}
               className={cx(
-                'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors',
-                seccion === id ? 'bg-indigo-500/20 text-white' : 'text-slate-400',
+                'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-150',
+                seccion === id ? 'bg-indigo-500/20 text-white shadow-[inset_0_0_0_1px_rgba(99,102,241,0.35)]' : 'text-slate-400',
               )}
             >
               <Icono size={14} /> {etiqueta}

@@ -26,7 +26,7 @@ export function ProveedorAvisos({ children }: { children: ReactNode }) {
         {avisos.map((aviso) => (
           <div
             key={aviso.id}
-            className="pointer-events-auto flex items-start gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg"
+            className="animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg"
           >
             {aviso.tipo === 'ok' ? (
               <CircleCheck size={18} className="mt-0.5 shrink-0 text-emerald-500" />

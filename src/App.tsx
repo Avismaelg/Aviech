@@ -68,10 +68,12 @@ function App() {
     <ProveedorAvisos>
       {sesion ? (
         <Layout sesion={sesion} seccion={seccion} onSeccion={setSeccion}>
-          {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
-          {seccion === 'clientes' && <Clientes />}
-          {seccion === 'servicios' && <Servicios />}
-          {seccion === 'pagos' && <Pagos />}
+          <div key={seccion} className="animar-entrada">
+            {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
+            {seccion === 'clientes' && <Clientes />}
+            {seccion === 'servicios' && <Servicios />}
+            {seccion === 'pagos' && <Pagos />}
+          </div>
         </Layout>
       ) : (
         <Login />

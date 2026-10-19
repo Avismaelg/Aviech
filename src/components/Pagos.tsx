@@ -271,7 +271,7 @@ export function Pagos() {
               placeholder="Ej. Anticipo auditoría"
             />
           </Campo>
-          <Campo etiqueta="Monto (MXN) *">
+          <Campo etiqueta="Monto (RD$) *">
             <Entrada
               required
               type="number"

@@ -7,7 +7,9 @@ Startup de auditoría y consultoría.
 ## AviTech Panel — producto interno
 
 Panel de gestión de AviTech Solutions Group: clientes, servicios y pagos, con tablero
-de resumen. Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
+de resumen. Pensado para **República Dominicana**: montos en **RD$** (pesos dominicanos),
+**RNC** de clientes y teléfonos con formato local (809/829/849).
+Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
@@ -16,9 +18,9 @@ de resumen. Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 
 | Módulo | Qué hace |
 |---|---|
-| **Inicio** | Resumen: clientes activos, servicios en curso, cobrado del mes y por cobrar; últimos clientes y pagos pendientes |
-| **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado) |
-| **Servicios** | Trabajos por cliente con tipo, estado, monto y fechas |
+| **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, últimos clientes y pagos pendientes |
+| **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
+| **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas |
 | **Pagos** | Ingresos por cliente; cobrado vs. pendiente y «marcar como pagado» en un clic |
 
 ### Requisitos
@@ -40,7 +42,7 @@ npm run lint       # revisión de código (oxlint)
 
 ### Base de datos y migraciones
 
-- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001, 002, …).
+- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001, 002, 003, …).
 - Se aplican solos con el workflow **«Migrar base de datos»** cada vez que cambia
   `supabase/sql/` (o a mano: GitHub → Actions → Run workflow).
 - Cada ejecución deja un reporte en `supabase/verificacion-ultima.txt`
@@ -73,8 +75,8 @@ src/
   App.tsx                 # sesión de Supabase → Login o panel
   components/
     Layout.tsx            # barra lateral + navegación
-    Inicio.tsx            # tablero de resumen
-    Clientes.tsx          # CRUD de clientes
+    Inicio.tsx            # tablero: contadores, gráfica y anillo de cobro
+    Clientes.tsx          # CRUD de clientes (con RNC)
     Servicios.tsx         # CRUD de servicios
     Pagos.tsx             # CRUD de pagos
     Login.tsx             # acceso del personal
@@ -82,10 +84,11 @@ src/
   lib/
     supabase.ts           # cliente compartido de Supabase
     useTabla.ts           # carga/guardado genérico por tabla
-    formato.ts            # moneda, fechas e iniciales
+    formato.ts            # moneda (RD$), fechas e iniciales
     etiquetas.ts          # estados, tipos y colores
+    useContador.ts        # animación de números del tablero
   types/                  # tipos Cliente, Servicio y Pago
-supabase/sql/             # migraciones (001, 002, …)
+supabase/sql/             # migraciones (001, 002, 003, …)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 

@@ -11,9 +11,9 @@ import { claseEntrada, cx } from '../lib/estilos'
 import type { ColorInsignia } from '../lib/etiquetas'
 
 const variantesBoton = {
-  primario: 'bg-indigo-600 text-white hover:bg-indigo-500',
+  primario: 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/25 hover:bg-indigo-500',
   secundario: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
-  peligro: 'bg-red-600 text-white hover:bg-red-500',
+  peligro: 'bg-red-600 text-white shadow-sm shadow-red-600/25 hover:bg-red-500',
   fantasma: 'text-slate-500 hover:bg-slate-100 hover:text-slate-700',
 }
 
@@ -26,7 +26,7 @@ export function Boton({
     <button
       {...propiedades}
       className={cx(
-        'inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50',
         variantesBoton[variante],
         className,
       )}
@@ -115,14 +115,14 @@ export function Modal({
     <div
       role="presentation"
       onMouseDown={onCerrar}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 backdrop-blur-[2px] sm:items-center"
+      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 backdrop-blur-[2px] sm:items-center"
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={titulo}
         onMouseDown={(evento) => evento.stopPropagation()}
-        className={cx('max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white shadow-xl', ancho)}
+        className={cx('animar-modal max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white shadow-xl', ancho)}
       >
         <div className="sticky top-0 flex items-center justify-between border-b border-slate-100 bg-white px-5 py-3.5">
           <h3 className="text-base font-semibold text-slate-900">{titulo}</h3>

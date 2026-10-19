@@ -267,7 +267,7 @@ export function Servicios() {
               ))}
             </Selector>
           </Campo>
-          <Campo etiqueta="Monto (MXN)">
+          <Campo etiqueta="Monto (RD$)">
             <Entrada
               type="number"
               min="0"

@@ -25,10 +25,13 @@ export function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-100 via-slate-50 to-indigo-50 px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-slate-100 via-slate-50 to-indigo-50 px-4">
+      <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-indigo-200/50 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-violet-200/50 blur-3xl" />
+
+      <div className="animar-entrada relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5">
         <header className="mb-6 text-center">
-          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-xl font-bold text-white shadow-lg shadow-slate-900/20">
+          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/30">
             A
           </span>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-900">AviTech Panel</h1>

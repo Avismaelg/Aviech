@@ -1,7 +1,8 @@
-const formatoMoneda = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' })
-const formatoFechaLarga = new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+// Formatos para República Dominicana (Santo Domingo): pesos RD$ y fechas es-DO.
+const formatoMoneda = new Intl.NumberFormat('es-DO', { style: 'currency', currency: 'DOP' })
+const formatoFechaLarga = new Intl.DateTimeFormat('es-DO', { day: '2-digit', month: 'short', year: 'numeric' })
 
-/** $1,234.50 — o "—" cuando no hay monto. */
+/** RD$1,234.56 — o "—" cuando no hay monto. */
 export function formatoDinero(monto: number | null | undefined): string {
   return monto == null ? '—' : formatoMoneda.format(monto)
 }

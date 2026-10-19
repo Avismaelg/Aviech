@@ -23,6 +23,7 @@ import {
 interface FormularioCliente {
   nombre: string
   empresa: string
+  rnc: string
   email: string
   telefono: string
   estado: string
@@ -32,6 +33,7 @@ interface FormularioCliente {
 const FORMULARIO_VACIO: FormularioCliente = {
   nombre: '',
   empresa: '',
+  rnc: '',
   email: '',
   telefono: '',
   estado: 'activo',
@@ -54,7 +56,7 @@ export function Clientes() {
       const coincideEstado = filtroEstado === 'todos' || cliente.estado === filtroEstado
       const coincideTexto =
         !texto ||
-        [cliente.nombre, cliente.empresa, cliente.email, cliente.telefono].some((valor) =>
+        [cliente.nombre, cliente.empresa, cliente.rnc, cliente.email, cliente.telefono].some((valor) =>
           valor?.toLowerCase().includes(texto),
         )
       return coincideEstado && coincideTexto
@@ -72,6 +74,7 @@ export function Clientes() {
     setFormulario({
       nombre: cliente.nombre,
       empresa: cliente.empresa ?? '',
+      rnc: cliente.rnc ?? '',
       email: cliente.email ?? '',
       telefono: cliente.telefono ?? '',
       estado: cliente.estado,
@@ -88,6 +91,7 @@ export function Clientes() {
       {
         nombre: formulario.nombre.trim(),
         empresa: formulario.empresa.trim() || null,
+        rnc: formulario.rnc.trim() || null,
         email: formulario.email.trim() || null,
         telefono: formulario.telefono.trim() || null,
         estado: formulario.estado,
@@ -117,7 +121,7 @@ export function Clientes() {
           <Entrada
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
-            placeholder="Buscar por nombre, empresa, correo…"
+            placeholder="Buscar por nombre, empresa, RNC, correo…"
             className="pl-9"
           />
         </div>
@@ -148,14 +152,16 @@ export function Clientes() {
         {!cargando && !error && filtrados.length > 0 && (
           <ul className="divide-y divide-slate-100">
             {filtrados.map((cliente) => (
-              <li key={cliente.id} className="flex items-center gap-3 px-4 py-3">
+              <li key={cliente.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-xs font-semibold text-indigo-600">
                   {iniciales(cliente.nombre)}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-slate-900">{cliente.nombre}</p>
                   <p className="truncate text-xs text-slate-500">
-                    {[cliente.empresa, cliente.email, cliente.telefono].filter(Boolean).join(' · ') || 'Sin datos de contacto'}
+                    {[cliente.empresa, cliente.rnc ? `RNC ${cliente.rnc}` : null, cliente.email, cliente.telefono]
+                      .filter(Boolean)
+                      .join(' · ') || 'Sin datos de contacto'}
                   </p>
                 </div>
                 <div className="hidden shrink-0 sm:block">
@@ -209,6 +215,13 @@ export function Clientes() {
               placeholder="Nombre de la empresa"
             />
           </Campo>
+          <Campo etiqueta="RNC">
+            <Entrada
+              value={formulario.rnc}
+              onChange={(evento) => setFormulario({ ...formulario, rnc: evento.target.value })}
+              placeholder="1-01-12345-6"
+            />
+          </Campo>
           <Campo etiqueta="Estado">
             <Selector
               value={formulario.estado}
@@ -233,7 +246,7 @@ export function Clientes() {
             <Entrada
               value={formulario.telefono}
               onChange={(evento) => setFormulario({ ...formulario, telefono: evento.target.value })}
-              placeholder="55 1234 5678"
+              placeholder="809 555 1234"
             />
           </Campo>
           <Campo etiqueta="Notas" className="sm:col-span-2">
