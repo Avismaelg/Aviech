@@ -56,6 +56,10 @@
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
 - Detalles: **`docs/MIGRACIONES.md`**.
+- **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
+  Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
+  repos se actualizaron y el **respaldo + las migraciones quedaron verificados en
+  verde** con la clave nueva. Procedimiento: **`docs/ROTAR-CLAVE-BD.md`**.
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -77,7 +81,9 @@
 ## 📋 Próximos pasos
 
 1. Verificar el primer respaldo programado (lunes 19-oct ~10:00 AM, hora de República Dominicana).
-2. Cuando se pueda: rotar la contraseña de la base de datos (se pegó en el chat una vez).
+2. Revisar en Supabase → **Account → Access Tokens** y borrar el token
+   `cli_User@ThinkBook-15IIL_1792390971` (se creó el 19-oct solo para rotar la
+   contraseña; ya no hace falta). En este PC ya no queda copia.
 3. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
    dirección, teléfono y correo) y, cuando estén, conectar el **e-CF** con el certificado
    digital de DGII (ver `docs/FACTURACION.md`).
