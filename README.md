@@ -6,7 +6,7 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, servicios, pagos, facturación, gastos
+Panel de gestión de AviTech Solutions Group: clientes, CRM, auditoría SEO, servicios, pagos, facturación, gastos
 y reportes, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
@@ -23,6 +23,7 @@ Interfaz **oscura premium**: tokens de diseño, cristal, gradientes índigo→vi
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
+| **Auditor SEO** | Analiza cualquier página como la ve Google (título, meta, encabezados, imágenes, enlaces, HTTPS, canonical, Open Graph, `robots.txt` y `sitemap.xml`) con puntaje 0–100 e historial; **velocidad** gratis con PageSpeed Insights. Sin claves ni costo |
 | **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas |
 | **Pagos** | Ingresos por cliente; cobrado vs. pendiente, **vencidos** y «marcar como pagado» en un clic |
 | **Facturación** | Facturas con **NCF / e-NCF** e **ITBIS 18%**; líneas de detalle, estados borrador → emitida → pagada, **anulación**, impresión/PDF y pago registrado automáticamente al cobrar |
@@ -89,6 +90,8 @@ src/
       Empresas.tsx        # CRUD de empresas + conversión a cliente
       Contactos.tsx       # CRUD de contactos
       Actividades.tsx     # llamadas, correos, reuniones, tareas y notas
+    seo/
+      Seo.tsx             # Auditor SEO: formulario, informe, velocidad e historial
     Servicios.tsx         # CRUD de servicios
     Pagos.tsx             # CRUD de pagos (con vencidos)
     Facturacion.tsx       # facturas con NCF/e-NCF, ITBIS y PDF
@@ -100,13 +103,16 @@ src/
     supabase.ts           # cliente compartido de Supabase
     useTabla.ts           # carga/guardado genérico por tabla
     crm.ts                # convierte una empresa del CRM en cliente
+    seo.ts                # auditoría SEO (Worker) y PageSpeed; normaliza direcciones
     formato.ts            # moneda (RD$), fechas e iniciales
     etiquetas.ts          # estados, tipos y colores
     useContador.ts        # animación de números del tablero
     csv.ts                # exportar tablas a Excel (CSV)
     empresa.ts            # datos fiscales de la empresa (encabezado de facturas)
-  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala y CRM
-supabase/sql/             # migraciones (001…007)
+  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM y SEO
+worker/
+  index.js                # API del panel en Cloudflare (auditoría SEO)
+supabase/sql/             # migraciones (001…008)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 
@@ -115,7 +121,8 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
-- `docs/pruebas/README.md` — prueba de humo del CRM con datos simulados
+- `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)
+- `docs/pruebas/README.md` — pruebas de humo del CRM y del Auditor SEO con datos simulados
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

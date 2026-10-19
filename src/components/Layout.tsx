@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, FileText, Handshake, LayoutDashboard, LogOut, Receipt, ReceiptText, Target, Users, Wallet } from 'lucide-react'
+import { Briefcase, FileText, Handshake, LayoutDashboard, LogOut, Receipt, ReceiptText, SearchCheck, Target, Users, Wallet } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cx } from '../lib/estilos'
@@ -9,6 +9,7 @@ export type Seccion =
   | 'inicio'
   | 'clientes'
   | 'crm'
+  | 'seo'
   | 'servicios'
   | 'igualas'
   | 'pagos'
@@ -20,6 +21,7 @@ const NAVEGACION: Array<{ id: Seccion; etiqueta: string; Icono: LucideIcon }> = 
   { id: 'inicio', etiqueta: 'Inicio', Icono: LayoutDashboard },
   { id: 'clientes', etiqueta: 'Clientes', Icono: Users },
   { id: 'crm', etiqueta: 'CRM', Icono: Target },
+  { id: 'seo', etiqueta: 'Auditor SEO', Icono: SearchCheck },
   { id: 'servicios', etiqueta: 'Servicios', Icono: Briefcase },
   { id: 'igualas', etiqueta: 'Igualas', Icono: Handshake },
   { id: 'pagos', etiqueta: 'Pagos', Icono: Wallet },
