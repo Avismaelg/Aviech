@@ -14,7 +14,7 @@ guardada en un repositorio **privado** de GitHub:
 
 ## Cuándo corre
 
-- **Automático:** todos los lunes ~8:00 AM (hora CDMX).
+- **Automático:** todos los lunes ~10:00 AM (hora de República Dominicana).
 - **Manual:** GitHub → repo de respaldos → pestaña **Actions** →
   *"Respaldo de la base de datos"* → **Run workflow**.
 - **Retención:** ~120 días (los respaldos más viejos se borran solos).

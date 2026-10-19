@@ -59,7 +59,7 @@
 
 ## ✅ Respaldos automáticos de la base de datos
 
-- El panel genera **solo** una copia completa de la base **cada lunes ~8:00 AM (hora del Este)**.
+- El panel genera **solo** una copia completa de la base **cada lunes ~10:00 AM (hora de República Dominicana)**.
 - Las copias viven en un repositorio privado: `https://github.com/Avismaelg/Aviech-backup`
   (carpeta `respaldos/`, formato `backup-AAAA-MM-DD_HHMM.sql.gz`).
 - Se conservan los últimos ~120 días; los más viejos se borran solos.
@@ -76,7 +76,7 @@
 
 ## 📋 Próximos pasos
 
-1. Verificar el primer respaldo programado (lunes 19-oct ~8:00 AM hora del Este).
+1. Verificar el primer respaldo programado (lunes 19-oct ~10:00 AM, hora de República Dominicana).
 2. Cuando se pueda: rotar la contraseña de la base de datos (se pegó en el chat una vez).
 3. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
    dirección, teléfono y correo) y, cuando estén, conectar el **e-CF** con el certificado
