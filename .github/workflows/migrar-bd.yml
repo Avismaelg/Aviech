@@ -67,9 +67,9 @@ jobs:
             echo "## Tablas de public"
             psql "$DB" -c '\dt public.*'
             echo "## Columnas de todas las tablas"
-            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items') order by table_name, ordinal_position;"
+            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas') order by table_name, ordinal_position;"
             echo "## Conteos"
-            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items;"
+            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas;"
             echo "## Prueba de inserciones (se revierte al final)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
@@ -80,6 +80,7 @@ jobs:
             insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
             insert into public.pagos (cliente_id, concepto, monto) values (c, '__prueba__', 5);
             insert into public.gastos (concepto, monto) values ('__prueba__', 3);
+            insert into public.igualas (cliente_id, descripcion, monto_mensual) values (c, '__prueba__', 7);
             insert into public.facturas (cliente_id, cliente_nombre, numero, tipo, subtotal, itbis, total) values (c, '__prueba__', 'B0200000001', 'B02', 100, 18, 118) returning id into f;
             insert into public.factura_items (factura_id, descripcion, precio) values (f, '__prueba__', 100);
             raise notice 'Inserciones de prueba: OK';
@@ -96,7 +97,8 @@ jobs:
                  (select count(*) from public.pagos) as pagos,
                  (select count(*) from public.gastos) as gastos,
                  (select count(*) from public.facturas) as facturas,
-                 (select count(*) from public.factura_items) as factura_items;
+                 (select count(*) from public.factura_items) as factura_items,
+                 (select count(*) from public.igualas) as igualas;
           rollback;
           SQL
             echo "## RLS: lectura como anónimo (debe dar 0 en todo)"
@@ -108,7 +110,8 @@ jobs:
                  (select count(*) from public.pagos) as pagos,
                  (select count(*) from public.gastos) as gastos,
                  (select count(*) from public.facturas) as facturas,
-                 (select count(*) from public.factura_items) as factura_items;
+                 (select count(*) from public.factura_items) as factura_items,
+                 (select count(*) from public.igualas) as igualas;
           rollback;
           SQL
           } > "$REPORTE" 2>&1

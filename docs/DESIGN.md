@@ -15,7 +15,7 @@
   rejilla tenue de fondo y cristal (desenfoque) en barras y flotantes.
 - **Acento de marca:** violeta / índigo (gradiente `indigo-500 → violet-600`).
 - **Personalidad:** seria (auditoría y consultoría), moderna, legible y rápida.
-- **Sin webfonts:** se usa la fuente del sistema (buen rendimiento).
+- **Tipografía de marca:** **Inter** (variable, autoalojada con `@fontsource-variable/inter` — sin CDN, funciona offline y en la PWA) con respaldo a fuentes del sistema.
 
 ## 2. Tokens de color (fuente única: `src/index.css` → `@theme`)
 
@@ -54,6 +54,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 
 ## 4. Tipografía y datos
 
+- **Familia:** Inter Variable (`--font-sans` en `index.css`), autoalojada: cero llamadas a CDN y disponible sin internet.
 - Jerarquía: título de sección `text-2xl font-semibold tracking-tight`;
   descripción `text-sm text-tinta-suave`; etiquetas `text-xs`; detalles `text-[11px]`.
 - **Números**: monedas con `tabular-nums` (no bailan al animarse).
@@ -86,10 +87,11 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 | `Tarjeta` | `rounded-2xl`, borde, `bg-superficie/90`, `backdrop-blur-sm`. |
 | `CabeceraSeccion` | Título + descripción + acciones alineadas. |
 | `Campo` / `Entrada` / `Selector` / `AreaTexto` | Comparten `claseEntrada` (`lib/estilos.ts`): foco con borde y anillo índigo. |
-| `Modal` | Fondo `#03060d/75` + blur; se cierra con Escape, clic fuera o la X; cabecera fija; entrada `animar-modal`. |
+| `Modal` | Fondo `#03060d/75` + blur; se cierra con Escape, clic fuera o la X; cabecera fija; entrada `animar-modal`; **bloquea el scroll del fondo** y **auto-enfoca el primer campo** al abrir. |
 | `Confirmar` | Modal pequeño con botón de peligro. |
+| `BotonIcono` | Acción de solo icono con etiqueta accesible (`title` + `aria-label`). Obligatorio en tablas en vez de botones sueltos. |
 | `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío, esqueleto `animate-pulse` y aviso ámbar. |
-| `Layout` | Barra lateral fija con navegación (activo: fondo índigo 10 % + barra lateral con brillo), chip de usuario; en móvil, cabecera con blur + navegación desplazable. |
+| `Layout` | Barra lateral fija con navegación (activo: fondo índigo 10 % + barra lateral con brillo + `aria-current`), chip de usuario; en móvil, cabecera con blur + navegación desplazable (utilidades `.sin-barra` y `.mascara-desvanecida`). |
 
 ## 7. Regla de oro: factura e impresión en claro
 
@@ -97,7 +99,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
   (la factura se ve como una hoja blanca dentro de la app oscura).
 - `@media print`: tokens claros, se ocultan `aside`, `header` y `.no-imprimir`,
   se quitan sombras, los acentos vuelven a tonos legibles sobre papel
-  (`#047857`, `#b45309`, `#be123c`, `#b91c1c`, `#4338ca`, `#0369a1`, `#6d28d9`),
+  (`#047857`, `#b45309`, `#be123c`, `#b91c1c`, `#4338ca`, `#0369a1`, `#6d28d9`, `#0f766e`),
   insignias en gris claro, y `@page` con margen de 12 mm.
 - `.solo-impresion`: bloques que solo existen en el papel.
 
@@ -107,7 +109,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - Íconos: `lucide-react` (nada de emojis como íconos 😉 — salvo guiños de texto).
 - Probar siempre en **375 / 768 / 1024 / 1440 px** y con **Ctrl+P** (impresión).
 - Mantener el contraste: texto normal ≥ 4.5:1, texto grande ≥ 3:1.
-- Focus visible en todo lo interactivo (el anillo índigo ya viene en los campos).
+- Focus visible en todo lo interactivo: anillo índigo en campos + regla global `:focus-visible` para botones y enlaces de icono.
 
 ## 9. Don'ts (anti-patrones)
 

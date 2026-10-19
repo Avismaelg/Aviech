@@ -17,6 +17,7 @@ import type { Factura } from '../types/factura'
 import {
   AreaTexto,
   Boton,
+  BotonIcono,
   CabeceraSeccion,
   Campo,
   Confirmar,
@@ -602,52 +603,39 @@ export function Facturacion() {
                   </Insignia>
                 </div>
                 <div className="flex shrink-0 items-center gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setViendo(factura)}
-                    title="Ver / Imprimir"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
-                  >
+                  <BotonIcono etiqueta="Ver / Imprimir" onClick={() => setViendo(factura)}>
                     <Eye size={15} />
-                  </button>
+                  </BotonIcono>
                   {factura.estado === 'emitida' && (
                     <>
-                      <button
-                        type="button"
+                      <BotonIcono
+                        etiqueta="Marcar como pagada"
                         onClick={() => setPorPagar(factura)}
-                        title="Marcar como pagada"
-                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-emerald-400/10 hover:text-emerald-300"
+                        className="hover:bg-emerald-400/10 hover:text-emerald-300"
                       >
                         <Check size={15} />
-                      </button>
-                      <button
-                        type="button"
+                      </BotonIcono>
+                      <BotonIcono
+                        etiqueta="Anular"
                         onClick={() => setPorAnular(factura)}
-                        title="Anular"
-                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
+                        className="hover:bg-red-400/10 hover:text-red-300"
                       >
                         <X size={15} />
-                      </button>
+                      </BotonIcono>
                     </>
                   )}
                   {factura.estado === 'borrador' && (
                     <>
-                      <button
-                        type="button"
-                        onClick={() => abrirEdicion(factura)}
-                        title="Editar"
-                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
-                      >
+                      <BotonIcono etiqueta="Editar" onClick={() => abrirEdicion(factura)}>
                         <Pencil size={15} />
-                      </button>
-                      <button
-                        type="button"
+                      </BotonIcono>
+                      <BotonIcono
+                        etiqueta="Eliminar"
                         onClick={() => setPorEliminar(factura)}
-                        title="Eliminar"
-                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
+                        className="hover:bg-red-400/10 hover:text-red-300"
                       >
                         <Trash2 size={15} />
-                      </button>
+                      </BotonIcono>
                     </>
                   )}
                 </div>
@@ -754,15 +742,14 @@ export function Facturacion() {
                   <span className="w-24 shrink-0 text-right text-sm text-tinta-suave tabular-nums">
                     {formatoDinero(importeLinea(linea))}
                   </span>
-                  <button
-                    type="button"
+                  <BotonIcono
+                    etiqueta="Quitar línea"
                     onClick={() => quitarLinea(indice)}
                     disabled={formulario.lineas.length === 1}
-                    title="Quitar línea"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </BotonIcono>
                 </div>
               ))}
             </div>

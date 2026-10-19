@@ -7,6 +7,7 @@ import type { Cliente } from '../types/cliente'
 import {
   AreaTexto,
   Boton,
+  BotonIcono,
   CabeceraSeccion,
   Campo,
   Confirmar,
@@ -171,22 +172,16 @@ export function Clientes() {
                 </div>
                 <time className="hidden shrink-0 text-xs text-tinta-tenue lg:block">{formatoFecha(cliente.created_at)}</time>
                 <div className="flex shrink-0 items-center gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => abrirEdicion(cliente)}
-                    title="Editar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
-                  >
+                  <BotonIcono etiqueta="Editar" onClick={() => abrirEdicion(cliente)}>
                     <Pencil size={15} />
-                  </button>
-                  <button
-                    type="button"
+                  </BotonIcono>
+                  <BotonIcono
+                    etiqueta="Eliminar"
                     onClick={() => setPorEliminar(cliente)}
-                    title="Eliminar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </BotonIcono>
                 </div>
               </li>
             ))}

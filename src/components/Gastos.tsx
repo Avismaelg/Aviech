@@ -7,6 +7,7 @@ import type { Gasto } from '../types/gasto'
 import {
   AreaTexto,
   Boton,
+  BotonIcono,
   CabeceraSeccion,
   Campo,
   Confirmar,
@@ -186,22 +187,16 @@ export function Gastos() {
                   </Insignia>
                 </div>
                 <div className="flex shrink-0 items-center gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => abrirEdicion(gasto)}
-                    title="Editar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
-                  >
+                  <BotonIcono etiqueta="Editar" onClick={() => abrirEdicion(gasto)}>
                     <Pencil size={15} />
-                  </button>
-                  <button
-                    type="button"
+                  </BotonIcono>
+                  <BotonIcono
+                    etiqueta="Eliminar"
                     onClick={() => setPorEliminar(gasto)}
-                    title="Eliminar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </BotonIcono>
                 </div>
               </li>
             ))}

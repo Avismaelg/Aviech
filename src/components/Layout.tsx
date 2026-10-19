@@ -1,16 +1,17 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, FileText, LayoutDashboard, LogOut, Receipt, ReceiptText, Users, Wallet } from 'lucide-react'
+import { Briefcase, FileText, Handshake, LayoutDashboard, LogOut, Receipt, ReceiptText, Users, Wallet } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cx } from '../lib/estilos'
 import { supabase } from '../lib/supabase'
 
-export type Seccion = 'inicio' | 'clientes' | 'servicios' | 'pagos' | 'facturacion' | 'gastos' | 'reportes'
+export type Seccion = 'inicio' | 'clientes' | 'servicios' | 'igualas' | 'pagos' | 'facturacion' | 'gastos' | 'reportes'
 
 const NAVEGACION: Array<{ id: Seccion; etiqueta: string; Icono: LucideIcon }> = [
   { id: 'inicio', etiqueta: 'Inicio', Icono: LayoutDashboard },
   { id: 'clientes', etiqueta: 'Clientes', Icono: Users },
   { id: 'servicios', etiqueta: 'Servicios', Icono: Briefcase },
+  { id: 'igualas', etiqueta: 'Igualas', Icono: Handshake },
   { id: 'pagos', etiqueta: 'Pagos', Icono: Wallet },
   { id: 'facturacion', etiqueta: 'Facturación', Icono: ReceiptText },
   { id: 'gastos', etiqueta: 'Gastos', Icono: Receipt },
@@ -53,12 +54,13 @@ export function Layout({
           </div>
         </div>
 
-        <nav className="mt-1 flex-1 space-y-1 overflow-y-auto px-3 pb-4">
+        <nav aria-label="Secciones" className="mt-1 flex-1 space-y-1 overflow-y-auto px-3 pb-4">
           {NAVEGACION.map(({ id, etiqueta, Icono }) => (
             <button
               key={id}
               type="button"
               onClick={() => onSeccion(id)}
+              aria-current={seccion === id ? 'page' : undefined}
               className={cx(
                 'relative flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-150',
                 seccion === id
@@ -90,6 +92,7 @@ export function Layout({
               type="button"
               onClick={salir}
               title="Cerrar sesión"
+              aria-label="Cerrar sesión"
               className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-white/5 hover:text-white"
             >
               <LogOut size={15} />
@@ -118,17 +121,18 @@ export function Layout({
             <LogOut size={13} /> Salir
           </button>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-2">
+        <nav aria-label="Secciones" className="sin-barra mascara-desvanecida flex gap-1 overflow-x-auto px-3 pb-2">
           {NAVEGACION.map(({ id, etiqueta, Icono }) => (
             <button
               key={id}
               type="button"
               onClick={() => onSeccion(id)}
+              aria-current={seccion === id ? 'page' : undefined}
               className={cx(
-                'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-150',
+                'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150',
                 seccion === id
                   ? 'bg-indigo-500/15 text-white shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]'
-                  : 'text-slate-400 hover:bg-white/5',
+                  : 'text-slate-400 hover:bg-white/5 hover:text-slate-200',
               )}
             >
               <Icono size={14} /> {etiqueta}

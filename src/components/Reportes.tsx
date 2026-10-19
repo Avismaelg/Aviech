@@ -226,10 +226,11 @@ export function Reportes() {
       </div>
 
       <div className="no-imprimir mb-5 flex flex-wrap items-center gap-3">
-        <div className="flex rounded-lg border border-borde bg-superficie p-1">
+        <div role="group" aria-label="Tipo de reporte" className="flex rounded-lg border border-borde bg-superficie p-1">
           <button
             type="button"
             onClick={() => setVista('cliente')}
+            aria-pressed={vista === 'cliente'}
             className={cx(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150',
               vista === 'cliente' ? 'bg-indigo-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
@@ -240,6 +241,7 @@ export function Reportes() {
           <button
             type="button"
             onClick={() => setVista('mensual')}
+            aria-pressed={vista === 'mensual'}
             className={cx(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150',
               vista === 'mensual' ? 'bg-indigo-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',

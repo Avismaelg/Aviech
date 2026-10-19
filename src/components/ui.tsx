@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import {
   useEffect,
+  useRef,
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
   type ReactNode,
@@ -31,6 +32,26 @@ export function Boton({
       className={cx(
         'inline-flex items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50',
         variantesBoton[variante],
+        className,
+      )}
+    />
+  )
+}
+
+/** Botón compacto solo con icono (acciones de tablas y listas). Siempre con etiqueta accesible. */
+export function BotonIcono({
+  etiqueta,
+  className,
+  ...propiedades
+}: ButtonHTMLAttributes<HTMLButtonElement> & { etiqueta: string }) {
+  return (
+    <button
+      {...propiedades}
+      type={propiedades.type ?? 'button'}
+      title={etiqueta}
+      aria-label={etiqueta}
+      className={cx(
+        'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-tinta-tenue transition-colors duration-150 hover:bg-superficie-2 hover:text-tinta disabled:cursor-not-allowed disabled:opacity-40',
         className,
       )}
     />
@@ -118,13 +139,27 @@ export function Modal({
   children: ReactNode
   ancho?: string
 }) {
+  const contenedor = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!abierto) return
     function alTeclear(evento: KeyboardEvent) {
       if (evento.key === 'Escape') onCerrar()
     }
+    const desbordeAnterior = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', alTeclear)
-    return () => window.removeEventListener('keydown', alTeclear)
+    const enfoque = window.setTimeout(() => {
+      const primero =
+        contenedor.current?.querySelector<HTMLElement>('[data-autofoco]') ??
+        contenedor.current?.querySelector<HTMLElement>('input:not([type="hidden"]), select, textarea')
+      primero?.focus()
+    }, 40)
+    return () => {
+      document.body.style.overflow = desbordeAnterior
+      window.removeEventListener('keydown', alTeclear)
+      window.clearTimeout(enfoque)
+    }
   }, [abierto, onCerrar])
 
   if (!abierto) return null
@@ -135,6 +170,7 @@ export function Modal({
       className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-[#03060d]/75 p-4 backdrop-blur-sm sm:items-center"
     >
       <div
+        ref={contenedor}
         role="dialog"
         aria-modal="true"
         aria-label={titulo}

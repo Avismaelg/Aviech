@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Clientes } from './components/Clientes'
 import { Facturacion } from './components/Facturacion'
 import { Gastos } from './components/Gastos'
+import { Igualas } from './components/Igualas'
 import { Inicio } from './components/Inicio'
 import { Layout, type Seccion } from './components/Layout'
 import { Login } from './components/Login'
@@ -80,6 +81,7 @@ function App() {
             {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
             {seccion === 'clientes' && <Clientes />}
             {seccion === 'servicios' && <Servicios />}
+            {seccion === 'igualas' && <Igualas />}
             {seccion === 'pagos' && <Pagos />}
             {seccion === 'facturacion' && <Facturacion />}
             {seccion === 'gastos' && <Gastos />}

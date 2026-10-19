@@ -18,8 +18,9 @@
 
 ## ✅ La app está completa (local y en internet)
 
-- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **Servicios**, **Pagos**,
-  **Facturación**, **Gastos** y **Reportes**.
+- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **Servicios**, **Igualas**
+  (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
+  **Pagos**, **Facturación**, **Gastos** y **Reportes**.
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
   campo **RNC** para facturación formal (DGII) y teléfonos con formato local (809 / 829 / 849).
 - **Toque tecnológico**: contadores que se animan, gráfica de ingresos de los últimos 6 meses,
@@ -28,6 +29,10 @@
 - **Interfaz oscura premium** (19-oct): fondo con auroras y rejilla sutil, barra lateral de
   cristal, botones con gradiente, tarjetas elevadas e insignias translúcidas. La impresión y
   las facturas se mantienen en claro (las hojas salen perfectas).
+- **Mejora de interfaz integral** (19-oct, con el skill UI UX Pro Max): tipografía **Inter**
+  autoalojada, foco visible en todo lo interactivo, acciones de tabla con etiqueta accesible
+  (`BotonIcono`), modales con bloqueo del fondo y auto-foco, **login rediseñado** (panel de
+  marca + ver/ocultar contraseña) y contraste reforzado del texto tenue.
 - **Gastos** con la regla del dinero ×3: cada gasto se cubre con ingresos reales;
   el tablero muestra **Gastos del mes** y **Balance del mes** (cobrado − gastos).
 - **Facturación**: facturas con **NCF/e-NCF** (B01, B02, B14, B15 y e-CF E31/E32/E44/E45),
@@ -48,10 +53,10 @@
 
 ## ✅ Base de datos al día (migraciones automáticas)
 
-- Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `pagos`, `gastos`,
-  `facturas` y `factura_items` (líneas de factura). Todas con RLS: solo usuarios
-  autenticados; un visitante anónimo no ve nada.
-- Las migraciones viven en **`supabase/sql/`** (001…005) y se aplican solas con el
+- Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `igualas`
+  (categoría, monto mensual y día de cobro), `pagos`, `gastos`, `facturas` y `factura_items`
+  (líneas de factura). Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
+- Las migraciones viven en **`supabase/sql/`** (001…006) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -60,10 +65,10 @@
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
   repos se actualizaron y el **respaldo + las migraciones quedaron verificados en
   verde** con la clave nueva. Procedimiento: **`docs/ROTAR-CLAVE-BD.md`**.
-- **Prueba completa 19-oct-2026** (con datos simulados, sin tocar la base real): las 7
-  secciones, factura (con NCF, RNC e ITBIS), impresión siempre en claro, vista móvil y
-  navegación — **0 errores de consola**. Capturas guardadas en el PC, carpeta
-  `capturas-prueba`.
+- **Prueba completa 19-oct-2026** (con datos simulados, sin tocar la base real): las 8
+  secciones (incluida **Igualas**), factura (con NCF, RNC e ITBIS), impresión siempre en
+  claro, vista móvil, login y navegación — **0 errores de consola**. Capturas en la
+  carpeta `capturas-mejora` (14 pantallas).
 
 ## ✅ Respaldos automáticos de la base de datos
 

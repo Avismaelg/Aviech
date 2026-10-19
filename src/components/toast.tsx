@@ -1,6 +1,7 @@
 import { CircleAlert, CircleCheck } from 'lucide-react'
 import { useCallback, useState, type ReactNode } from 'react'
 import { ContextoAvisos, type TipoAviso } from '../lib/avisos'
+import { cx } from '../lib/estilos'
 
 interface Aviso {
   id: number
@@ -22,11 +23,18 @@ export function ProveedorAvisos({ children }: { children: ReactNode }) {
   return (
     <ContextoAvisos.Provider value={mostrar}>
       {children}
-      <div className="pointer-events-none fixed right-4 bottom-4 z-[70] flex w-80 max-w-[calc(100vw-2rem)] flex-col gap-2">
+      <div
+        role="status"
+        aria-live="polite"
+        className="pointer-events-none fixed right-4 bottom-4 z-[70] flex w-80 max-w-[calc(100vw-2rem)] flex-col gap-2"
+      >
         {avisos.map((aviso) => (
           <div
             key={aviso.id}
-            className="animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-xl border border-borde bg-superficie/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl"
+            className={cx(
+              'animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-xl border bg-superficie/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl',
+              aviso.tipo === 'ok' ? 'border-emerald-400/30' : 'border-red-400/30',
+            )}
           >
             {aviso.tipo === 'ok' ? (
               <CircleCheck size={18} className="mt-0.5 shrink-0 text-emerald-400" />

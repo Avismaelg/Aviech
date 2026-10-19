@@ -119,3 +119,32 @@ export const colorEstadoFactura: Record<string, ColorInsignia> = {
   pagada: 'emerald',
   anulada: 'red',
 }
+
+// ---------- Igualas (contratos mensuales) ----------
+export const CATEGORIAS_IGUALA = ['contabilidad', 'software', 'asesoria_legal'] as const
+
+export const etiquetaCategoriaIguala: Record<string, string> = {
+  contabilidad: 'Contabilidad',
+  software: 'Software',
+  asesoria_legal: 'Asesoría legal',
+}
+
+export const colorCategoriaIguala: Record<string, ColorInsignia> = {
+  contabilidad: 'emerald',
+  software: 'sky',
+  asesoria_legal: 'indigo',
+}
+
+export const ESTADOS_IGUALA = ['activa', 'pausada', 'cancelada'] as const
+
+export const etiquetaEstadoIguala: Record<string, string> = {
+  activa: 'Activa',
+  pausada: 'Pausada',
+  cancelada: 'Cancelada',
+}
+
+export const colorEstadoIguala: Record<string, ColorInsignia> = {
+  activa: 'emerald',
+  pausada: 'amber',
+  cancelada: 'slate',
+}

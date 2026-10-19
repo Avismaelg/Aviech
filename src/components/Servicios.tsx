@@ -13,6 +13,7 @@ import type { Servicio } from '../types/servicio'
 import {
   AreaTexto,
   Boton,
+  BotonIcono,
   CabeceraSeccion,
   Campo,
   Confirmar,
@@ -165,7 +166,7 @@ export function Servicios() {
         {!cargando && !error && filtrados.length > 0 && (
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((servicio) => (
-              <li key={servicio.id} className="flex items-center gap-3 px-4 py-3">
+              <li key={servicio.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-400/10 text-sky-300">
                   <Briefcase size={15} />
                 </span>
@@ -189,22 +190,16 @@ export function Servicios() {
                   </Insignia>
                 </div>
                 <div className="flex shrink-0 items-center gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => abrirEdicion(servicio)}
-                    title="Editar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
-                  >
+                  <BotonIcono etiqueta="Editar" onClick={() => abrirEdicion(servicio)}>
                     <Pencil size={15} />
-                  </button>
-                  <button
-                    type="button"
+                  </BotonIcono>
+                  <BotonIcono
+                    etiqueta="Eliminar"
                     onClick={() => setPorEliminar(servicio)}
-                    title="Eliminar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </BotonIcono>
                 </div>
               </li>
             ))}

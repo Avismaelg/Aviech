@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { ArrowRight, Banknote, Briefcase, Clock, PiggyBank, Plus, TrendingDown, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, Banknote, Briefcase, Clock, Handshake, PiggyBank, Plus, TrendingDown, TrendingUp, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { cx } from '../lib/estilos'
@@ -9,6 +9,7 @@ import { supabase } from '../lib/supabase'
 import { useContador } from '../lib/useContador'
 import type { Cliente } from '../types/cliente'
 import type { Gasto } from '../types/gasto'
+import type { Iguala } from '../types/iguala'
 import type { Pago } from '../types/pago'
 import type { Servicio } from '../types/servicio'
 import type { Seccion } from './Layout'
@@ -19,6 +20,7 @@ interface Resumen {
   servicios: Servicio[]
   pagos: Pago[]
   gastos: Gasto[]
+  igualas: Iguala[]
 }
 
 const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -86,7 +88,11 @@ function serieIngresos(pagos: Pago[]): PuntoSerie[] {
 function GraficoIngresos({ serie }: { serie: PuntoSerie[] }) {
   const maximo = Math.max(...serie.map((punto) => punto.valor), 1)
   return (
-    <div className="flex h-48 items-stretch gap-2 px-4 pt-5 pb-3 sm:gap-3">
+    <div
+      role="img"
+      aria-label="Gráfica de barras con los ingresos de los últimos 6 meses"
+      className="flex h-48 items-stretch gap-2 px-4 pt-5 pb-3 sm:gap-3"
+    >
       {serie.map((punto) => (
         <div key={punto.clave} className="group flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="relative flex-1">
@@ -182,13 +188,15 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
       supabase.from('servicios').select('*'),
       supabase.from('pagos').select('*, clientes(nombre)').order('fecha', { ascending: false }),
       supabase.from('gastos').select('*').order('fecha', { ascending: false }),
-    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos]) => {
+      supabase.from('igualas').select('*'),
+    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos, consultaIgualas]) => {
       if (consultaClientes.error || consultaServicios.error || consultaPagos.error) setErrorTablas(true)
       setDatos({
         clientes: (consultaClientes.data ?? []) as Cliente[],
         servicios: (consultaServicios.data ?? []) as Servicio[],
         pagos: (consultaPagos.data ?? []) as Pago[],
         gastos: (consultaGastos.error ? [] : (consultaGastos.data ?? [])) as Gasto[],
+        igualas: (consultaIgualas.error ? [] : (consultaIgualas.data ?? [])) as Iguala[],
       })
     })
   }, [])
@@ -251,13 +259,16 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
     .filter((gasto) => (gasto.fecha ?? '').slice(0, 7) === mesActual)
     .reduce((total, gasto) => total + Number(gasto.monto), 0)
   const balanceMes = cobradoMes - gastosMes
+  const igualasActivas = datos.igualas.filter((iguala) => iguala.estado === 'activa')
+  const ingresoRecurrente = igualasActivas.reduce((total, iguala) => total + Number(iguala.monto_mensual), 0)
+  const clientesConIguala = new Set(igualasActivas.map((iguala) => iguala.cliente_id)).size
   const serie = serieIngresos(pagos)
   const totalPeriodo = serie.reduce((total, punto) => total + punto.valor, 0)
   const recientes = clientes.slice(0, 5)
 
   return (
     <section>
-      <CabeceraSeccion titulo={`Hola, ${nombre} 👋`} descripcion="Este es el resumen de AviTech hoy." />
+      <CabeceraSeccion titulo={`Hola, ${nombre}`} descripcion="Este es el resumen de AviTech hoy." />
 
       <div className="mb-6 flex flex-wrap gap-2">
         <Boton onClick={() => onIr('clientes')}>
@@ -272,6 +283,31 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         <Boton variante="secundario" onClick={() => onIr('facturacion')}>
           <Plus size={16} /> Factura
         </Boton>
+      </div>
+
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-400/20 bg-teal-400/[0.06] px-4 py-3">
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-400/10 text-teal-300">
+            <Handshake size={17} />
+          </span>
+          <div>
+            <p className="text-xs text-tinta-suave">Ingreso mensual recurrente (igualas)</p>
+            <p className="text-base font-semibold text-tinta tabular-nums">
+              {formatoDinero(ingresoRecurrente)}
+              <span className="ml-2 text-xs font-normal text-tinta-tenue">
+                {igualasActivas.length} activa{igualasActivas.length === 1 ? '' : 's'} en {clientesConIguala} cliente
+                {clientesConIguala === 1 ? '' : 's'}
+              </span>
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => onIr('igualas')}
+          className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-teal-300 transition-colors hover:text-teal-200"
+        >
+          Ver igualas <ArrowRight size={13} />
+        </button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

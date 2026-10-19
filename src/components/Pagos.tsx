@@ -13,6 +13,7 @@ import type { Pago } from '../types/pago'
 import {
   AreaTexto,
   Boton,
+  BotonIcono,
   CabeceraSeccion,
   Campo,
   Confirmar,
@@ -196,7 +197,7 @@ export function Pagos() {
         {!cargando && !error && filtrados.length > 0 && (
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((pago) => (
-              <li key={pago.id} className="flex items-center gap-3 px-4 py-3">
+              <li key={pago.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-superficie-2 text-tinta-suave">
                   <Banknote size={15} />
                 </span>
@@ -230,31 +231,24 @@ export function Pagos() {
                 </div>
                 <div className="flex shrink-0 items-center gap-0.5">
                   {pago.estado === 'pendiente' && (
-                    <button
-                      type="button"
-                      title="Marcar como pagado"
+                    <BotonIcono
+                      etiqueta="Marcar como pagado"
                       onClick={() => void guardar({ estado: 'pagado' }, pago.id)}
-                      className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-emerald-400/10 hover:text-emerald-300"
+                      className="hover:bg-emerald-400/10 hover:text-emerald-300"
                     >
                       <Check size={15} />
-                    </button>
+                    </BotonIcono>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => abrirEdicion(pago)}
-                    title="Editar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
-                  >
+                  <BotonIcono etiqueta="Editar" onClick={() => abrirEdicion(pago)}>
                     <Pencil size={15} />
-                  </button>
-                  <button
-                    type="button"
+                  </BotonIcono>
+                  <BotonIcono
+                    etiqueta="Eliminar"
                     onClick={() => setPorEliminar(pago)}
-                    title="Eliminar"
-                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
-                  </button>
+                  </BotonIcono>
                 </div>
               </li>
             ))}
