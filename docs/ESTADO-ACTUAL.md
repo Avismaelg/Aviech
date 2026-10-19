@@ -73,11 +73,14 @@
 
 ## ✅ Respaldos automáticos de la base de datos
 
-- El panel genera **solo** una copia completa de la base **cada lunes ~10:00 AM (hora de República Dominicana)**.
+- El panel genera **solo** una copia completa de la base **cada lunes ~1:00 PM (hora de República Dominicana = 17:00 UTC)**.
 - Las copias viven en un repositorio privado: `https://github.com/Avismaelg/Aviech-backup`
   (carpeta `respaldos/`, formato `backup-AAAA-MM-DD_HHMM.sql.gz`).
 - Se conservan los últimos ~120 días; los más viejos se borran solos.
 - Respaldo manual: repo de respaldos → **Actions** → *Respaldo de la base de datos* → **Run workflow**.
+- Nota 19-oct: el respaldo automático de ese día no corrió por un incidente de GitHub
+  Actions; se ejecutó uno manual a la 1:04 PM y se verificó (gzip válido, 7,402 líneas SQL,
+  con la tabla `igualas`).
 - Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
 
 ## 🎨 Herramientas de diseño (UI UX Pro Max)
@@ -103,7 +106,8 @@
 
 ## 📋 Próximos pasos
 
-1. Verificar el primer respaldo programado (lunes 19-oct ~10:00 AM, hora de República Dominicana).
+1. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
+   Dominicana). El del 19-oct se hizo manual y quedó verificado.
 2. Revisar en Supabase → **Account → Access Tokens** y borrar el token
    `cli_User@ThinkBook-15IIL_1792390971` (se creó el 19-oct solo para rotar la
    contraseña; ya no hace falta). En este PC ya no queda copia.

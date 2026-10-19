@@ -70,7 +70,7 @@ Detalles y solución de problemas: **`docs/PUBLICAR-CLOUDFLARE.md`**.
 
 ### Respaldos
 
-Copia semanal automática de la base (lunes ~10:00 AM, hora de República Dominicana) en el repositorio privado
+Copia semanal automática de la base (lunes ~1:00 PM, hora de República Dominicana) en el repositorio privado
 `Avismaelg/Aviech-backup`. Ver **`docs/RESPALDOS.md`**.
 
 ### Estructura

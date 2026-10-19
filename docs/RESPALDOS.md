@@ -11,10 +11,12 @@ guardada en un repositorio **privado** de GitHub:
 
 - Nombre de archivo: `backup-AAAA-MM-DD_HHMM.sql.gz`
 - Primer respaldo (prueba, 18-oct-2026): `backup-2026-10-18_2323.sql.gz` ✅
+- Respaldo del 19-oct-2026: `backup-2026-10-19_1704.sql.gz` (manual, verificado: gzip válido,
+  7,402 líneas SQL, incluye la tabla `igualas`) ✅
 
 ## Cuándo corre
 
-- **Automático:** todos los lunes ~10:00 AM (hora de República Dominicana).
+- **Automático:** todos los lunes ~1:00 PM (hora de República Dominicana = 17:00 UTC).
 - **Manual:** GitHub → repo de respaldos → pestaña **Actions** →
   *"Respaldo de la base de datos"* → **Run workflow**.
 - **Retención:** ~120 días (los respaldos más viejos se borran solos).
