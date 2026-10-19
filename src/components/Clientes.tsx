@@ -117,7 +117,7 @@ export function Clientes() {
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-tinta-tenue" />
           <Entrada
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
@@ -150,15 +150,15 @@ export function Clientes() {
           )
         )}
         {!cargando && !error && filtrados.length > 0 && (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-borde-suave">
             {filtrados.map((cliente) => (
-              <li key={cliente.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-xs font-semibold text-indigo-600">
+              <li key={cliente.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-xs font-semibold text-indigo-300">
                   {iniciales(cliente.nombre)}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">{cliente.nombre}</p>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-sm font-medium text-tinta">{cliente.nombre}</p>
+                  <p className="truncate text-xs text-tinta-suave">
                     {[cliente.empresa, cliente.rnc ? `RNC ${cliente.rnc}` : null, cliente.email, cliente.telefono]
                       .filter(Boolean)
                       .join(' · ') || 'Sin datos de contacto'}
@@ -169,13 +169,13 @@ export function Clientes() {
                     {etiquetaEstadoCliente[cliente.estado] ?? cliente.estado}
                   </Insignia>
                 </div>
-                <time className="hidden shrink-0 text-xs text-slate-400 lg:block">{formatoFecha(cliente.created_at)}</time>
+                <time className="hidden shrink-0 text-xs text-tinta-tenue lg:block">{formatoFecha(cliente.created_at)}</time>
                 <div className="flex shrink-0 items-center gap-0.5">
                   <button
                     type="button"
                     onClick={() => abrirEdicion(cliente)}
                     title="Editar"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
                   >
                     <Pencil size={15} />
                   </button>
@@ -183,7 +183,7 @@ export function Clientes() {
                     type="button"
                     onClick={() => setPorEliminar(cliente)}
                     title="Eliminar"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
                   </button>
@@ -279,7 +279,7 @@ export function Clientes() {
         mensaje={
           porEliminar ? (
             <>
-              ¿Seguro que quieres eliminar a <strong className="text-slate-900">{porEliminar.nombre}</strong>? También se
+              ¿Seguro que quieres eliminar a <strong className="text-tinta">{porEliminar.nombre}</strong>? También se
               eliminarán sus servicios y pagos registrados. Esta acción no se puede deshacer.
             </>
           ) : null

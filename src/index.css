@@ -1,5 +1,61 @@
 @import "tailwindcss";
 
+/* ---------- Tokens del tema (oscuro premium) ----------
+   Las utilidades (bg-superficie, text-tinta, border-borde…) usan estas
+   variables. En impresión y dentro de .documento-factura se redefinen a
+   valores claros, así los reportes y las facturas imprimen perfectos. */
+@theme {
+  --color-fondo: #070b15;
+  --color-superficie: #0d1424;
+  --color-superficie-2: #172139;
+  --color-borde: #21304f;
+  --color-borde-suave: #182238;
+  --color-tinta: #eef2fb;
+  --color-tinta-suave: #9aa7c4;
+  --color-tinta-tenue: #5d6c8d;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-color: var(--color-fondo);
+  background-image:
+    radial-gradient(56rem 34rem at 12% -10%, rgb(79 70 229 / 0.22), transparent 62%),
+    radial-gradient(48rem 30rem at 102% -6%, rgb(139 92 246 / 0.16), transparent 60%),
+    radial-gradient(46rem 30rem at 50% 118%, rgb(14 165 233 / 0.08), transparent 62%),
+    linear-gradient(rgb(148 163 184 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(148 163 184 / 0.05) 1px, transparent 1px);
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
+  background-attachment: fixed;
+  background-size: auto, auto, auto, 3.25rem 3.25rem, 3.25rem 3.25rem;
+}
+
+::selection {
+  background: rgb(99 102 241 / 0.4);
+}
+
+/* Documento de factura: siempre con aspecto de papel (claro) */
+.documento-factura {
+  color-scheme: light;
+  --color-fondo: #ffffff;
+  --color-superficie: #ffffff;
+  --color-superficie-2: #f8fafc;
+  --color-borde: #e2e8f0;
+  --color-borde-suave: #eef2f7;
+  --color-tinta: #0f172a;
+  --color-tinta-suave: #475569;
+  --color-tinta-tenue: #94a3b8;
+}
+
 /* ---------- Animaciones sutiles (estilo tecnológico) ---------- */
 
 @keyframes aparecer {
@@ -87,16 +143,28 @@
 /* Barra de desplazamiento discreta */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(148 163 184 / 0.5) transparent;
+  scrollbar-color: rgb(71 85 105 / 0.55) transparent;
 }
 
-/* ---------- Impresión (reportes) ---------- */
+/* ---------- Impresión (reportes y facturas en claro) ---------- */
 
 .solo-impresion {
   display: none;
 }
 
 @media print {
+  :root {
+    color-scheme: light;
+    --color-fondo: #ffffff;
+    --color-superficie: #ffffff;
+    --color-superficie-2: #f8fafc;
+    --color-borde: #e2e8f0;
+    --color-borde-suave: #eef2f7;
+    --color-tinta: #0f172a;
+    --color-tinta-suave: #475569;
+    --color-tinta-tenue: #94a3b8;
+  }
+
   aside,
   header,
   .no-imprimir {
@@ -105,6 +173,7 @@
 
   body {
     background: #fff !important;
+    background-image: none !important;
   }
 
   main.area-impresion {
@@ -131,6 +200,36 @@
   * {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+    box-shadow: none !important;
+  }
+
+  /* Los acentos vuelven a tonos legibles sobre papel blanco */
+  [class*="text-emerald"] {
+    color: #047857 !important;
+  }
+  [class*="text-amber"] {
+    color: #b45309 !important;
+  }
+  [class*="text-rose"] {
+    color: #be123c !important;
+  }
+  [class*="text-red"] {
+    color: #b91c1c !important;
+  }
+  [class*="text-indigo"] {
+    color: #4338ca !important;
+  }
+  [class*="text-sky"] {
+    color: #0369a1 !important;
+  }
+  [class*="text-violet"] {
+    color: #6d28d9 !important;
+  }
+
+  .insignia {
+    border-color: #cbd5e1 !important;
+    background-color: #f1f5f9 !important;
+    color: #334155 !important;
   }
 }
 

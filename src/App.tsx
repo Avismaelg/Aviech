@@ -14,19 +14,24 @@ import { isSupabaseConfigured, supabase } from './lib/supabase'
 
 function SinConfigurar() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">AviTech Panel</h1>
-        <p className="mt-2 text-sm text-slate-600">Falta conectar Supabase. Pasos:</p>
-        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="w-full max-w-lg rounded-2xl border border-borde bg-superficie p-6 shadow-2xl shadow-black/50">
+        <h1 className="text-xl font-semibold tracking-tight text-tinta">AviTech Panel</h1>
+        <p className="mt-2 text-sm text-tinta-suave">Falta conectar Supabase. Pasos:</p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-tinta-suave">
           <li>
-            Copia <code>.env.example</code> como <code>.env</code> y completa los valores del proyecto.
+            Copia <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-indigo-200">.env.example</code> como{' '}
+            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-indigo-200">.env</code> y completa los
+            valores del proyecto.
           </li>
           <li>
-            Aplica las migraciones de <code>supabase/sql</code> en orden — o usa el workflow «Migrar base de datos» en GitHub.
+            Aplica las migraciones de{' '}
+            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-indigo-200">supabase/sql</code> en orden
+            — o usa el workflow «Migrar base de datos» en GitHub.
           </li>
           <li>
-            Reinicia el servidor de desarrollo: <code>npm run dev</code>.
+            Reinicia el servidor de desarrollo:{' '}
+            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-indigo-200">npm run dev</code>.
           </li>
         </ol>
       </div>
@@ -36,9 +41,9 @@ function SinConfigurar() {
 
 function Comprobando() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100">
-      <div className="flex items-center gap-3 text-sm text-slate-500">
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-500" />
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="flex items-center gap-3 text-sm text-tinta-suave">
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-borde border-t-indigo-400" />
         Cargando…
       </div>
     </div>

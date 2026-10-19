@@ -83,7 +83,7 @@ function VistaFactura({ factura, onVolver }: { factura: Factura; onVolver: () =>
         <button
           type="button"
           onClick={onVolver}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-tinta-suave transition-colors hover:text-tinta"
         >
           <ArrowLeft size={16} /> Volver a facturas
         </button>
@@ -93,23 +93,23 @@ function VistaFactura({ factura, onVolver }: { factura: Factura; onVolver: () =>
       </div>
 
       <Tarjeta className="documento-factura mx-auto max-w-3xl p-6 sm:p-8">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-5">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-borde pb-5">
           <div>
-            <p className="text-lg font-bold tracking-tight text-slate-900">{EMPRESA.nombre}</p>
-            {EMPRESA.eslogan && <p className="text-xs text-slate-500">{EMPRESA.eslogan}</p>}
-            <p className="mt-1.5 text-xs text-slate-500">{EMPRESA.direccion}</p>
-            {EMPRESA.rnc && <p className="text-xs text-slate-500">RNC: {EMPRESA.rnc}</p>}
+            <p className="text-lg font-bold tracking-tight text-tinta">{EMPRESA.nombre}</p>
+            {EMPRESA.eslogan && <p className="text-xs text-tinta-suave">{EMPRESA.eslogan}</p>}
+            <p className="mt-1.5 text-xs text-tinta-suave">{EMPRESA.direccion}</p>
+            {EMPRESA.rnc && <p className="text-xs text-tinta-suave">RNC: {EMPRESA.rnc}</p>}
             {(EMPRESA.telefono || EMPRESA.correo) && (
-              <p className="text-xs text-slate-500">{[EMPRESA.telefono, EMPRESA.correo].filter(Boolean).join(' · ')}</p>
+              <p className="text-xs text-tinta-suave">{[EMPRESA.telefono, EMPRESA.correo].filter(Boolean).join(' · ')}</p>
             )}
           </div>
           <div className="text-right">
-            <p className="text-sm font-semibold text-slate-900">Factura</p>
-            <p className="text-xs text-slate-500">NCF: {factura.numero ?? '—'}</p>
-            <p className="text-xs text-slate-500">
+            <p className="text-sm font-semibold text-tinta">Factura</p>
+            <p className="text-xs text-tinta-suave">NCF: {factura.numero ?? '—'}</p>
+            <p className="text-xs text-tinta-suave">
               Tipo: {factura.tipo} · {etiquetaTipoFactura[factura.tipo] ?? ''}
             </p>
-            <p className="text-xs text-slate-500">Fecha: {formatoFecha(factura.fecha)}</p>
+            <p className="text-xs text-tinta-suave">Fecha: {formatoFecha(factura.fecha)}</p>
             <div className="no-imprimir mt-1.5">
               <Insignia color={colorEstadoFactura[factura.estado] ?? 'slate'}>
                 {etiquetaEstadoFactura[factura.estado] ?? factura.estado}
@@ -119,34 +119,34 @@ function VistaFactura({ factura, onVolver }: { factura: Factura; onVolver: () =>
         </div>
 
         <div className="mt-5">
-          <p className="text-[11px] font-medium tracking-wide text-slate-400 uppercase">Facturar a</p>
-          <p className="text-sm font-semibold text-slate-900">{factura.cliente_nombre}</p>
-          {factura.cliente_rnc && <p className="text-xs text-slate-500">RNC: {factura.cliente_rnc}</p>}
+          <p className="text-[11px] font-medium tracking-wide text-tinta-tenue uppercase">Facturar a</p>
+          <p className="text-sm font-semibold text-tinta">{factura.cliente_nombre}</p>
+          {factura.cliente_rnc && <p className="text-xs text-tinta-suave">RNC: {factura.cliente_rnc}</p>}
         </div>
 
         <table className="mt-6 w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-200 text-left text-xs text-slate-400">
+            <tr className="border-b border-borde text-left text-xs text-tinta-tenue">
               <th className="py-2 font-medium">Descripción</th>
               <th className="py-2 text-right font-medium">Cant.</th>
               <th className="py-2 text-right font-medium">Precio</th>
               <th className="py-2 text-right font-medium">Importe</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-borde-suave">
             {items.length === 0 && (
               <tr>
-                <td colSpan={4} className="py-4 text-center text-sm text-slate-400">
+                <td colSpan={4} className="py-4 text-center text-sm text-tinta-tenue">
                   Sin líneas de detalle.
                 </td>
               </tr>
             )}
             {items.map((item, indice) => (
               <tr key={item.id ?? indice}>
-                <td className="py-2 text-slate-800">{item.descripcion}</td>
-                <td className="py-2 text-right text-slate-500 tabular-nums">{item.cantidad}</td>
-                <td className="py-2 text-right text-slate-500 tabular-nums">{formatoDinero(item.precio)}</td>
-                <td className="py-2 text-right text-slate-800 tabular-nums">{formatoDinero(item.cantidad * item.precio)}</td>
+                <td className="py-2 text-tinta">{item.descripcion}</td>
+                <td className="py-2 text-right text-tinta-suave tabular-nums">{item.cantidad}</td>
+                <td className="py-2 text-right text-tinta-suave tabular-nums">{formatoDinero(item.precio)}</td>
+                <td className="py-2 text-right text-tinta tabular-nums">{formatoDinero(item.cantidad * item.precio)}</td>
               </tr>
             ))}
           </tbody>
@@ -154,15 +154,15 @@ function VistaFactura({ factura, onVolver }: { factura: Factura; onVolver: () =>
 
         <div className="mt-5 flex justify-end">
           <div className="w-full max-w-xs space-y-1 text-sm">
-            <div className="flex justify-between text-slate-500">
+            <div className="flex justify-between text-tinta-suave">
               <span>Subtotal</span>
               <span className="tabular-nums">{formatoDinero(factura.subtotal)}</span>
             </div>
-            <div className="flex justify-between text-slate-500">
+            <div className="flex justify-between text-tinta-suave">
               <span>ITBIS {factura.aplica_itbis ? '(18%)' : '(no aplica)'}</span>
               <span className="tabular-nums">{formatoDinero(factura.itbis)}</span>
             </div>
-            <div className="flex justify-between border-t border-slate-200 pt-1.5 text-base font-semibold text-slate-900">
+            <div className="flex justify-between border-t border-borde pt-1.5 text-base font-semibold text-tinta">
               <span>Total</span>
               <span className="tabular-nums">{formatoDinero(factura.total)}</span>
             </div>
@@ -170,10 +170,10 @@ function VistaFactura({ factura, onVolver }: { factura: Factura; onVolver: () =>
         </div>
 
         {factura.notas && (
-          <p className="mt-5 border-t border-slate-100 pt-4 text-xs text-slate-500">Notas: {factura.notas}</p>
+          <p className="mt-5 border-t border-borde-suave pt-4 text-xs text-tinta-suave">Notas: {factura.notas}</p>
         )}
 
-        <p className="mt-6 text-center text-[11px] text-slate-400">
+        <p className="mt-6 text-center text-[11px] text-tinta-tenue">
           {factura.tipo.startsWith('E') ? 'Comprobante fiscal electrónico (e-CF).' : 'Comprobante fiscal.'} Emitido con{' '}
           {EMPRESA.nombre} · Gracias por su preferencia.
         </p>
@@ -503,37 +503,37 @@ export function Facturacion() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300">
             <ReceiptText size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Facturado este mes</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(facturadoMes)}</p>
+            <p className="text-xs text-tinta-suave">Facturado este mes</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(facturadoMes)}</p>
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300">
             <Printer size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Emitidas por cobrar</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(porCobrarFacturas)}</p>
+            <p className="text-xs text-tinta-suave">Emitidas por cobrar</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(porCobrarFacturas)}</p>
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300">
             <Check size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">ITBIS este mes</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(itbisMes)}</p>
+            <p className="text-xs text-tinta-suave">ITBIS este mes</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(itbisMes)}</p>
           </div>
         </Tarjeta>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-tinta-tenue" />
           <Entrada
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
@@ -569,15 +569,15 @@ export function Facturacion() {
           )
         )}
         {!cargando && !error && filtradas.length > 0 && (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-borde-suave">
             {filtradas.map((factura) => (
-              <li key={factura.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-500">
+              <li key={factura.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-indigo-300">
                   <ReceiptText size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">{factura.cliente_nombre}</p>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-sm font-medium text-tinta">{factura.cliente_nombre}</p>
+                  <p className="truncate text-xs text-tinta-suave">
                     {[
                       factura.numero ?? 'Sin NCF',
                       `${factura.tipo} · ${etiquetaTipoFactura[factura.tipo] ?? ''}`,
@@ -591,7 +591,7 @@ export function Facturacion() {
                 <span
                   className={cx(
                     'shrink-0 text-sm font-semibold tabular-nums',
-                    factura.estado === 'anulada' ? 'text-slate-400 line-through' : 'text-slate-900',
+                    factura.estado === 'anulada' ? 'text-tinta-tenue line-through' : 'text-tinta',
                   )}
                 >
                   {formatoDinero(factura.total)}
@@ -606,7 +606,7 @@ export function Facturacion() {
                     type="button"
                     onClick={() => setViendo(factura)}
                     title="Ver / Imprimir"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
                   >
                     <Eye size={15} />
                   </button>
@@ -616,7 +616,7 @@ export function Facturacion() {
                         type="button"
                         onClick={() => setPorPagar(factura)}
                         title="Marcar como pagada"
-                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
+                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-emerald-400/10 hover:text-emerald-300"
                       >
                         <Check size={15} />
                       </button>
@@ -624,7 +624,7 @@ export function Facturacion() {
                         type="button"
                         onClick={() => setPorAnular(factura)}
                         title="Anular"
-                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
                       >
                         <X size={15} />
                       </button>
@@ -636,7 +636,7 @@ export function Facturacion() {
                         type="button"
                         onClick={() => abrirEdicion(factura)}
                         title="Editar"
-                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
                       >
                         <Pencil size={15} />
                       </button>
@@ -644,7 +644,7 @@ export function Facturacion() {
                         type="button"
                         onClick={() => setPorEliminar(factura)}
                         title="Eliminar"
-                        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                        className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -708,18 +708,18 @@ export function Facturacion() {
             </Campo>
           </div>
 
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-tinta-tenue">
             NCF: B + 10 dígitos · e-CF: E + 12 dígitos. El envío a DGII se conecta cuando esté listo el
             certificado; aquí el comprobante se registra e imprime.
           </p>
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">Líneas de la factura</span>
+              <span className="text-xs font-medium text-tinta-suave">Líneas de la factura</span>
               <button
                 type="button"
                 onClick={agregarLinea}
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
+                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-indigo-300 transition-colors hover:bg-indigo-400/10"
               >
                 <Plus size={13} /> Agregar línea
               </button>
@@ -751,7 +751,7 @@ export function Facturacion() {
                     placeholder="Precio RD$"
                     className="w-32"
                   />
-                  <span className="w-24 shrink-0 text-right text-sm text-slate-600 tabular-nums">
+                  <span className="w-24 shrink-0 text-right text-sm text-tinta-suave tabular-nums">
                     {formatoDinero(importeLinea(linea))}
                   </span>
                   <button
@@ -759,7 +759,7 @@ export function Facturacion() {
                     onClick={() => quitarLinea(indice)}
                     disabled={formulario.lineas.length === 1}
                     title="Quitar línea"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <Trash2 size={15} />
                   </button>
@@ -768,26 +768,26 @@ export function Facturacion() {
             </div>
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-slate-700">
+          <label className="flex items-center gap-2 text-sm text-tinta">
             <input
               type="checkbox"
               checked={formulario.aplica_itbis}
               onChange={(evento) => setFormulario({ ...formulario, aplica_itbis: evento.target.checked })}
-              className="h-4 w-4 rounded border-slate-300 text-indigo-600"
+              className="h-4 w-4 rounded accent-indigo-500"
             />
             Aplica ITBIS (18%)
           </label>
 
-          <div className="rounded-lg bg-slate-50 p-3 text-sm">
-            <div className="flex justify-between text-slate-500">
+          <div className="rounded-lg bg-superficie-2 p-3 text-sm">
+            <div className="flex justify-between text-tinta-suave">
               <span>Subtotal</span>
               <span className="tabular-nums">{formatoDinero(subtotalForm)}</span>
             </div>
-            <div className="flex justify-between text-slate-500">
+            <div className="flex justify-between text-tinta-suave">
               <span>ITBIS</span>
               <span className="tabular-nums">{formatoDinero(itbisForm)}</span>
             </div>
-            <div className="mt-1 flex justify-between border-t border-slate-200 pt-1 font-semibold text-slate-900">
+            <div className="mt-1 flex justify-between border-t border-borde pt-1 font-semibold text-tinta">
               <span>Total</span>
               <span className="tabular-nums">{formatoDinero(totalForm)}</span>
             </div>
@@ -841,9 +841,9 @@ export function Facturacion() {
         mensaje={
           porPagar ? (
             <>
-              Se registrará un pago de <strong className="text-slate-900">{formatoDinero(porPagar.total)}</strong> en el
+              Se registrará un pago de <strong className="text-tinta">{formatoDinero(porPagar.total)}</strong> en el
               módulo Pagos y la factura{' '}
-              <strong className="text-slate-900">{porPagar.numero ?? 'sin NCF'}</strong> quedará pagada.
+              <strong className="text-tinta">{porPagar.numero ?? 'sin NCF'}</strong> quedará pagada.
             </>
           ) : null
         }
@@ -861,7 +861,7 @@ export function Facturacion() {
         mensaje={
           porAnular ? (
             <>
-              La factura <strong className="text-slate-900">{porAnular.numero ?? 'sin NCF'}</strong> quedará anulada y no
+              La factura <strong className="text-tinta">{porAnular.numero ?? 'sin NCF'}</strong> quedará anulada y no
               contará en los reportes. Esta acción no se puede deshacer.
             </>
           ) : null
@@ -880,7 +880,7 @@ export function Facturacion() {
           porEliminar ? (
             <>
               ¿Seguro que quieres eliminar el borrador de{' '}
-              <strong className="text-slate-900">{porEliminar.cliente_nombre}</strong>? Esta acción no se puede deshacer.
+              <strong className="text-tinta">{porEliminar.cliente_nombre}</strong>? Esta acción no se puede deshacer.
             </>
           ) : null
         }

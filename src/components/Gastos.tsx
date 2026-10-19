@@ -111,28 +111,28 @@ export function Gastos() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-400/10 text-rose-300">
             <TrendingDown size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Gastos este mes</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(gastosMes)}</p>
+            <p className="text-xs text-tinta-suave">Gastos este mes</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(gastosMes)}</p>
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-superficie-2 text-tinta-suave">
             <Wallet size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Total histórico</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(totalHistorico)}</p>
+            <p className="text-xs text-tinta-suave">Total histórico</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(totalHistorico)}</p>
           </div>
         </Tarjeta>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-tinta-tenue" />
           <Entrada
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
@@ -165,21 +165,21 @@ export function Gastos() {
           )
         )}
         {!cargando && !error && filtrados.length > 0 && (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-borde-suave">
             {filtrados.map((gasto) => (
-              <li key={gasto.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500">
+              <li key={gasto.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-400/10 text-rose-300">
                   <Receipt size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">{gasto.concepto}</p>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-sm font-medium text-tinta">{gasto.concepto}</p>
+                  <p className="truncate text-xs text-tinta-suave">
                     {[etiquetaCategoriaGasto[gasto.categoria] ?? gasto.categoria, formatoFecha(gasto.fecha), gasto.notas]
                       .filter(Boolean)
                       .join(' · ')}
                   </p>
                 </div>
-                <span className="shrink-0 text-sm font-semibold text-rose-600 tabular-nums">{formatoDinero(gasto.monto)}</span>
+                <span className="shrink-0 text-sm font-semibold text-rose-300 tabular-nums">{formatoDinero(gasto.monto)}</span>
                 <div className="hidden shrink-0 sm:block">
                   <Insignia color={colorCategoriaGasto[gasto.categoria] ?? 'slate'}>
                     {etiquetaCategoriaGasto[gasto.categoria] ?? gasto.categoria}
@@ -190,7 +190,7 @@ export function Gastos() {
                     type="button"
                     onClick={() => abrirEdicion(gasto)}
                     title="Editar"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
                   >
                     <Pencil size={15} />
                   </button>
@@ -198,7 +198,7 @@ export function Gastos() {
                     type="button"
                     onClick={() => setPorEliminar(gasto)}
                     title="Eliminar"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
                   </button>
@@ -279,7 +279,7 @@ export function Gastos() {
           porEliminar ? (
             <>
               ¿Seguro que quieres eliminar el gasto{' '}
-              <strong className="text-slate-900">{porEliminar.concepto}</strong>? Esta acción no se puede deshacer.
+              <strong className="text-tinta">{porEliminar.concepto}</strong>? Esta acción no se puede deshacer.
             </>
           ) : null
         }

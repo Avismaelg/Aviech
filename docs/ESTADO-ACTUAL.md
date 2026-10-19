@@ -25,6 +25,9 @@
 - **Toque tecnológico**: contadores que se animan, gráfica de ingresos de los últimos 6 meses,
   anillo de estado de cobro, transiciones suaves y app instalable (PWA: se puede «Añadir a
   pantalla de inicio» desde el teléfono).
+- **Interfaz oscura premium** (19-oct): fondo con auroras y rejilla sutil, barra lateral de
+  cristal, botones con gradiente, tarjetas elevadas e insignias translúcidas. La impresión y
+  las facturas se mantienen en claro (las hojas salen perfectas).
 - **Gastos** con la regla del dinero ×3: cada gasto se cubre con ingresos reales;
   el tablero muestra **Gastos del mes** y **Balance del mes** (cobrado − gastos).
 - **Facturación**: facturas con **NCF/e-NCF** (B01, B02, B14, B15 y e-CF E31/E32/E44/E45),
@@ -48,7 +51,7 @@
 - Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `pagos`, `gastos`,
   `facturas` y `factura_items` (líneas de factura). Todas con RLS: solo usuarios
   autenticados; un visitante anónimo no ve nada.
-- Las migraciones viven en **`supabase/sql/`** (001…004) y se aplican solas con el
+- Las migraciones viven en **`supabase/sql/`** (001…005) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).

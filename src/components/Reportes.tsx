@@ -114,7 +114,7 @@ export function Reportes() {
       <section>
         <CabeceraSeccion titulo="Reportes" descripcion="Estado de cuenta y resumen mensual." />
         <Tarjeta>
-          <div className="p-6 text-sm text-amber-800">
+          <div className="p-6 text-sm text-amber-200">
             Alguna tabla todavía no existe en la base de datos. Aplica las migraciones: GitHub → Actions → «Migrar base de datos» →
             Run workflow.
           </div>
@@ -217,22 +217,22 @@ export function Reportes() {
       </div>
 
       {/* Encabezado solo para impresión */}
-      <div className="solo-impresion mb-5 border-b border-slate-200 pb-3">
-        <h1 className="text-lg font-bold text-slate-900">AviTech Solutions Group</h1>
-        <p className="text-sm text-slate-600">
+      <div className="solo-impresion mb-5 border-b border-borde pb-3">
+        <h1 className="text-lg font-bold text-tinta">AviTech Solutions Group</h1>
+        <p className="text-sm text-tinta-suave">
           {vista === 'cliente' ? `Estado de cuenta — ${cliente?.nombre ?? 'Sin cliente seleccionado'}` : 'Resumen mensual de ingresos y gastos'}
         </p>
-        <p className="text-xs text-slate-500">Generado el {fechaCompleta()}</p>
+        <p className="text-xs text-tinta-suave">Generado el {fechaCompleta()}</p>
       </div>
 
       <div className="no-imprimir mb-5 flex flex-wrap items-center gap-3">
-        <div className="flex rounded-lg border border-slate-200 bg-white p-1">
+        <div className="flex rounded-lg border border-borde bg-superficie p-1">
           <button
             type="button"
             onClick={() => setVista('cliente')}
             className={cx(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150',
-              vista === 'cliente' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100',
+              vista === 'cliente' ? 'bg-indigo-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
             )}
           >
             Por cliente
@@ -242,7 +242,7 @@ export function Reportes() {
             onClick={() => setVista('mensual')}
             className={cx(
               'rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-150',
-              vista === 'mensual' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100',
+              vista === 'mensual' ? 'bg-indigo-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
             )}
           >
             Resumen mensual
@@ -275,12 +275,12 @@ export function Reportes() {
         <div className="space-y-4">
           <Tarjeta className="flex flex-wrap items-center justify-between gap-3 p-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-sm font-semibold text-indigo-600">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-400/10 text-sm font-semibold text-indigo-300">
                 {iniciales(cliente.nombre)}
               </span>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-slate-900">{cliente.nombre}</p>
-                <p className="truncate text-xs text-slate-500">
+                <p className="truncate text-sm font-semibold text-tinta">{cliente.nombre}</p>
+                <p className="truncate text-xs text-tinta-suave">
                   {[cliente.empresa, cliente.rnc ? `RNC ${cliente.rnc}` : null, cliente.email, cliente.telefono]
                     .filter(Boolean)
                     .join(' · ') || 'Sin datos de contacto'}
@@ -294,26 +294,26 @@ export function Reportes() {
 
           <div className="grid gap-3 sm:grid-cols-3">
             <Tarjeta className="p-3.5">
-              <p className="text-xs text-slate-500">Contratado (servicios)</p>
-              <p className="text-base font-semibold text-slate-900">{formatoDinero(contratado)}</p>
+              <p className="text-xs text-tinta-suave">Contratado (servicios)</p>
+              <p className="text-base font-semibold text-tinta">{formatoDinero(contratado)}</p>
             </Tarjeta>
             <Tarjeta className="p-3.5">
-              <p className="text-xs text-slate-500">Cobrado</p>
-              <p className="text-base font-semibold text-emerald-600">{formatoDinero(cobradoCliente)}</p>
+              <p className="text-xs text-tinta-suave">Cobrado</p>
+              <p className="text-base font-semibold text-emerald-300">{formatoDinero(cobradoCliente)}</p>
             </Tarjeta>
             <Tarjeta className="p-3.5">
-              <p className="text-xs text-slate-500">Por cobrar</p>
-              <p className="text-base font-semibold text-amber-600">{formatoDinero(pendienteCliente)}</p>
+              <p className="text-xs text-tinta-suave">Por cobrar</p>
+              <p className="text-base font-semibold text-amber-300">{formatoDinero(pendienteCliente)}</p>
             </Tarjeta>
           </div>
 
           <div>
-            <h3 className="mb-2 text-sm font-semibold text-slate-700">Servicios</h3>
+            <h3 className="mb-2 text-sm font-semibold text-tinta">Servicios</h3>
             <Tarjeta className="overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-100 text-left text-xs text-slate-400">
+                    <tr className="border-b border-borde-suave text-left text-xs text-tinta-tenue">
                       <th className="px-4 py-2.5 font-medium">Título</th>
                       <th className="px-4 py-2.5 font-medium">Tipo</th>
                       <th className="px-4 py-2.5 font-medium">Estado</th>
@@ -322,27 +322,27 @@ export function Reportes() {
                       <th className="px-4 py-2.5 text-right font-medium">Monto</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-borde-suave">
                     {serviciosCliente.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="px-4 py-6 text-center text-sm text-slate-400">
+                        <td colSpan={6} className="px-4 py-6 text-center text-sm text-tinta-tenue">
                           Sin servicios registrados.
                         </td>
                       </tr>
                     )}
                     {serviciosCliente.map((servicio) => (
                       <tr key={servicio.id}>
-                        <td className="px-4 py-2.5 text-slate-800">{servicio.titulo}</td>
-                        <td className="px-4 py-2.5 text-slate-500">{etiquetaTipoServicio[servicio.tipo] ?? servicio.tipo}</td>
+                        <td className="px-4 py-2.5 text-tinta">{servicio.titulo}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">{etiquetaTipoServicio[servicio.tipo] ?? servicio.tipo}</td>
                         <td className="px-4 py-2.5">
                           <Insignia color={colorEstadoServicio[servicio.estado] ?? 'slate'}>
                             {etiquetaEstadoServicio[servicio.estado] ?? servicio.estado}
                           </Insignia>
                         </td>
-                        <td className="px-4 py-2.5 text-slate-500">{formatoFecha(servicio.fecha_inicio)}</td>
-                        <td className="px-4 py-2.5 text-slate-500">{formatoFecha(servicio.fecha_fin)}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">{formatoFecha(servicio.fecha_inicio)}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">{formatoFecha(servicio.fecha_fin)}</td>
                         <td className="px-4 py-2.5 text-right">
-                          <Monto valor={servicio.monto} clase="text-slate-800" />
+                          <Monto valor={servicio.monto} clase="text-tinta" />
                         </td>
                       </tr>
                     ))}
@@ -353,12 +353,12 @@ export function Reportes() {
           </div>
 
           <div>
-            <h3 className="mb-2 text-sm font-semibold text-slate-700">Pagos</h3>
+            <h3 className="mb-2 text-sm font-semibold text-tinta">Pagos</h3>
             <Tarjeta className="overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-100 text-left text-xs text-slate-400">
+                    <tr className="border-b border-borde-suave text-left text-xs text-tinta-tenue">
                       <th className="px-4 py-2.5 font-medium">Concepto</th>
                       <th className="px-4 py-2.5 font-medium">Fecha</th>
                       <th className="px-4 py-2.5 font-medium">Método</th>
@@ -366,19 +366,19 @@ export function Reportes() {
                       <th className="px-4 py-2.5 text-right font-medium">Monto</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-borde-suave">
                     {pagosCliente.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-4 py-6 text-center text-sm text-slate-400">
+                        <td colSpan={5} className="px-4 py-6 text-center text-sm text-tinta-tenue">
                           Sin pagos registrados.
                         </td>
                       </tr>
                     )}
                     {pagosCliente.map((pago) => (
                       <tr key={pago.id}>
-                        <td className="px-4 py-2.5 text-slate-800">{pago.concepto}</td>
-                        <td className="px-4 py-2.5 text-slate-500">{formatoFecha(pago.fecha)}</td>
-                        <td className="px-4 py-2.5 text-slate-500">{etiquetaMetodoPago[pago.metodo ?? ''] ?? '—'}</td>
+                        <td className="px-4 py-2.5 text-tinta">{pago.concepto}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">{formatoFecha(pago.fecha)}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">{etiquetaMetodoPago[pago.metodo ?? ''] ?? '—'}</td>
                         <td className="px-4 py-2.5">
                           {estaVencido(pago) ? (
                             <Insignia color="red">Vencido</Insignia>
@@ -389,7 +389,7 @@ export function Reportes() {
                           )}
                         </td>
                         <td className="px-4 py-2.5 text-right">
-                          <Monto valor={pago.monto} clase={pago.estado === 'pagado' ? 'text-emerald-600' : 'text-slate-700'} />
+                          <Monto valor={pago.monto} clase={pago.estado === 'pagado' ? 'text-emerald-300' : 'text-tinta'} />
                         </td>
                       </tr>
                     ))}
@@ -400,12 +400,12 @@ export function Reportes() {
           </div>
 
           <div>
-            <h3 className="mb-2 text-sm font-semibold text-slate-700">Facturas</h3>
+            <h3 className="mb-2 text-sm font-semibold text-tinta">Facturas</h3>
             <Tarjeta className="overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-100 text-left text-xs text-slate-400">
+                    <tr className="border-b border-borde-suave text-left text-xs text-tinta-tenue">
                       <th className="px-4 py-2.5 font-medium">NCF / e-NCF</th>
                       <th className="px-4 py-2.5 font-medium">Tipo</th>
                       <th className="px-4 py-2.5 font-medium">Fecha</th>
@@ -413,28 +413,28 @@ export function Reportes() {
                       <th className="px-4 py-2.5 text-right font-medium">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-borde-suave">
                     {facturasCliente.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-4 py-6 text-center text-sm text-slate-400">
+                        <td colSpan={5} className="px-4 py-6 text-center text-sm text-tinta-tenue">
                           Sin facturas registradas.
                         </td>
                       </tr>
                     )}
                     {facturasCliente.map((factura) => (
                       <tr key={factura.id}>
-                        <td className="px-4 py-2.5 text-slate-800">{factura.numero ?? '—'}</td>
-                        <td className="px-4 py-2.5 text-slate-500">
+                        <td className="px-4 py-2.5 text-tinta">{factura.numero ?? '—'}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">
                           {factura.tipo} · {etiquetaTipoFactura[factura.tipo] ?? ''}
                         </td>
-                        <td className="px-4 py-2.5 text-slate-500">{formatoFecha(factura.fecha)}</td>
+                        <td className="px-4 py-2.5 text-tinta-suave">{formatoFecha(factura.fecha)}</td>
                         <td className="px-4 py-2.5">
                           <Insignia color={colorEstadoFactura[factura.estado] ?? 'slate'}>
                             {etiquetaEstadoFactura[factura.estado] ?? factura.estado}
                           </Insignia>
                         </td>
                         <td className="px-4 py-2.5 text-right">
-                          <Monto valor={factura.total} clase="text-slate-800" />
+                          <Monto valor={factura.total} clase="text-tinta" />
                         </td>
                       </tr>
                     ))}
@@ -452,7 +452,7 @@ export function Reportes() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-100 text-left text-xs text-slate-400">
+                  <tr className="border-b border-borde-suave text-left text-xs text-tinta-tenue">
                     <th className="px-4 py-2.5 font-medium">Mes</th>
                     <th className="px-4 py-2.5 text-right font-medium">Facturado</th>
                     <th className="px-4 py-2.5 text-right font-medium">Cobrado</th>
@@ -461,42 +461,42 @@ export function Reportes() {
                     <th className="px-4 py-2.5 text-right font-medium">Balance</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-borde-suave">
                   {filasMensuales.map((fila) => (
                     <tr key={fila.clave}>
-                      <td className="px-4 py-2.5 text-slate-800">{formatoMes(fila.clave)}</td>
+                      <td className="px-4 py-2.5 text-tinta">{formatoMes(fila.clave)}</td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.facturado} clase="text-indigo-600" />
+                        <Monto valor={fila.facturado} clase="text-indigo-300" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.cobrado} clase="text-emerald-600" />
+                        <Monto valor={fila.cobrado} clase="text-emerald-300" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.porCobrar} clase="text-amber-600" />
+                        <Monto valor={fila.porCobrar} clase="text-amber-300" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.gastos} clase="text-rose-600" />
+                        <Monto valor={fila.gastos} clase="text-rose-300" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.balance} clase={fila.balance >= 0 ? 'font-semibold text-slate-900' : 'font-semibold text-rose-600'} />
+                        <Monto valor={fila.balance} clase={fila.balance >= 0 ? 'font-semibold text-tinta' : 'font-semibold text-rose-300'} />
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-slate-200 bg-slate-50">
-                    <td className="px-4 py-2.5 font-semibold text-slate-700">Total (12 meses)</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-indigo-700">{formatoDinero(totales.facturado)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-emerald-700">{formatoDinero(totales.cobrado)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-amber-700">{formatoDinero(totales.porCobrar)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-rose-700">{formatoDinero(totales.gastos)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-slate-900">{formatoDinero(totales.balance)}</td>
+                  <tr className="border-t border-borde bg-superficie-2">
+                    <td className="px-4 py-2.5 font-semibold text-tinta">Total (12 meses)</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-indigo-300">{formatoDinero(totales.facturado)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-emerald-300">{formatoDinero(totales.cobrado)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-amber-300">{formatoDinero(totales.porCobrar)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-rose-300">{formatoDinero(totales.gastos)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-tinta">{formatoDinero(totales.balance)}</td>
                   </tr>
                 </tfoot>
               </table>
             </div>
           </Tarjeta>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-tinta-tenue">
             «Facturado» son las facturas no anuladas con fecha en ese mes. «Por cobrar» son pagos pendientes con fecha en
             ese mes. Balance = cobrado − gastos del mes.
           </p>

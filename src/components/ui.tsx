@@ -11,10 +11,13 @@ import { claseEntrada, cx } from '../lib/estilos'
 import type { ColorInsignia } from '../lib/etiquetas'
 
 const variantesBoton = {
-  primario: 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/25 hover:bg-indigo-500',
-  secundario: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
-  peligro: 'bg-red-600 text-white shadow-sm shadow-red-600/25 hover:bg-red-500',
-  fantasma: 'text-slate-500 hover:bg-slate-100 hover:text-slate-700',
+  primario:
+    'border border-indigo-400/30 bg-gradient-to-b from-indigo-500 to-indigo-600 text-white shadow-lg shadow-indigo-600/25 hover:from-indigo-400 hover:to-indigo-500 hover:shadow-indigo-500/35',
+  secundario:
+    'border border-borde bg-superficie-2/60 text-tinta hover:border-indigo-400/30 hover:bg-superficie-2',
+  peligro:
+    'border border-red-400/30 bg-gradient-to-b from-red-500 to-red-600 text-white shadow-lg shadow-red-600/25 hover:from-red-400 hover:to-red-500 hover:shadow-red-500/35',
+  fantasma: 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
 }
 
 export function Boton({
@@ -26,7 +29,7 @@ export function Boton({
     <button
       {...propiedades}
       className={cx(
-        'inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50',
         variantesBoton[variante],
         className,
       )}
@@ -35,32 +38,46 @@ export function Boton({
 }
 
 const coloresInsignia: Record<ColorInsignia, string> = {
-  emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  amber: 'border-amber-200 bg-amber-50 text-amber-700',
-  sky: 'border-sky-200 bg-sky-50 text-sky-700',
-  red: 'border-red-200 bg-red-50 text-red-700',
-  slate: 'border-slate-200 bg-slate-50 text-slate-600',
-  indigo: 'border-indigo-200 bg-indigo-50 text-indigo-700',
+  emerald: 'border-emerald-400/25 bg-emerald-400/10 text-emerald-300',
+  amber: 'border-amber-400/25 bg-amber-400/10 text-amber-300',
+  sky: 'border-sky-400/25 bg-sky-400/10 text-sky-300',
+  red: 'border-red-400/25 bg-red-400/10 text-red-300',
+  slate: 'border-slate-400/20 bg-slate-400/10 text-slate-300',
+  indigo: 'border-indigo-400/25 bg-indigo-400/10 text-indigo-300',
 }
 
 export function Insignia({ color = 'slate', children }: { color?: ColorInsignia; children: ReactNode }) {
   return (
-    <span className={cx('inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap', coloresInsignia[color])}>
+    <span
+      className={cx(
+        'insignia inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap',
+        coloresInsignia[color],
+      )}
+    >
       {children}
     </span>
   )
 }
 
 export function Tarjeta({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cx('rounded-xl border border-slate-200 bg-white shadow-sm', className)}>{children}</div>
+  return (
+    <div
+      className={cx(
+        'rounded-2xl border border-borde bg-superficie/90 shadow-[0_24px_60px_-40px_rgba(0,0,0,0.9)] backdrop-blur-sm',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
 }
 
 export function CabeceraSeccion({ titulo, descripcion, acciones }: { titulo: string; descripcion?: string; acciones?: ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h2 className="text-xl font-semibold tracking-tight text-slate-900">{titulo}</h2>
-        {descripcion && <p className="mt-0.5 text-sm text-slate-500">{descripcion}</p>}
+        <h2 className="text-2xl font-semibold tracking-tight text-tinta">{titulo}</h2>
+        {descripcion && <p className="mt-1 text-sm text-tinta-suave">{descripcion}</p>}
       </div>
       {acciones}
     </div>
@@ -70,7 +87,7 @@ export function CabeceraSeccion({ titulo, descripcion, acciones }: { titulo: str
 export function Campo({ etiqueta, className, children }: { etiqueta: string; className?: string; children: ReactNode }) {
   return (
     <label className={cx('block', className)}>
-      <span className="mb-1 block text-xs font-medium text-slate-600">{etiqueta}</span>
+      <span className="mb-1.5 block text-xs font-medium tracking-wide text-tinta-suave">{etiqueta}</span>
       {children}
     </label>
   )
@@ -115,22 +132,25 @@ export function Modal({
     <div
       role="presentation"
       onMouseDown={onCerrar}
-      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 backdrop-blur-[2px] sm:items-center"
+      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-[#03060d]/75 p-4 backdrop-blur-sm sm:items-center"
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={titulo}
         onMouseDown={(evento) => evento.stopPropagation()}
-        className={cx('animar-modal max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white shadow-xl', ancho)}
+        className={cx(
+          'animar-modal max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-borde bg-superficie shadow-2xl shadow-black/60',
+          ancho,
+        )}
       >
-        <div className="sticky top-0 flex items-center justify-between border-b border-slate-100 bg-white px-5 py-3.5">
-          <h3 className="text-base font-semibold text-slate-900">{titulo}</h3>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-borde-suave bg-superficie/95 px-5 py-4 backdrop-blur-md">
+          <h3 className="text-base font-semibold text-tinta">{titulo}</h3>
           <button
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar"
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-lg p-1.5 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta"
           >
             <X size={18} />
           </button>
@@ -158,7 +178,7 @@ export function Confirmar({
 }) {
   return (
     <Modal abierto={abierto} titulo={titulo} onCerrar={onCancelar} ancho="sm:max-w-md">
-      <div className="text-sm text-slate-600">{mensaje}</div>
+      <div className="text-sm text-tinta-suave">{mensaje}</div>
       <div className="mt-4 flex justify-end gap-2">
         <Boton variante="secundario" type="button" onClick={onCancelar}>
           Cancelar
@@ -174,9 +194,11 @@ export function Confirmar({
 export function Vacio({ icono, titulo, texto }: { icono: ReactNode; titulo: string; texto?: string }) {
   return (
     <div className="flex flex-col items-center gap-1 px-6 py-14 text-center">
-      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">{icono}</div>
-      <p className="text-sm font-medium text-slate-700">{titulo}</p>
-      {texto && <p className="max-w-sm text-sm text-slate-500">{texto}</p>}
+      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl border border-borde-suave bg-superficie-2 text-tinta-tenue">
+        {icono}
+      </div>
+      <p className="text-sm font-medium text-tinta">{titulo}</p>
+      {texto && <p className="max-w-sm text-sm text-tinta-suave">{texto}</p>}
     </div>
   )
 }
@@ -185,12 +207,16 @@ export function FilasCargando({ filas = 4 }: { filas?: number }) {
   return (
     <div className="space-y-2.5 p-4">
       {Array.from({ length: filas }).map((_, indice) => (
-        <div key={indice} className="h-11 animate-pulse rounded-lg bg-slate-100" />
+        <div key={indice} className="h-11 animate-pulse rounded-xl bg-superficie-2" />
       ))}
     </div>
   )
 }
 
 export function ErrorTabla({ mensaje }: { mensaje: string }) {
-  return <div className="m-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{mensaje}</div>
+  return (
+    <div className="m-4 rounded-xl border border-amber-400/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+      {mensaje}
+    </div>
+  )
 }

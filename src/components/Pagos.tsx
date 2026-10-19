@@ -131,37 +131,37 @@ export function Pagos() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
             <Banknote size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Cobrado este mes</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(cobradoMes)}</p>
+            <p className="text-xs text-tinta-suave">Cobrado este mes</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(cobradoMes)}</p>
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300">
             <Clock size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Por cobrar ({pendientesPago.length})</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(porCobrar)}</p>
+            <p className="text-xs text-tinta-suave">Por cobrar ({pendientesPago.length})</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(porCobrar)}</p>
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-400/10 text-red-300">
             <AlertTriangle size={17} />
           </span>
           <div>
-            <p className="text-xs text-slate-500">Vencidos ({vencidos.length})</p>
-            <p className="text-base font-semibold text-slate-900">{formatoDinero(porCobrarVencido)}</p>
+            <p className="text-xs text-tinta-suave">Vencidos ({vencidos.length})</p>
+            <p className="text-base font-semibold text-tinta">{formatoDinero(porCobrarVencido)}</p>
           </div>
         </Tarjeta>
       </div>
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-tinta-tenue" />
           <Entrada
             value={busqueda}
             onChange={(evento) => setBusqueda(evento.target.value)}
@@ -194,15 +194,15 @@ export function Pagos() {
           )
         )}
         {!cargando && !error && filtrados.length > 0 && (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-borde-suave">
             {filtrados.map((pago) => (
               <li key={pago.id} className="flex items-center gap-3 px-4 py-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-superficie-2 text-tinta-suave">
                   <Banknote size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">{pago.concepto}</p>
-                  <p className="truncate text-xs text-slate-500">
+                  <p className="truncate text-sm font-medium text-tinta">{pago.concepto}</p>
+                  <p className="truncate text-xs text-tinta-suave">
                     {[pago.clientes?.nombre ?? 'Cliente', formatoFecha(pago.fecha), etiquetaMetodoPago[pago.metodo ?? '']]
                       .filter(Boolean)
                       .join(' · ')}
@@ -211,10 +211,10 @@ export function Pagos() {
                 <span
                   className={`shrink-0 text-sm font-semibold tabular-nums ${
                     pago.estado === 'pagado'
-                      ? 'text-emerald-600'
+                      ? 'text-emerald-300'
                       : diasDeAtraso(pago.fecha) > 0
-                        ? 'text-red-600'
-                        : 'text-slate-700'
+                        ? 'text-red-300'
+                        : 'text-tinta'
                   }`}
                 >
                   {formatoDinero(pago.monto)}
@@ -234,7 +234,7 @@ export function Pagos() {
                       type="button"
                       title="Marcar como pagado"
                       onClick={() => void guardar({ estado: 'pagado' }, pago.id)}
-                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
+                      className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-emerald-400/10 hover:text-emerald-300"
                     >
                       <Check size={15} />
                     </button>
@@ -243,7 +243,7 @@ export function Pagos() {
                     type="button"
                     onClick={() => abrirEdicion(pago)}
                     title="Editar"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta-suave"
                   >
                     <Pencil size={15} />
                   </button>
@@ -251,7 +251,7 @@ export function Pagos() {
                     type="button"
                     onClick={() => setPorEliminar(pago)}
                     title="Eliminar"
-                    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg p-2 text-tinta-tenue transition-colors hover:bg-red-400/10 hover:text-red-300"
                   >
                     <Trash2 size={15} />
                   </button>
@@ -280,7 +280,7 @@ export function Pagos() {
             </Selector>
           </Campo>
           {clientes.length === 0 && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
+            <p className="rounded-lg border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-xs text-amber-300 sm:col-span-2">
               Todavía no hay clientes. Crea uno primero en la sección «Clientes».
             </p>
           )}
@@ -364,7 +364,7 @@ export function Pagos() {
         mensaje={
           porEliminar ? (
             <>
-              ¿Seguro que quieres eliminar el pago <strong className="text-slate-900">{porEliminar.concepto}</strong>? Esta
+              ¿Seguro que quieres eliminar el pago <strong className="text-tinta">{porEliminar.concepto}</strong>? Esta
               acción no se puede deshacer.
             </>
           ) : null

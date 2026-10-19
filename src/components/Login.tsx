@@ -25,17 +25,21 @@ export function Login() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-slate-100 via-slate-50 to-indigo-50 px-4">
-      <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-indigo-200/50 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-violet-200/50 blur-3xl" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <div aria-hidden className="pointer-events-none absolute -top-32 -left-24 h-96 w-96 rounded-full bg-indigo-600/25 blur-[110px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-32 h-96 w-96 rounded-full bg-violet-600/25 blur-[110px]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/50 to-transparent"
+      />
 
-      <div className="animar-entrada relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5">
-        <header className="mb-6 text-center">
-          <span className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/30">
+      <div className="animar-entrada relative w-full max-w-sm rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/60 backdrop-blur-2xl">
+        <header className="mb-7 text-center">
+          <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/40 ring-1 ring-white/20">
             A
           </span>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">AviTech Panel</h1>
-          <p className="mt-1 text-sm text-slate-500">Acceso del personal</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">AviTech Panel</h1>
+          <p className="mt-1 text-sm text-slate-400">Acceso del personal</p>
         </header>
 
         <form onSubmit={enviar} className="space-y-4">
@@ -60,14 +64,16 @@ export function Login() {
             />
           </Campo>
 
-          {error && <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+          {error && (
+            <p className="rounded-xl border border-red-400/25 bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>
+          )}
 
           <Boton type="submit" disabled={cargando} className="w-full">
             {cargando ? 'Entrando…' : 'Entrar'}
           </Boton>
         </form>
 
-        <p className="mt-5 text-center text-xs text-slate-400">¿Necesitas acceso? Pídele al administrador que cree tu usuario.</p>
+        <p className="mt-6 text-center text-xs text-slate-500">¿Necesitas acceso? Pídele al administrador que cree tu usuario.</p>
       </div>
     </div>
   )
