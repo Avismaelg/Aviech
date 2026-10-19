@@ -33,3 +33,6 @@ dist-ssr
 # Estado local de la herramienta de Cloudflare (wrangler)
 .wrangler/
 
+# Herramientas de diseño locales (skill UI UX Pro Max de OpenCode)
+.opencode/
+

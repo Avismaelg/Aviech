@@ -74,6 +74,19 @@
 - Respaldo manual: repo de respaldos → **Actions** → *Respaldo de la base de datos* → **Run workflow**.
 - Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
 
+## 🎨 Herramientas de diseño (UI UX Pro Max)
+
+- El **sistema de diseño** del panel está documentado en **`docs/DESIGN.md`** (tokens,
+  componentes, reglas de impresión y checklist). Cualquier cambio visual debe seguirlo.
+- Quedó instalado el skill **UI UX Pro Max** (19-oct): motor de estilos, paletas por
+  industria, tipografías, guías de UX y checklist de entrega.
+  - **Global** (funciona en todo OpenCode): `C:\Users\User\.opencode\skills\`
+  - **En el proyecto**: `avitech-panel\.opencode\skills\` (ignorado por Git; se reinstala
+    con `npx ui-ux-pro-max-cli init --ai opencode`)
+  - Requiere **Python 3.12** (instalado en `C:\Users\User\AppData\Local\Programs\Python\Python312`).
+- Uso: pedir en OpenCode cualquier tarea de interfaz («revisa esta pantalla», «mejora este
+  formulario», «haz este reporte más claro») y el skill se activa solo.
+
 ## ⚠️ Reglas de oro
 
 1. Ningún limpiador de disco ni antivirus debe tocar `C:\Users\User\avitech`.
