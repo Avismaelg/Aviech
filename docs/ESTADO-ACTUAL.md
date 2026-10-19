@@ -1,22 +1,28 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la segunda sesión)
+> Última actualización: 19-oct-2026 (cierre de la tercera sesión)
 
 ## 📌 Punto de continuación
 
-- **Todo guardado en GitHub:** `main` = `origin/main`, sin cambios pendientes (el **Auditor SEO**
-  entró en `438d3e5` y el reporte de migración en `3dbbc51`).
+- **Todo guardado en GitHub:** `main` = `origin/main`, sin cambios pendientes
+  (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
+  3.ª sesión: **Prospección** en `34a6459`).
+- **Prospección integrada y en vivo:** busca **correos, teléfonos y redes sociales** de una web
+  (página principal + hasta 2 páginas de contacto) y con un clic los guarda como **empresa y
+  contacto en el CRM**, avisando si la empresa ya existe. **Gratis y sin claves**; no necesitó
+  migración. Verificado en producción: el bundle sirve el módulo y `/api/scraper/contactos`
+  responde `401` sin sesión. Guía: **`docs/PROSPECCION.md`**.
 - **Auditor SEO integrado y en vivo:** analiza cualquier página con puntaje **0–100**
   (contenido, técnico y archivos del sitio), guarda historial y mide la **velocidad con
   PageSpeed**; **gratis y sin claves**. Migración **008** aplicada por el workflow «Migrar
-  base de datos» **#9 (en verde)**. Verificado en producción: el panel sirve el módulo y
-  `/api/seo/auditar` responde `401` sin sesión. Guía: **`docs/SEO.md`**.
+  base de datos» **#9 (en verde)**. Guía: **`docs/SEO.md`**.
 - **CRM integrado y en vivo** (commit `3dc111d`): pipeline kanban, empresas, contactos y
   actividades, con conversión de empresa en cliente. Migración **007** aplicada por el
   workflow «Migrar base de datos» **#8 (en verde)** y verificada con RLS.
-- **Sitio:** https://aviech.avismael-eg.workers.dev — sirve la compilación con el CRM y el Auditor SEO.
+- **Sitio:** https://aviech.avismael-eg.workers.dev — sirve la compilación con el CRM, el
+  Auditor SEO y Prospección.
 - **Respaldo manual al cerrar** (19-oct, 6:25 PM UTC): `backup-2026-10-19_1825.sql.gz`
-  verificado; ver la sección de respaldos.
+  verificado; ver la sección de respaldos (la 3.ª sesión no cambió la base de datos).
 - **Para retomar:** sigue los pasos de abajo (2 minutos).
 
 ## 🔄 Cómo retomar al encender la laptop
@@ -30,7 +36,8 @@
 6. Revisa los workflows:
    - `Avismaelg/Aviech` → **Actions** → «Migrar base de datos».
    - `Avismaelg/Aviech-backup` → **Actions** → «Respaldo de la base de datos».
-7. Lee **`docs/CRM.md`** y **`docs/SEO.md`** para usar esos módulos y este archivo para el estado general.
+7. Lee **`docs/CRM.md`**, **`docs/SEO.md`** y **`docs/PROSPECCION.md`** para usar esos
+   módulos y este archivo para el estado general.
 8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
 9. Si agregas una migración, créala como `supabase/sql/009_....sql`; el push la aplica.
 
@@ -48,15 +55,15 @@
   quedó autorizada en este PC (guarda la sesión de Cloudflare).
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
   del repositorio — no hay que configurar nada dentro de Cloudflare.
-- El mismo Worker atiende la **API interna** del panel: `/api/seo/*` (Auditor SEO) exige la
-  sesión de Supabase (`Authorization: Bearer …`); sin ella responde `401`. Declarado en
-  `wrangler.jsonc` (`main` + `assets.run_worker_first`). ✅
+- El mismo Worker atiende la **API interna** del panel: `/api/seo/*` (Auditor SEO) y
+  `/api/scraper/*` (Prospección) exigen la sesión de Supabase (`Authorization: Bearer …`);
+  sin ella responden `401`. Declarado en `wrangler.jsonc` (`main` + `assets.run_worker_first`). ✅
 - ⚠️ Cuidado con direcciones parecidas: `avitech.workers.dev` **no** es de este proyecto
   (es de otra empresa; da `error code: 1042`). La nuestra termina en `avismael-eg.workers.dev`.
 
 ## ✅ La app está completa (local y en internet)
 
-- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Auditor SEO** (informe de páginas y velocidad), **Servicios**, **Igualas**
+- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
   (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
   **Pagos**, **Facturación**, **Gastos** y **Reportes**.
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
@@ -97,6 +104,12 @@
   idioma) y archivos del sitio (`robots.txt` y `sitemap.xml`); además mide la **velocidad con
   PageSpeed** (móvil) y guarda **historial** por URL. Gratis, sin claves y con el mismo login.
   Guía: **`docs/SEO.md`**.
+- **Prospección** (nuevo, 3.ª sesión): escribe la web de una empresa y extrae sus **correos,
+  teléfonos y redes sociales** (página principal + hasta 2 páginas de contacto del mismo
+  dominio); cada hallazgo indica su página de origen y las redes de empresa van primero.
+  Con un clic crea la **empresa y el contacto en el CRM** (o añade el contacto si la empresa
+  ya existe; avisa antes). Gratis, sin claves, con el mismo login. Guía:
+  **`docs/PROSPECCION.md`**.
 - Login solo para personal (sin registro público). Los usuarios se crean en
   Supabase → Authentication → Users.
 - App local: `npm run dev` → http://localhost:5173
@@ -132,6 +145,11 @@
   velocidad con PageSpeed, historial, borrado, validación, recarga y vista móvil —
   **0 errores de consola**. Script: `docs/pruebas/prueba-seo.js`; capturas en `capturas-seo`
   (6 pantallas).
+- **Prueba de Prospección** (19-oct, 3.ª sesión): 9 pasos con datos simulados — búsqueda de
+  contactos, guardado como empresa nueva, guardado cuando la empresa ya existe (sin
+  duplicarla), salto al CRM, validación, recarga y vista móvil — **0 errores de consola**.
+  Script: `docs/pruebas/prueba-prospeccion.js`; capturas en `capturas-prospeccion`
+  (7 pantallas).
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -149,6 +167,8 @@
 - **Respaldo manual adicional al cerrar la segunda sesión (19-oct, 6:25 PM UTC):**
   `backup-2026-10-19_1825.sql.gz` verificado (gzip válido, 277,330 bytes descomprimidos,
   7,796 líneas) e incluye las 12 tablas, entre ellas **`seo_auditorias`**. Run #9 en verde.
+- **3.ª sesión (Prospección):** sin cambios de base de datos (el módulo usa las tablas del
+  CRM), así que el respaldo de las 6:25 PM UTC sigue siendo el más reciente.
 - Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
 
 ## 🎨 Herramientas de diseño (UI UX Pro Max)
@@ -188,5 +208,7 @@
 5. Auditor SEO fase 2 (solo si algún día se decide pagar): palabras clave, backlinks y
    seguimiento de posiciones con OpenSEO hospedado (US$10/mes) o DataForSEO (recarga mínima
    US$50). Hoy: no pagar.
-6. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
+6. Prospección fase 2 (solo si se pide): rastrear más páginas por sitio, exportar los
+   hallazgos a CSV y marcar empresas ya descartadas.
+7. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
    recordatorios de vencimientos y más analítica del tablero.
