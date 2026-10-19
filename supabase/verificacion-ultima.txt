@@ -1,101 +1,147 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-19 16:38 UTC
+Fecha: 2026-10-19 17:35 UTC
 
 ## Tablas de public
-             List of relations
- Schema |     Name      | Type  |  Owner   
---------+---------------+-------+----------
- public | clientes      | table | postgres
- public | factura_items | table | postgres
- public | facturas      | table | postgres
- public | gastos        | table | postgres
- public | igualas       | table | postgres
- public | pagos         | table | postgres
- public | servicios     | table | postgres
-(7 rows)
+               List of relations
+ Schema |       Name        | Type  |  Owner   
+--------+-------------------+-------+----------
+ public | clientes          | table | postgres
+ public | crm_actividades   | table | postgres
+ public | crm_contactos     | table | postgres
+ public | crm_empresas      | table | postgres
+ public | crm_oportunidades | table | postgres
+ public | factura_items     | table | postgres
+ public | facturas          | table | postgres
+ public | gastos            | table | postgres
+ public | igualas           | table | postgres
+ public | pagos             | table | postgres
+ public | servicios         | table | postgres
+(11 rows)
 
 ## Columnas de todas las tablas
-  table_name   |  column_name   |        data_type         
----------------+----------------+--------------------------
- clientes      | id             | uuid
- clientes      | nombre         | text
- clientes      | email          | text
- clientes      | telefono       | text
- clientes      | notas          | text
- clientes      | created_at     | timestamp with time zone
- clientes      | empresa        | text
- clientes      | estado         | text
- clientes      | rnc            | text
- factura_items | id             | uuid
- factura_items | factura_id     | uuid
- factura_items | descripcion    | text
- factura_items | cantidad       | numeric
- factura_items | precio         | numeric
- factura_items | created_at     | timestamp with time zone
- facturas      | id             | uuid
- facturas      | cliente_id     | uuid
- facturas      | cliente_nombre | text
- facturas      | cliente_rnc    | text
- facturas      | numero         | text
- facturas      | tipo           | text
- facturas      | fecha          | date
- facturas      | aplica_itbis   | boolean
- facturas      | subtotal       | numeric
- facturas      | itbis          | numeric
- facturas      | total          | numeric
- facturas      | estado         | text
- facturas      | notas          | text
- facturas      | pago_id        | uuid
- facturas      | created_at     | timestamp with time zone
- gastos        | id             | uuid
- gastos        | concepto       | text
- gastos        | categoria      | text
- gastos        | monto          | numeric
- gastos        | fecha          | date
- gastos        | notas          | text
- gastos        | created_at     | timestamp with time zone
- igualas       | id             | uuid
- igualas       | cliente_id     | uuid
- igualas       | categoria      | text
- igualas       | descripcion    | text
- igualas       | monto_mensual  | numeric
- igualas       | dia_cobro      | integer
- igualas       | fecha_inicio   | date
- igualas       | estado         | text
- igualas       | notas          | text
- igualas       | created_at     | timestamp with time zone
- pagos         | id             | uuid
- pagos         | cliente_id     | uuid
- pagos         | concepto       | text
- pagos         | monto          | numeric
- pagos         | fecha          | date
- pagos         | estado         | text
- pagos         | metodo         | text
- pagos         | created_at     | timestamp with time zone
- servicios     | id             | uuid
- servicios     | cliente_id     | uuid
- servicios     | titulo         | text
- servicios     | tipo           | text
- servicios     | estado         | text
- servicios     | monto          | numeric
- servicios     | fecha_inicio   | date
- servicios     | fecha_fin      | date
- servicios     | notas          | text
- servicios     | created_at     | timestamp with time zone
-(65 rows)
+    table_name     |  column_name   |        data_type         
+-------------------+----------------+--------------------------
+ clientes          | id             | uuid
+ clientes          | nombre         | text
+ clientes          | email          | text
+ clientes          | telefono       | text
+ clientes          | notas          | text
+ clientes          | created_at     | timestamp with time zone
+ clientes          | empresa        | text
+ clientes          | estado         | text
+ clientes          | rnc            | text
+ crm_actividades   | id             | uuid
+ crm_actividades   | oportunidad_id | uuid
+ crm_actividades   | contacto_id    | uuid
+ crm_actividades   | tipo           | text
+ crm_actividades   | titulo         | text
+ crm_actividades   | detalle        | text
+ crm_actividades   | fecha          | date
+ crm_actividades   | completada     | boolean
+ crm_actividades   | created_at     | timestamp with time zone
+ crm_contactos     | id             | uuid
+ crm_contactos     | empresa_id     | uuid
+ crm_contactos     | nombre         | text
+ crm_contactos     | cargo          | text
+ crm_contactos     | email          | text
+ crm_contactos     | telefono       | text
+ crm_contactos     | linkedin       | text
+ crm_contactos     | notas          | text
+ crm_contactos     | created_at     | timestamp with time zone
+ crm_empresas      | id             | uuid
+ crm_empresas      | nombre         | text
+ crm_empresas      | dominio        | text
+ crm_empresas      | industria      | text
+ crm_empresas      | telefono       | text
+ crm_empresas      | sitio_web      | text
+ crm_empresas      | notas          | text
+ crm_empresas      | cliente_id     | uuid
+ crm_empresas      | created_at     | timestamp with time zone
+ crm_oportunidades | id             | uuid
+ crm_oportunidades | empresa_id     | uuid
+ crm_oportunidades | contacto_id    | uuid
+ crm_oportunidades | titulo         | text
+ crm_oportunidades | etapa          | text
+ crm_oportunidades | monto          | numeric
+ crm_oportunidades | probabilidad   | integer
+ crm_oportunidades | fecha_cierre   | date
+ crm_oportunidades | notas          | text
+ crm_oportunidades | created_at     | timestamp with time zone
+ crm_oportunidades | updated_at     | timestamp with time zone
+ factura_items     | id             | uuid
+ factura_items     | factura_id     | uuid
+ factura_items     | descripcion    | text
+ factura_items     | cantidad       | numeric
+ factura_items     | precio         | numeric
+ factura_items     | created_at     | timestamp with time zone
+ facturas          | id             | uuid
+ facturas          | cliente_id     | uuid
+ facturas          | cliente_nombre | text
+ facturas          | cliente_rnc    | text
+ facturas          | numero         | text
+ facturas          | tipo           | text
+ facturas          | fecha          | date
+ facturas          | aplica_itbis   | boolean
+ facturas          | subtotal       | numeric
+ facturas          | itbis          | numeric
+ facturas          | total          | numeric
+ facturas          | estado         | text
+ facturas          | notas          | text
+ facturas          | pago_id        | uuid
+ facturas          | created_at     | timestamp with time zone
+ gastos            | id             | uuid
+ gastos            | concepto       | text
+ gastos            | categoria      | text
+ gastos            | monto          | numeric
+ gastos            | fecha          | date
+ gastos            | notas          | text
+ gastos            | created_at     | timestamp with time zone
+ igualas           | id             | uuid
+ igualas           | cliente_id     | uuid
+ igualas           | categoria      | text
+ igualas           | descripcion    | text
+ igualas           | monto_mensual  | numeric
+ igualas           | dia_cobro      | integer
+ igualas           | fecha_inicio   | date
+ igualas           | estado         | text
+ igualas           | notas          | text
+ igualas           | created_at     | timestamp with time zone
+ pagos             | id             | uuid
+ pagos             | cliente_id     | uuid
+ pagos             | concepto       | text
+ pagos             | monto          | numeric
+ pagos             | fecha          | date
+ pagos             | estado         | text
+ pagos             | metodo         | text
+ pagos             | created_at     | timestamp with time zone
+ servicios         | id             | uuid
+ servicios         | cliente_id     | uuid
+ servicios         | titulo         | text
+ servicios         | tipo           | text
+ servicios         | estado         | text
+ servicios         | monto          | numeric
+ servicios         | fecha_inicio   | date
+ servicios         | fecha_fin      | date
+ servicios         | notas          | text
+ servicios         | created_at     | timestamp with time zone
+(103 rows)
 
 ## Conteos
-     tabla     | filas 
----------------+-------
- clientes      |     2
- servicios     |     1
- pagos         |     1
- gastos        |     0
- facturas      |     0
- factura_items |     0
- igualas       |     0
-(7 rows)
+       tabla       | filas 
+-------------------+-------
+ clientes          |     2
+ servicios         |     1
+ pagos             |     1
+ gastos            |     0
+ facturas          |     0
+ factura_items     |     0
+ igualas           |     0
+ crm_empresas      |     0
+ crm_contactos     |     0
+ crm_oportunidades |     0
+ crm_actividades   |     0
+(11 rows)
 
 ## Prueba de inserciones (se revierte al final)
 BEGIN
@@ -106,18 +152,18 @@ ROLLBACK
 BEGIN
 SET
 SET
- clientes | servicios | pagos | gastos | facturas | factura_items | igualas 
-----------+-----------+-------+--------+----------+---------------+---------
-        2 |         1 |     1 |      0 |        0 |             0 |       0
+ clientes | servicios | pagos | gastos | facturas | factura_items | igualas | crm_empresas | crm_contactos | crm_oportunidades | crm_actividades 
+----------+-----------+-------+--------+----------+---------------+---------+--------------+---------------+-------------------+-----------------
+        2 |         1 |     1 |      0 |        0 |             0 |       0 |            0 |             0 |                 0 |               0
 (1 row)
 
 ROLLBACK
 ## RLS: lectura como anónimo (debe dar 0 en todo)
 BEGIN
 SET
- clientes | servicios | pagos | gastos | facturas | factura_items | igualas 
-----------+-----------+-------+--------+----------+---------------+---------
-        0 |         0 |     0 |      0 |        0 |             0 |       0
+ clientes | servicios | pagos | gastos | facturas | factura_items | igualas | crm_empresas | crm_contactos | crm_oportunidades | crm_actividades 
+----------+-----------+-------+--------+----------+---------------+---------+--------------+---------------+-------------------+-----------------
+        0 |         0 |     0 |      0 |        0 |             0 |       0 |            0 |             0 |                 0 |               0
 (1 row)
 
 ROLLBACK
