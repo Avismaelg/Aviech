@@ -374,7 +374,7 @@ const REDES_SOCIALES = [
 
 const PALABRAS_CONTACTO = /(contact|nosotros|quienes|qui[eé]nes|sobre|about|empresa|company|equipo|team|soporte|support|ayuda|help)/i
 // Rutas con restos de plantillas JavaScript (comillas, corchetes…): ruido de frameworks.
-const BASURA_EN_RUTA = /[\[\]{}'"`]|%5B|%5D|%27|%22|%7B|%7D|\.\./
+const BASURA_EN_RUTA = /[[\]{}'"`]|%5B|%5D|%27|%22|%7B|%7D|\.\./
 const RE_EMAIL = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi
 const RE_TELEFONO =
   /(?:\+?1[\s.-]?)?\(?(?:809|829|849)\)?[\s.-]?\d{3}[\s.-]?\d{4}\b|\+\d{1,3}(?:[\s.-]?\(?\d{1,4}\)?){2,4}|\b\d{3}[\s.-]\d{3}[\s.-]\d{4}\b/g
