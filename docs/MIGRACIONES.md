@@ -34,3 +34,4 @@ El orden importa: primero 001, luego 002, etc.
 | `001_clientes.sql` | Tabla `clientes` + políticas RLS |
 | `002_servicios_pagos.sql` | Tabla `servicios`, tabla `pagos`, campos `empresa` y `estado` en clientes |
 | `003_rnc_clientes.sql` | Columna `rnc` en clientes (RNC dominicano, República Dominicana) |
+| `004_gastos.sql` | Tabla `gastos` (regla del dinero ×3) + políticas RLS |

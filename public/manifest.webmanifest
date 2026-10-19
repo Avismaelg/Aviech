@@ -1,0 +1,17 @@
+{
+  "name": "AviTech Panel",
+  "short_name": "AviTech",
+  "description": "Panel interno de AviTech: clientes, servicios, pagos, gastos y reportes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

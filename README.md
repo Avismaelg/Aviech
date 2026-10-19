@@ -6,9 +6,9 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, servicios y pagos, con tablero
-de resumen. Pensado para **República Dominicana**: montos en **RD$** (pesos dominicanos),
-**RNC** de clientes y teléfonos con formato local (809/829/849).
+Panel de gestión de AviTech Solutions Group: clientes, servicios, pagos, gastos y reportes,
+con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$** (pesos
+dominicanos), **RNC** de clientes y teléfonos con formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
@@ -18,10 +18,12 @@ Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 
 | Módulo | Qué hace |
 |---|---|
-| **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, últimos clientes y pagos pendientes |
+| **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas |
-| **Pagos** | Ingresos por cliente; cobrado vs. pendiente y «marcar como pagado» en un clic |
+| **Pagos** | Ingresos por cliente; cobrado vs. pendiente, **vencidos** y «marcar como pagado» en un clic |
+| **Gastos** | Salidas por categoría (regla del dinero ×3); total del mes e histórico |
+| **Reportes** | Estado de cuenta por cliente y resumen mensual (12 meses) con **Imprimir / PDF** y exportación **CSV** |
 
 ### Requisitos
 
@@ -42,7 +44,7 @@ npm run lint       # revisión de código (oxlint)
 
 ### Base de datos y migraciones
 
-- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001, 002, 003, …).
+- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001, 002, 003, 004, …).
 - Se aplican solos con el workflow **«Migrar base de datos»** cada vez que cambia
   `supabase/sql/` (o a mano: GitHub → Actions → Run workflow).
 - Cada ejecución deja un reporte en `supabase/verificacion-ultima.txt`
@@ -75,10 +77,12 @@ src/
   App.tsx                 # sesión de Supabase → Login o panel
   components/
     Layout.tsx            # barra lateral + navegación
-    Inicio.tsx            # tablero: contadores, gráfica y anillo de cobro
+    Inicio.tsx            # tablero: contadores, gráfica, anillo de cobro y balance
     Clientes.tsx          # CRUD de clientes (con RNC)
     Servicios.tsx         # CRUD de servicios
-    Pagos.tsx             # CRUD de pagos
+    Pagos.tsx             # CRUD de pagos (con vencidos)
+    Gastos.tsx            # CRUD de gastos (regla ×3)
+    Reportes.tsx          # estado de cuenta y resumen mensual (imprimir / CSV)
     Login.tsx             # acceso del personal
     ui.tsx / toast.tsx    # piezas de interfaz compartidas
   lib/
@@ -87,8 +91,9 @@ src/
     formato.ts            # moneda (RD$), fechas e iniciales
     etiquetas.ts          # estados, tipos y colores
     useContador.ts        # animación de números del tablero
-  types/                  # tipos Cliente, Servicio y Pago
-supabase/sql/             # migraciones (001, 002, 003, …)
+    csv.ts                # exportar tablas a Excel (CSV)
+  types/                  # tipos Cliente, Servicio, Pago y Gasto
+supabase/sql/             # migraciones (001, 002, 003, 004, …)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 

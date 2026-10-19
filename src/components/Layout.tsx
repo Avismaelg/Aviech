@@ -1,17 +1,19 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, LayoutDashboard, LogOut, Users, Wallet } from 'lucide-react'
+import { Briefcase, FileText, LayoutDashboard, LogOut, Receipt, Users, Wallet } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cx } from '../lib/estilos'
 import { supabase } from '../lib/supabase'
 
-export type Seccion = 'inicio' | 'clientes' | 'servicios' | 'pagos'
+export type Seccion = 'inicio' | 'clientes' | 'servicios' | 'pagos' | 'gastos' | 'reportes'
 
 const NAVEGACION: Array<{ id: Seccion; etiqueta: string; Icono: LucideIcon }> = [
   { id: 'inicio', etiqueta: 'Inicio', Icono: LayoutDashboard },
   { id: 'clientes', etiqueta: 'Clientes', Icono: Users },
   { id: 'servicios', etiqueta: 'Servicios', Icono: Briefcase },
   { id: 'pagos', etiqueta: 'Pagos', Icono: Wallet },
+  { id: 'gastos', etiqueta: 'Gastos', Icono: Receipt },
+  { id: 'reportes', etiqueta: 'Reportes', Icono: FileText },
 ]
 
 const BRILLO_LATERAL = 'radial-gradient(120% 55% at 50% -10%, rgba(99, 102, 241, 0.22), transparent)'
@@ -36,7 +38,10 @@ export function Layout({
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800">
       {/* Barra lateral (escritorio) */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col bg-slate-900 md:flex" style={{ backgroundImage: BRILLO_LATERAL }}>
+      <aside
+        className="no-imprimir fixed inset-y-0 left-0 z-40 hidden w-60 flex-col bg-slate-900 md:flex"
+        style={{ backgroundImage: BRILLO_LATERAL }}
+      >
         <div className="flex items-center gap-2.5 px-5 py-5">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-lg font-bold text-white shadow-lg shadow-indigo-500/40">
             A
@@ -91,7 +96,7 @@ export function Layout({
 
       {/* Barra superior (móvil) */}
       <header
-        className="sticky top-0 z-40 border-b border-slate-800 bg-slate-900 md:hidden"
+        className="no-imprimir sticky top-0 z-40 border-b border-slate-800 bg-slate-900 md:hidden"
         style={{ backgroundImage: 'radial-gradient(100% 160% at 50% -40%, rgba(99, 102, 241, 0.25), transparent)' }}
       >
         <div className="flex items-center justify-between px-4 py-3">
@@ -126,8 +131,8 @@ export function Layout({
         </nav>
       </header>
 
-      <main className="md:pl-60">
-        <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">{children}</div>
+      <main className="area-impresion md:pl-60">
+        <div className="area-impresion-contenido mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">{children}</div>
       </main>
     </div>
   )

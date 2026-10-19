@@ -68,3 +68,24 @@ export const etiquetaMetodoPago: Record<string, string> = {
 export function etiqueta(mapa: Record<string, string>, valor: string | null | undefined, alterno = '—'): string {
   return valor ? (mapa[valor] ?? valor) : alterno
 }
+
+// ---------- Gastos ----------
+export const CATEGORIAS_GASTO = ['operativo', 'herramientas', 'marketing', 'impuestos', 'personal', 'otro'] as const
+
+export const etiquetaCategoriaGasto: Record<string, string> = {
+  operativo: 'Operativo',
+  herramientas: 'Herramientas',
+  marketing: 'Marketing',
+  impuestos: 'Impuestos',
+  personal: 'Personal',
+  otro: 'Otro',
+}
+
+export const colorCategoriaGasto: Record<string, ColorInsignia> = {
+  operativo: 'slate',
+  herramientas: 'sky',
+  marketing: 'indigo',
+  impuestos: 'amber',
+  personal: 'emerald',
+  otro: 'slate',
+}

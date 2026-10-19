@@ -89,3 +89,51 @@
   scrollbar-width: thin;
   scrollbar-color: rgb(148 163 184 / 0.5) transparent;
 }
+
+/* ---------- Impresión (reportes) ---------- */
+
+.solo-impresion {
+  display: none;
+}
+
+@media print {
+  aside,
+  header,
+  .no-imprimir {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  main.area-impresion {
+    padding-left: 0 !important;
+  }
+
+  .area-impresion-contenido {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .solo-impresion {
+    display: block !important;
+  }
+
+  .animar-entrada,
+  .animar-modal,
+  .animar-aviso,
+  .animar-fundido,
+  .animar-barra {
+    animation: none !important;
+  }
+
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+@page {
+  margin: 12mm;
+}

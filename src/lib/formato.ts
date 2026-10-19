@@ -38,3 +38,31 @@ export function iniciales(nombre: string): string {
       .join('') || '?'
   )
 }
+
+/** Días transcurridos desde una fecha "YYYY-MM-DD" (positivo = ya pasó). */
+export function diasDeAtraso(fecha: string | null | undefined): number {
+  if (!fecha) return 0
+  const [anio, mes, dia] = fecha.slice(0, 10).split('-').map(Number)
+  if (!anio || !mes || !dia) return 0
+  const objetivo = new Date(anio, mes - 1, dia)
+  const ahora = new Date()
+  const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate())
+  return Math.round((hoy.getTime() - objetivo.getTime()) / 86400000)
+}
+
+const formatoMesLargo = new Intl.DateTimeFormat('es-DO', { month: 'long', year: 'numeric' })
+const formatoFechaCompleta = new Intl.DateTimeFormat('es-DO', { day: '2-digit', month: 'long', year: 'numeric' })
+
+/** "Octubre de 2026" a partir de "2026-10". */
+export function formatoMes(clave: string): string {
+  const [anio, mes] = clave.split('-').map(Number)
+  if (!anio || !mes) return clave
+  const texto = formatoMesLargo.format(new Date(anio, mes - 1, 1))
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
+}
+
+/** "18 de octubre de 2026" — si no se pasa valor, usa hoy. */
+export function fechaCompleta(valor?: string | null): string {
+  const fecha = valor ? new Date(valor.length <= 10 ? `${valor}T12:00:00` : valor) : new Date()
+  return Number.isNaN(fecha.getTime()) ? '—' : formatoFechaCompleta.format(fecha)
+}

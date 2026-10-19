@@ -1,13 +1,14 @@
 import type { Session } from '@supabase/supabase-js'
-import { ArrowRight, Banknote, Briefcase, Clock, Plus, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, Banknote, Briefcase, Clock, PiggyBank, Plus, TrendingDown, TrendingUp, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { cx } from '../lib/estilos'
 import { colorEstadoCliente, etiquetaEstadoCliente } from '../lib/etiquetas'
-import { formatoDinero, formatoFecha, iniciales, mesActualISO } from '../lib/formato'
+import { diasDeAtraso, formatoDinero, formatoFecha, iniciales, mesActualISO } from '../lib/formato'
 import { supabase } from '../lib/supabase'
 import { useContador } from '../lib/useContador'
 import type { Cliente } from '../types/cliente'
+import type { Gasto } from '../types/gasto'
 import type { Pago } from '../types/pago'
 import type { Servicio } from '../types/servicio'
 import type { Seccion } from './Layout'
@@ -17,6 +18,7 @@ interface Resumen {
   clientes: Cliente[]
   servicios: Servicio[]
   pagos: Pago[]
+  gastos: Gasto[]
 }
 
 const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -27,6 +29,7 @@ function TarjetaDato({
   titulo,
   valor,
   formatear = (numero) => String(Math.round(numero)),
+  claseValor,
   detalle,
 }: {
   Icono: LucideIcon
@@ -34,6 +37,7 @@ function TarjetaDato({
   titulo: string
   valor: number
   formatear?: (numero: number) => string
+  claseValor?: string
   detalle?: string
 }) {
   const animado = useContador(valor)
@@ -50,7 +54,7 @@ function TarjetaDato({
         </span>
         <div className="min-w-0">
           <p className="text-xs font-medium text-slate-500">{titulo}</p>
-          <p className="truncate text-lg font-semibold text-slate-900 tabular-nums">{formatear(animado)}</p>
+          <p className={cx('truncate text-lg font-semibold tabular-nums', claseValor ?? 'text-slate-900')}>{formatear(animado)}</p>
           {detalle && <p className="truncate text-[11px] text-slate-400">{detalle}</p>}
         </div>
       </div>
@@ -177,12 +181,14 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
       supabase.from('clientes').select('*').order('created_at', { ascending: false }),
       supabase.from('servicios').select('*'),
       supabase.from('pagos').select('*, clientes(nombre)').order('fecha', { ascending: false }),
-    ]).then(([consultaClientes, consultaServicios, consultaPagos]) => {
+      supabase.from('gastos').select('*').order('fecha', { ascending: false }),
+    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos]) => {
       if (consultaClientes.error || consultaServicios.error || consultaPagos.error) setErrorTablas(true)
       setDatos({
         clientes: (consultaClientes.data ?? []) as Cliente[],
         servicios: (consultaServicios.data ?? []) as Servicio[],
         pagos: (consultaPagos.data ?? []) as Pago[],
+        gastos: (consultaGastos.error ? [] : (consultaGastos.data ?? [])) as Gasto[],
       })
     })
   }, [])
@@ -207,8 +213,8 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
     return (
       <section>
         <CabeceraSeccion titulo={`Hola, ${nombre}`} descripcion="Este es el resumen de AviTech hoy." />
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, indice) => (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, indice) => (
             <Tarjeta key={indice} className="p-4">
               <div className="h-10 animate-pulse rounded-lg bg-slate-100" />
             </Tarjeta>
@@ -241,6 +247,10 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
   const cobradoHistorico = pagos
     .filter((pago) => pago.estado === 'pagado')
     .reduce((total, pago) => total + Number(pago.monto), 0)
+  const gastosMes = datos.gastos
+    .filter((gasto) => (gasto.fecha ?? '').slice(0, 7) === mesActual)
+    .reduce((total, gasto) => total + Number(gasto.monto), 0)
+  const balanceMes = cobradoMes - gastosMes
   const serie = serieIngresos(pagos)
   const totalPeriodo = serie.reduce((total, punto) => total + punto.valor, 0)
   const recientes = clientes.slice(0, 5)
@@ -261,7 +271,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         </Boton>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <TarjetaDato
           Icono={Users}
           claseIcono="bg-indigo-50 text-indigo-600"
@@ -291,6 +301,23 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
           valor={porCobrar}
           formatear={(numero) => formatoDinero(Math.round(numero))}
           detalle={`${pendientesPago.length} pago${pendientesPago.length === 1 ? '' : 's'} pendiente${pendientesPago.length === 1 ? '' : 's'}`}
+        />
+        <TarjetaDato
+          Icono={TrendingDown}
+          claseIcono="bg-rose-50 text-rose-600"
+          titulo="Gastos este mes"
+          valor={gastosMes}
+          formatear={(numero) => formatoDinero(Math.round(numero))}
+          detalle="Salidas registradas"
+        />
+        <TarjetaDato
+          Icono={PiggyBank}
+          claseIcono="bg-violet-50 text-violet-600"
+          titulo="Balance del mes"
+          valor={balanceMes}
+          formatear={(numero) => formatoDinero(Math.round(numero))}
+          claseValor={balanceMes >= 0 ? 'text-emerald-600' : 'text-rose-600'}
+          detalle="Cobrado − gastos"
         />
       </div>
 
@@ -374,9 +401,24 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
                     <p className="truncate text-sm font-medium text-slate-800">{pago.concepto}</p>
                     <p className="truncate text-xs text-slate-400">
                       {pago.clientes?.nombre ?? 'Cliente'} · {formatoFecha(pago.fecha)}
+                      {diasDeAtraso(pago.fecha) > 0 && (
+                        <>
+                          {' · '}
+                          <span className="font-medium text-red-500">
+                            vencido hace {diasDeAtraso(pago.fecha)} día{diasDeAtraso(pago.fecha) === 1 ? '' : 's'}
+                          </span>
+                        </>
+                      )}
                     </p>
                   </div>
-                  <span className="shrink-0 text-sm font-semibold text-slate-700 tabular-nums">{formatoDinero(pago.monto)}</span>
+                  <span
+                    className={cx(
+                      'shrink-0 text-sm font-semibold tabular-nums',
+                      diasDeAtraso(pago.fecha) > 0 ? 'text-red-600' : 'text-slate-700',
+                    )}
+                  >
+                    {formatoDinero(pago.monto)}
+                  </span>
                 </li>
               ))}
             </ul>

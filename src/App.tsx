@@ -1,10 +1,12 @@
 import type { Session } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 import { Clientes } from './components/Clientes'
+import { Gastos } from './components/Gastos'
 import { Inicio } from './components/Inicio'
 import { Layout, type Seccion } from './components/Layout'
 import { Login } from './components/Login'
 import { Pagos } from './components/Pagos'
+import { Reportes } from './components/Reportes'
 import { Servicios } from './components/Servicios'
 import { ProveedorAvisos } from './components/toast'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
@@ -73,6 +75,8 @@ function App() {
             {seccion === 'clientes' && <Clientes />}
             {seccion === 'servicios' && <Servicios />}
             {seccion === 'pagos' && <Pagos />}
+            {seccion === 'gastos' && <Gastos />}
+            {seccion === 'reportes' && <Reportes />}
           </div>
         </Layout>
       ) : (

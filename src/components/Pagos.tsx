@@ -1,4 +1,4 @@
-import { Banknote, Check, Clock, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { AlertTriangle, Banknote, Check, Clock, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
 import {
   ESTADOS_PAGO,
@@ -7,7 +7,7 @@ import {
   etiquetaEstadoPago,
   etiquetaMetodoPago,
 } from '../lib/etiquetas'
-import { formatoDinero, formatoFecha, hoyISO, mesActualISO } from '../lib/formato'
+import { diasDeAtraso, formatoDinero, formatoFecha, hoyISO, mesActualISO } from '../lib/formato'
 import { useListaClientes, useTabla } from '../lib/useTabla'
 import type { Pago } from '../types/pago'
 import {
@@ -63,6 +63,8 @@ export function Pagos() {
     .reduce((total, pago) => total + Number(pago.monto), 0)
   const pendientesPago = pagos.filter((pago) => pago.estado === 'pendiente')
   const porCobrar = pendientesPago.reduce((total, pago) => total + Number(pago.monto), 0)
+  const vencidos = pendientesPago.filter((pago) => diasDeAtraso(pago.fecha) > 0)
+  const porCobrarVencido = vencidos.reduce((total, pago) => total + Number(pago.monto), 0)
 
   const filtrados = useMemo(() => {
     const texto = busqueda.trim().toLowerCase()
@@ -127,7 +129,7 @@ export function Pagos() {
         }
       />
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-2">
+      <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
             <Banknote size={17} />
@@ -144,6 +146,15 @@ export function Pagos() {
           <div>
             <p className="text-xs text-slate-500">Por cobrar ({pendientesPago.length})</p>
             <p className="text-base font-semibold text-slate-900">{formatoDinero(porCobrar)}</p>
+          </div>
+        </Tarjeta>
+        <Tarjeta className="flex items-center gap-3 p-3.5">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
+            <AlertTriangle size={17} />
+          </span>
+          <div>
+            <p className="text-xs text-slate-500">Vencidos ({vencidos.length})</p>
+            <p className="text-base font-semibold text-slate-900">{formatoDinero(porCobrarVencido)}</p>
           </div>
         </Tarjeta>
       </div>
@@ -198,14 +209,24 @@ export function Pagos() {
                   </p>
                 </div>
                 <span
-                  className={`shrink-0 text-sm font-semibold ${pago.estado === 'pagado' ? 'text-emerald-600' : 'text-slate-700'}`}
+                  className={`shrink-0 text-sm font-semibold tabular-nums ${
+                    pago.estado === 'pagado'
+                      ? 'text-emerald-600'
+                      : diasDeAtraso(pago.fecha) > 0
+                        ? 'text-red-600'
+                        : 'text-slate-700'
+                  }`}
                 >
                   {formatoDinero(pago.monto)}
                 </span>
                 <div className="hidden shrink-0 sm:block">
-                  <Insignia color={colorEstadoPago[pago.estado] ?? 'slate'}>
-                    {etiquetaEstadoPago[pago.estado] ?? pago.estado}
-                  </Insignia>
+                  {pago.estado === 'pendiente' && diasDeAtraso(pago.fecha) > 0 ? (
+                    <Insignia color="red">Vencido</Insignia>
+                  ) : (
+                    <Insignia color={colorEstadoPago[pago.estado] ?? 'slate'}>
+                      {etiquetaEstadoPago[pago.estado] ?? pago.estado}
+                    </Insignia>
+                  )}
                 </div>
                 <div className="flex shrink-0 items-center gap-0.5">
                   {pago.estado === 'pendiente' && (
