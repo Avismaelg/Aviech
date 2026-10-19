@@ -115,6 +115,7 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
+- `docs/pruebas/README.md` — prueba de humo del CRM con datos simulados
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

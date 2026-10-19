@@ -1,6 +1,34 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026
+> Última actualización: 19-oct-2026 (cierre de sesión)
+
+## 📌 Punto de continuación
+
+- **Todo guardado en GitHub:** `main` = `origin/main` (el CRM entró en `3dc111d`), sin cambios pendientes.
+- **CRM integrado y en vivo** (commit `3dc111d`): pipeline kanban, empresas, contactos y
+  actividades, con conversión de empresa en cliente. Migración **007** aplicada por el
+  workflow «Migrar base de datos» **#8 (en verde)** y verificada con RLS.
+- **Sitio:** https://aviech.avismael-eg.workers.dev — ya sirve la compilación con el CRM.
+- **Respaldo manual al cerrar** (19-oct): ver la sección de respaldos.
+- **Para retomar:** sigue los pasos de abajo (2 minutos).
+
+## 🔄 Cómo retomar al encender la laptop
+
+1. Abre PowerShell y entra al proyecto:
+   `cd C:\Users\User\avitech\avitech-panel`
+2. Trae lo último: `git pull --ff-only`.
+3. Si no existe `node_modules`, instala: `npm ci`. Si ya existe, sáltalo.
+4. Prueba local: `npm run dev` → http://localhost:5173
+5. Verificación rápida: `npm run build` y `npm run lint` (deben pasar limpios).
+6. Revisa los workflows:
+   - `Avismaelg/Aviech` → **Actions** → «Migrar base de datos».
+   - `Avismaelg/Aviech-backup` → **Actions** → «Respaldo de la base de datos».
+7. Lee **`docs/CRM.md`** para usar el CRM y este archivo para el estado general.
+8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
+9. Si agregas una migración, créala como `supabase/sql/008_....sql`; el push la aplica.
+
+**Prueba del CRM guardada:** `docs/pruebas/prueba-crm.js` (instrucciones en
+`docs/pruebas/README.md`). No usa la base real: simula Supabase y no contiene secretos.
 
 ## ✅ El panel está PUBLICADO y en uso
 
@@ -18,7 +46,7 @@
 
 ## ✅ La app está completa (local y en internet)
 
-- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **Servicios**, **Igualas**
+- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Servicios**, **Igualas**
   (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
   **Pagos**, **Facturación**, **Gastos** y **Reportes**.
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
@@ -68,6 +96,9 @@
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
+- **Migración 007 (CRM) aplicada y verificada el 19-oct-2026 17:35 UTC:** las 4 tablas
+  existen con sus columnas e índices, las inserciones de prueba pasan y el RLS deja al
+  anónimo en 0. Reporte: `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -88,6 +119,9 @@
 - Nota 19-oct: el respaldo automático de ese día no corrió por un incidente de GitHub
   Actions; se ejecutó uno manual a la 1:04 PM y se verificó (gzip válido, 7,402 líneas SQL,
   con la tabla `igualas`).
+- **Respaldo manual adicional al cerrar la sesión (19-oct, 1:42 PM RD):**
+  `backup-2026-10-19_1742.sql.gz` verificado (gzip válido, 269.1 KB descomprimido,
+  7,738 líneas) e incluye ya las 4 tablas del CRM. Run #8 en verde.
 - Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
 
 ## 🎨 Herramientas de diseño (UI UX Pro Max)
@@ -114,7 +148,8 @@
 ## 📋 Próximos pasos
 
 1. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
-   Dominicana). El del 19-oct se hizo manual y quedó verificado.
+   Dominicana). Los dos del 19-oct se hicieron manuales (1:04 PM y 1:42 PM) y quedaron
+   verificados.
 2. Revisar en Supabase → **Account → Access Tokens** y borrar el token
    `cli_User@ThinkBook-15IIL_1792390971` (se creó el 19-oct solo para rotar la
    contraseña; ya no hace falta). En este PC ya no queda copia.
