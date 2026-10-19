@@ -1,15 +1,16 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-19 01:29 UTC
+Fecha: 2026-10-19 04:08 UTC
 
 ## Tablas de public
            List of relations
  Schema |   Name    | Type  |  Owner   
 --------+-----------+-------+----------
  public | clientes  | table | postgres
+ public | gastos    | table | postgres
  public | pagos     | table | postgres
  public | servicios | table | postgres
-(3 rows)
+(4 rows)
 
 ## Columnas de clientes, servicios y pagos
  table_name | column_name  |        data_type         
