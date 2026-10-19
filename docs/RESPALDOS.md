@@ -13,6 +13,8 @@ guardada en un repositorio **privado** de GitHub:
 - Primer respaldo (prueba, 18-oct-2026): `backup-2026-10-18_2323.sql.gz` ✅
 - Respaldo del 19-oct-2026: `backup-2026-10-19_1704.sql.gz` (manual, verificado: gzip válido,
   7,402 líneas SQL, incluye la tabla `igualas`) ✅
+- Respaldo del 19-oct-2026 (2ª sesión): `backup-2026-10-19_1825.sql.gz` (manual, verificado:
+  gzip válido, 277,330 bytes descomprimidos, 7,796 líneas, incluye `seo_auditorias`) ✅
 
 ## Cuándo corre
 
