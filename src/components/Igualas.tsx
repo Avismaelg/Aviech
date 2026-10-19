@@ -86,6 +86,12 @@ export function Igualas() {
     setModalAbierto(true)
   }
 
+  function limpiarFiltros() {
+    setBusqueda('')
+    setFiltroEstado('todos')
+    setFiltroCategoria('todas')
+  }
+
   function abrirEdicion(iguala: Iguala) {
     setEditandoId(iguala.id)
     setFormulario({
@@ -200,6 +206,10 @@ export function Igualas() {
         </Selector>
       </div>
 
+      <p aria-live="polite" className="sr-only">
+        {filtradas.length} iguala{filtradas.length === 1 ? '' : 's'} en pantalla
+      </p>
+
       <Tarjeta>
         {error && <ErrorTabla mensaje={error} />}
         {cargando && !error && <FilasCargando />}
@@ -208,10 +218,24 @@ export function Igualas() {
             <Vacio
               icono={<Handshake size={22} />}
               titulo="Todavía no hay igualas"
-              texto="Crea la primera con «Nueva iguala»: cobro mensual de contabilidad, software o asesoría legal."
+              texto="Crea la primera: cobro mensual de contabilidad, software o asesoría legal."
+              accion={
+                <Boton variante="secundario" onClick={abrirNuevo}>
+                  <Plus size={16} /> Nueva iguala
+                </Boton>
+              }
             />
           ) : (
-            <Vacio icono={<Search size={22} />} titulo="Sin resultados" texto="Prueba otra búsqueda o quita el filtro." />
+            <Vacio
+              icono={<Search size={22} />}
+              titulo="Sin resultados"
+              texto="Prueba otra búsqueda o quita los filtros."
+              accion={
+                <Boton variante="secundario" onClick={limpiarFiltros}>
+                  Limpiar filtros
+                </Boton>
+              }
+            />
           )
         )}
         {!cargando && !error && filtradas.length > 0 && (

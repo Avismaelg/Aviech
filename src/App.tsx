@@ -51,10 +51,37 @@ function Comprobando() {
   )
 }
 
+const SECCIONES: Seccion[] = ['inicio', 'clientes', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
+
+/** Enlace profundo: la sección activa vive en la URL (#igualas), así se puede recargar, compartir y usar el botón Atrás. */
+function seccionDesdeHash(): Seccion {
+  const valor = window.location.hash.replace(/^#\/?/, '')
+  return SECCIONES.includes(valor as Seccion) ? (valor as Seccion) : 'inicio'
+}
+
 function App() {
   const [sesion, setSesion] = useState<Session | null>(null)
   const [comprobando, setComprobando] = useState(isSupabaseConfigured)
-  const [seccion, setSeccion] = useState<Seccion>('inicio')
+  const [seccion, setSeccion] = useState<Seccion>(seccionDesdeHash)
+
+  useEffect(() => {
+    function alCambiarLaUrl() {
+      setSeccion(seccionDesdeHash())
+    }
+    window.addEventListener('hashchange', alCambiarLaUrl)
+    window.addEventListener('popstate', alCambiarLaUrl)
+    return () => {
+      window.removeEventListener('hashchange', alCambiarLaUrl)
+      window.removeEventListener('popstate', alCambiarLaUrl)
+    }
+  }, [])
+
+  useEffect(() => {
+    const destino = `#${seccion}`
+    if (window.location.hash === destino) return
+    if (window.location.hash === '') window.history.replaceState(null, '', destino)
+    else window.history.pushState(null, '', destino)
+  }, [seccion])
 
   useEffect(() => {
     if (!supabase) return

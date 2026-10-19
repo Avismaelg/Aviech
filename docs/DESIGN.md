@@ -90,8 +90,10 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 | `Modal` | Fondo `#03060d/75` + blur; se cierra con Escape, clic fuera o la X; cabecera fija; entrada `animar-modal`; **bloquea el scroll del fondo** y **auto-enfoca el primer campo** al abrir. |
 | `Confirmar` | Modal pequeño con botón de peligro. |
 | `BotonIcono` | Acción de solo icono con etiqueta accesible (`title` + `aria-label`). Obligatorio en tablas en vez de botones sueltos. |
-| `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío, esqueleto `animate-pulse` y aviso ámbar. |
+| `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío (acepta `accion` opcional para un CTA), esqueleto `animate-pulse` y aviso ámbar. |
 | `Layout` | Barra lateral fija con navegación (activo: fondo índigo 10 % + barra lateral con brillo + `aria-current`), chip de usuario; en móvil, cabecera con blur + navegación desplazable (utilidades `.sin-barra` y `.mascara-desvanecida`). |
+
+- **Enlaces profundos:** la sección activa vive en la URL (`#inicio`, `#clientes`, `#igualas`…). Recargar, compartir el enlace o usar Atrás conserva la sección.
 
 ## 7. Regla de oro: factura e impresión en claro
 

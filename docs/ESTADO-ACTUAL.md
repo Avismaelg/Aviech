@@ -32,7 +32,8 @@
 - **Mejora de interfaz integral** (19-oct, con el skill UI UX Pro Max): tipografía **Inter**
   autoalojada, foco visible en todo lo interactivo, acciones de tabla con etiqueta accesible
   (`BotonIcono`), modales con bloqueo del fondo y auto-foco, **login rediseñado** (panel de
-  marca + ver/ocultar contraseña) y contraste reforzado del texto tenue.
+  marca + ver/ocultar contraseña), **enlaces profundos por sección** (`#igualas`…),
+  estados vacíos con acción y contraste reforzado del texto tenue.
 - **Gastos** con la regla del dinero ×3: cada gasto se cubre con ingresos reales;
   el tablero muestra **Gastos del mes** y **Balance del mes** (cobrado − gastos).
 - **Facturación**: facturas con **NCF/e-NCF** (B01, B02, B14, B15 y e-CF E31/E32/E44/E45),

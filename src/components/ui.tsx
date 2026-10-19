@@ -227,7 +227,17 @@ export function Confirmar({
   )
 }
 
-export function Vacio({ icono, titulo, texto }: { icono: ReactNode; titulo: string; texto?: string }) {
+export function Vacio({
+  icono,
+  titulo,
+  texto,
+  accion,
+}: {
+  icono: ReactNode
+  titulo: string
+  texto?: string
+  accion?: ReactNode
+}) {
   return (
     <div className="flex flex-col items-center gap-1 px-6 py-14 text-center">
       <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl border border-borde-suave bg-superficie-2 text-tinta-tenue">
@@ -235,6 +245,7 @@ export function Vacio({ icono, titulo, texto }: { icono: ReactNode; titulo: stri
       </div>
       <p className="text-sm font-medium text-tinta">{titulo}</p>
       {texto && <p className="max-w-sm text-sm text-tinta-suave">{texto}</p>}
+      {accion && <div className="mt-3">{accion}</div>}
     </div>
   )
 }
