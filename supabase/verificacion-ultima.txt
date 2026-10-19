@@ -1,6 +1,6 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-19 04:08 UTC
+Fecha: 2026-10-19 04:11 UTC
 
 ## Tablas de public
            List of relations
@@ -12,7 +12,7 @@ Fecha: 2026-10-19 04:08 UTC
  public | servicios | table | postgres
 (4 rows)
 
-## Columnas de clientes, servicios y pagos
+## Columnas de clientes, servicios, pagos y gastos
  table_name | column_name  |        data_type         
 ------------+--------------+--------------------------
  clientes   | id           | uuid
@@ -24,6 +24,13 @@ Fecha: 2026-10-19 04:08 UTC
  clientes   | empresa      | text
  clientes   | estado       | text
  clientes   | rnc          | text
+ gastos     | id           | uuid
+ gastos     | concepto     | text
+ gastos     | categoria    | text
+ gastos     | monto        | numeric
+ gastos     | fecha        | date
+ gastos     | notas        | text
+ gastos     | created_at   | timestamp with time zone
  pagos      | id           | uuid
  pagos      | cliente_id   | uuid
  pagos      | concepto     | text
@@ -42,7 +49,7 @@ Fecha: 2026-10-19 04:08 UTC
  servicios  | fecha_fin    | date
  servicios  | notas        | text
  servicios  | created_at   | timestamp with time zone
-(27 rows)
+(34 rows)
 
 ## Conteos
    tabla   | filas 
@@ -50,7 +57,8 @@ Fecha: 2026-10-19 04:08 UTC
  clientes  |     2
  servicios |     1
  pagos     |     1
-(3 rows)
+ gastos    |     0
+(4 rows)
 
 ## Prueba de inserciones (se revierte al final)
 BEGIN
@@ -61,18 +69,18 @@ ROLLBACK
 BEGIN
 SET
 SET
- clientes | servicios | pagos 
-----------+-----------+-------
-        2 |         1 |     1
+ clientes | servicios | pagos | gastos 
+----------+-----------+-------+--------
+        2 |         1 |     1 |      0
 (1 row)
 
 ROLLBACK
 ## RLS: lectura como anónimo (debe dar 0 en todo)
 BEGIN
 SET
- clientes | servicios | pagos 
-----------+-----------+-------
-        0 |         0 |     0
+ clientes | servicios | pagos | gastos 
+----------+-----------+-------+--------
+        0 |         0 |     0 |      0
 (1 row)
 
 ROLLBACK
