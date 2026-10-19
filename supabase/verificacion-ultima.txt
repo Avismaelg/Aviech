@@ -1,6 +1,6 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-19 06:34 UTC
+Fecha: 2026-10-19 16:38 UTC
 
 ## Tablas de public
              List of relations
@@ -10,9 +10,10 @@ Fecha: 2026-10-19 06:34 UTC
  public | factura_items | table | postgres
  public | facturas      | table | postgres
  public | gastos        | table | postgres
+ public | igualas       | table | postgres
  public | pagos         | table | postgres
  public | servicios     | table | postgres
-(6 rows)
+(7 rows)
 
 ## Columnas de todas las tablas
   table_name   |  column_name   |        data_type         
@@ -54,6 +55,16 @@ Fecha: 2026-10-19 06:34 UTC
  gastos        | fecha          | date
  gastos        | notas          | text
  gastos        | created_at     | timestamp with time zone
+ igualas       | id             | uuid
+ igualas       | cliente_id     | uuid
+ igualas       | categoria      | text
+ igualas       | descripcion    | text
+ igualas       | monto_mensual  | numeric
+ igualas       | dia_cobro      | integer
+ igualas       | fecha_inicio   | date
+ igualas       | estado         | text
+ igualas       | notas          | text
+ igualas       | created_at     | timestamp with time zone
  pagos         | id             | uuid
  pagos         | cliente_id     | uuid
  pagos         | concepto       | text
@@ -72,7 +83,7 @@ Fecha: 2026-10-19 06:34 UTC
  servicios     | fecha_fin      | date
  servicios     | notas          | text
  servicios     | created_at     | timestamp with time zone
-(55 rows)
+(65 rows)
 
 ## Conteos
      tabla     | filas 
@@ -83,7 +94,8 @@ Fecha: 2026-10-19 06:34 UTC
  gastos        |     0
  facturas      |     0
  factura_items |     0
-(6 rows)
+ igualas       |     0
+(7 rows)
 
 ## Prueba de inserciones (se revierte al final)
 BEGIN
@@ -94,18 +106,18 @@ ROLLBACK
 BEGIN
 SET
 SET
- clientes | servicios | pagos | gastos | facturas | factura_items 
-----------+-----------+-------+--------+----------+---------------
-        2 |         1 |     1 |      0 |        0 |             0
+ clientes | servicios | pagos | gastos | facturas | factura_items | igualas 
+----------+-----------+-------+--------+----------+---------------+---------
+        2 |         1 |     1 |      0 |        0 |             0 |       0
 (1 row)
 
 ROLLBACK
 ## RLS: lectura como anónimo (debe dar 0 en todo)
 BEGIN
 SET
- clientes | servicios | pagos | gastos | facturas | factura_items 
-----------+-----------+-------+--------+----------+---------------
-        0 |         0 |     0 |      0 |        0 |             0
+ clientes | servicios | pagos | gastos | facturas | factura_items | igualas 
+----------+-----------+-------+--------+----------+---------------+---------
+        0 |         0 |     0 |      0 |        0 |             0 |       0
 (1 row)
 
 ROLLBACK
