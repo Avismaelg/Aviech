@@ -16,5 +16,10 @@
     // para comprobar la sesion del usuario contra Supabase.
     "SUPABASE_URL": "https://ktvyhtbmokmrzeuibznv.supabase.co",
     "SUPABASE_ANON_KEY": "sb_publishable_UFmcdmDc2j75X8vBcYhWww_G6DGneAl"
+  },
+  // Asistente de IA: Workers AI incluido en el plan gratis (10,000 neuronas/dia).
+  // No usa claves externas ni modelos de pago.
+  "ai": {
+    "binding": "AI"
   }
 }

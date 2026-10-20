@@ -1,6 +1,6 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la cuarta sesión: rediseño v3 «Claro profesional»)
+> Última actualización: 19-oct-2026 (cierre de la quinta sesión: asistente de IA)
 
 ## 📌 Punto de continuación
 
@@ -8,7 +8,17 @@
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
-  en el commit de cierre de esta sesión).
+  en el commit de cierre de esa sesión; 5.ª sesión: **asistente de IA** en el
+  commit de cierre de esta sesión).
+- **Asistente IA (5.ª sesión, 19-oct):** chat flotante dentro del panel (botón azul
+  abajo a la derecha; hoja inferior en móvil). Usa **Cloudflare Workers AI** con el
+  modelo `@cf/google/gemma-4-26b-a4b-it`, binding `AI` en `wrangler.jsonc`, **sin
+  claves ni costo** (10,000 neuronas gratis al día). Exige sesión de Supabase
+  (`POST /api/ia/chat`), limita el tamaño de los mensajes y no guarda el historial.
+  **No ve la base de datos**: si se necesitan datos, hay que pegarlos. Guía:
+  **`docs/ASISTENTE.md`**. Verificado en producción: preflight `204`, sin sesión
+  `401`, método incorrecto `405` y llamada directa al modelo `200` en español.
+  Interfaz validada en escritorio y móvil, **0 errores de consola**.
 - **PWA con service worker (4.ª sesión):** el panel guarda su armazón y **abre sin
   conexión**; las visitas repetidas cargan al instante. La API y Supabase **nunca** entran
   en la caché. Verificado en producción (`/sw.js` servido y el bundle lo registra) y con la
@@ -55,9 +65,9 @@
 6. Revisa los workflows:
    - `Avismaelg/Aviech` → **Actions** → «Migrar base de datos».
    - `Avismaelg/Aviech-backup` → **Actions** → «Respaldo de la base de datos».
-7. Lee **`docs/CRM.md`**, **`docs/SEO.md`** y **`docs/PROSPECCION.md`** para usar esos
-   módulos, **`docs/pruebas/README.md`** para las 4 pruebas de humo y este archivo para el
-   estado general.
+7. Lee **`docs/CRM.md`**, **`docs/SEO.md`**, **`docs/PROSPECCION.md`** y
+   **`docs/ASISTENTE.md`** para usar esos módulos, **`docs/pruebas/README.md`** para las
+   4 pruebas de humo y este archivo para el estado general.
 8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
 9. Si agregas una migración, créala como `supabase/sql/009_....sql`; el push la aplica.
 
@@ -76,9 +86,10 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   quedó autorizada en este PC (guarda la sesión de Cloudflare).
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
   del repositorio — no hay que configurar nada dentro de Cloudflare.
-- El mismo Worker atiende la **API interna** del panel: `/api/seo/*` (Auditor SEO) y
-  `/api/scraper/*` (Prospección) exigen la sesión de Supabase (`Authorization: Bearer …`);
-  sin ella responden `401`. Declarado en `wrangler.jsonc` (`main` + `assets.run_worker_first`). ✅
+- El mismo Worker atiende la **API interna** del panel: `/api/seo/*` (Auditor SEO),
+  `/api/scraper/*` (Prospección) y `/api/ia/chat` (Asistente IA); todas exigen la
+  sesión de Supabase (`Authorization: Bearer …`) y sin ella responden `401`.
+  Declarado en `wrangler.jsonc` (`main`, `assets.run_worker_first` y binding `ai`). ✅
 - ⚠️ Cuidado con direcciones parecidas: `avitech.workers.dev` **no** es de este proyecto
   (es de otra empresa; da `error code: 1042`). La nuestra termina en `avismael-eg.workers.dev`.
 
@@ -86,7 +97,7 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 
 - Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
   (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
-  **Pagos**, **Facturación**, **Gastos** y **Reportes**.
+  **Pagos**, **Facturación**, **Gastos**, **Reportes** y **Asistente IA** (chat flotante).
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
   campo **RNC** para facturación formal (DGII) y teléfonos con formato local (809 / 829 / 849).
 - **Toque tecnológico**: contadores que se animan, gráfica de ingresos de los últimos 6 meses,
@@ -133,6 +144,11 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   Con un clic crea la **empresa y el contacto en el CRM** (o añade el contacto si la empresa
   ya existe; avisa antes). Gratis, sin claves, con el mismo login. Guía:
   **`docs/PROSPECCION.md`**.
+- **Asistente IA** (nuevo, 5.ª sesión): botón azul flotante para abrir un chat de trabajo
+  (redactar correos y propuestas, resumir, revisar textos, ideas comerciales). Usa
+  **Workers AI** con el modelo Gemma 4, **sin claves ni costo** dentro del plan gratis;
+  las conversaciones **no se guardan** y el asistente **no ve los datos del panel**. En
+  móvil se abre como hoja inferior. Guía: **`docs/ASISTENTE.md`**.
 - **Sin conexión y optimización (nuevo, 4.ª sesión):** service worker propio — el armazón
   queda en caché, la app **abre sin internet** y repetir visita carga al instante; la API y
   Supabase **nunca** se guardan. Además el Worker analiza enlaces y metadatos en **una sola
@@ -180,6 +196,10 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 - **Prueba de la PWA** (19-oct, 4.ª sesión): 5 pasos con datos simulados — service worker
   activo con alcance raíz, recarga bajo su control y **apertura sin conexión** — **0 errores
   de consola**. Script: `docs/pruebas/prueba-pwa.js`; capturas en `capturas-pwa` (2 pantallas).
+- **Prueba del Asistente IA** (19-oct, 5.ª sesión): interfaz validada con respuesta simulada
+  en escritorio (1440 px) y móvil (390 px), sin desbordes y con **0 errores de consola**.
+  Además se probó el modelo real en Cloudflare: respondió en español (`200`). Capturas en
+  `capturas-ia` (5 pantallas). El endpoint exige sesión: `401` sin token.
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -246,3 +266,6 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
    hallazgos a CSV y marcar empresas ya descartadas.
 8. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
    recordatorios de vencimientos y más analítica del tablero.
+9. **Asistente IA fase 2 (opcional):** contexto automático de la sección o del cliente con
+   permiso explícito, historial por usuario con RLS, respuestas en streaming y voz. Evaluar
+   privacidad y consumo antes de activar.

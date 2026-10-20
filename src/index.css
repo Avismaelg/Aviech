@@ -127,6 +127,19 @@ h4 {
   }
 }
 
+@keyframes parpadeo-punto {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 .animar-entrada {
   animation: aparecer 0.3s ease-out both;
 }
@@ -148,13 +161,22 @@ h4 {
   animation: crecer-barra 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.punto-escribiendo {
+  animation: parpadeo-punto 1.2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animar-entrada,
   .animar-modal,
   .animar-aviso,
   .animar-fundido,
-  .animar-barra {
+  .animar-barra,
+  .punto-escribiendo {
     animation: none;
+  }
+
+  .punto-escribiendo {
+    opacity: 0.6;
   }
 }
 

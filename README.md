@@ -6,8 +6,7 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, CRM, prospección de contactos, auditoría SEO, servicios, pagos, facturación, gastos
-y reportes, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
+Panel de gestión de AviTech Solutions Group: clientes, CRM, prospección de contactos, auditoría SEO, servicios, pagos, facturación, gastos, reportes y un asistente de IA, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
@@ -30,6 +29,7 @@ Interfaz **clara profesional** (v3 «Claro»): tema luminoso tipo app, navegaci�
 | **Facturación** | Facturas con **NCF / e-NCF** e **ITBIS 18%**; líneas de detalle, estados borrador → emitida → pagada, **anulación**, impresión/PDF y pago registrado automáticamente al cobrar |
 | **Gastos** | Salidas por categoría (regla del dinero ×3); total del mes e histórico |
 | **Reportes** | Estado de cuenta por cliente y resumen mensual (12 meses) con **Imprimir / PDF** y exportación **CSV** |
+| **Asistente IA** | Chat flotante para redactar correos, propuestas y resúmenes, y para pensar ideas. Usa **Cloudflare Workers AI** (plan gratis, sin claves) y **no ve los datos del panel**; las conversaciones no se guardan. Ver **`docs/ASISTENTE.md`** |
 
 ### Requisitos
 
@@ -64,6 +64,7 @@ npm run lint       # revisión de código (oxlint)
 - El registro público está cerrado; los usuarios se crean desde Supabase → Authentication → Users.
 - La clave `service_role` **nunca** va en el frontend ni en Git.
 - `.env` está excluido de Git; el repositorio solo contiene `.env.production` con valores públicos.
+- El **Asistente IA** usa Cloudflare Workers AI con el binding `AI` (sin claves), no guarda conversaciones y no tiene acceso a la base de datos. Ver **`docs/ASISTENTE.md`**.
 
 ### Despliegue
 
@@ -83,6 +84,7 @@ src/
   App.tsx                 # sesión de Supabase → Login o panel
   components/
     Layout.tsx            # barra superior + navegación (menú en móvil)
+    AsistenteIA.tsx       # chat flotante del asistente (Workers AI)
     Inicio.tsx            # tablero: contadores, gráfica, anillo de cobro y balance
     Clientes.tsx          # CRUD de clientes (con RNC)
     crm/
@@ -108,6 +110,7 @@ src/
     crm.ts                # convierte una empresa del CRM en cliente
     seo.ts                # auditoría SEO (Worker) y PageSpeed
     prospeccion.ts        # prospección: Worker + guardado en el CRM
+    ia.ts                 # chat del asistente (Worker /api/ia/chat)
     urls.ts               # normalizar direcciones (compartido)
     formato.ts            # moneda (RD$), fechas e iniciales
     etiquetas.ts          # estados, tipos y colores
@@ -116,7 +119,7 @@ src/
     empresa.ts            # datos fiscales de la empresa (encabezado de facturas)
   types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM, SEO y Prospección
 worker/
-  index.js                # API del panel en Cloudflare (auditoría SEO y prospección)
+  index.js                # API del panel en Cloudflare (SEO, prospección y asistente IA)
 public/
   sw.js                   # service worker: abre sin conexión y repite visitas al instante
   manifest.webmanifest    # datos de la app instalable (PWA)

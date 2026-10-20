@@ -4,6 +4,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Fragment, useState, type ReactNode } from 'react'
 import { cx } from '../lib/estilos'
 import { supabase } from '../lib/supabase'
+import { AsistenteIA } from './AsistenteIA'
 
 export type Seccion =
   | 'inicio'
@@ -186,6 +187,8 @@ export function Layout({
       <main className="area-impresion">
         <div className="area-impresion-contenido mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8">{children}</div>
       </main>
+
+      <AsistenteIA />
     </div>
   )
 }

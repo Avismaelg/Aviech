@@ -93,6 +93,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 | `BotonIcono` | Círculo con etiqueta accesible (`title` + `aria-label`). |
 | `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío, esqueleto `animate-pulse` y aviso ámbar claro. |
 | `Layout` | **Barra superior blanca**: marca + cuenta + Salir, y navegación por grupos (Operación / Herramientas / Finanzas) con píldora azul activa. En móvil/tablet (`< lg`) se sustituye por un **menú desplegable** con las 11 secciones. Enlaces profundos con `#seccion`. |
+| `Asistente IA` | Botón flotante azul abajo a la derecha. En escritorio abre un panel blanco de 400 px; en móvil, una hoja inferior. Cabecera con estado, nueva conversación y cerrar; burbujas azul/blanco, sugerencias iniciales, indicador de escritura y compositor con `Enter` para enviar y `Shift+Enter` para salto de línea. No guarda el historial y avisa que no ve los datos del panel. |
 | `Login` | Dos columnas: panel de marca azul marino (escritorio) + tarjeta blanca de acceso. Incluye píldora «Acceso privado», ver/ocultar contraseña y error legible. |
 | `CRM` | Pestañas accesibles (flechas ←/→), kanban horizontal de 16 rem, arrastre nativo y edición en modal. |
 | `Auditor SEO` | Puntaje 0–100 (verde ≥ 80, ámbar ≥ 50, rojo < 50), comprobaciones agrupadas y columna de PageSpeed + ficha técnica. |
@@ -129,6 +130,8 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - ❌ Sombras duras, bordes negros o resplandores de color.
 - ❌ `backdrop-blur` en barras y tarjetas (solo en velo de modal y avisos).
 - ❌ Animaciones de más de 0.6 s o que ignoren `prefers-reduced-motion`.
+- ❌ Guardar conversaciones de IA en localStorage/Supabase sin decisión explícita.
+- ❌ Enviar datos del panel al asistente sin que el usuario los pegue o lo autorice.
 
 ## 10. Checklist antes de entregar
 
@@ -138,6 +141,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - [ ] Impresión: fondo blanco, sin menús, acentos legibles
 - [ ] `prefers-reduced-motion` respetado
 - [ ] Montos en RD$ y fechas en es-DO (usar `lib/formato.ts`)
+- [ ] Asistente IA: Enter envía, Shift+Enter salta línea, foco visible y móvil sin desbordes
 - [ ] 0 errores de consola
 
 ## 11. Cómo cambiar el tema
