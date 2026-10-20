@@ -5,7 +5,10 @@
 ## 📌 Punto de continuación
 
 - **Todo guardado en GitHub:** `main` = `origin/main` al cierre de la 7.ª sesión.
-  El **rediseño v4** se publica en el commit de cierre de esta sesión.
+  El **rediseño v4** quedó publicado en `638b2cd` y **Cloudflare ya sirve la
+  compilación nueva**: assets `index-ssOHlRfA.js` / `index-CAPS3oNI.css`, service
+  worker `avitech-v2026-10-20-open-design`, `/solicitud` con `200` y `noindex`,
+  sin errores de consola en escritorio ni móvil.
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
