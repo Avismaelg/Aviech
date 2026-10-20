@@ -1,6 +1,7 @@
 # Solicitudes de servicio — del pedido al servicio cerrado
 
-> Última actualización: 19-oct-2026 (6.ª sesión).
+> Última actualización: 19-oct-2026 (6.ª sesión). Verificado en producción el mismo día:
+> migración 009 aplicada, `/solicitud` en línea y RPC públicas probadas como anónimo.
 
 ## Qué hace
 

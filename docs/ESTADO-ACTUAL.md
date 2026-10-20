@@ -9,7 +9,8 @@
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
   en el commit de cierre de esa sesión; 5.ª sesión: **asistente de IA** en
-  `6344d13`; 6.ª sesión: **solicitudes con IA** en el commit de cierre).
+  `6344d13`; 6.ª sesión: **solicitudes con IA** en `98e1275` y reporte de migración
+  en `78fa159`).
 - **Solicitudes con IA (6.ª sesión, 19-oct):** el cliente pide un servicio por el
   **formulario público** `https://aviech.avismael-eg.workers.dev/solicitud` o el
   personal lo registra en **Solicitudes**. La IA prepara diagnóstico, alcance,
@@ -18,6 +19,11 @@
   Migración **009**, endpoints públicos con token y límites; el correo es un
   **borrador** (no se envía solo). Guía: **`docs/SOLICITUDES.md`**. Prueba de
   humo en `docs/pruebas/prueba-solicitudes.js` (0 errores de consola).
+- **Publicado y verificado en producción (19-oct, 11:10 PM RD):** Cloudflare ya sirve
+  la compilación nueva; `/solicitud` responde `200`, es `noindex` y carga sin errores en
+  escritorio y móvil. El ejecutor sin sesión responde `401`, el preflight del formulario
+  `204` y la migración **009** quedó aplicada. La prueba anónima de las RPC creó y cerró
+  una solicitud dentro de una transacción revertida.
 - **Asistente IA (5.ª sesión, 19-oct):** chat flotante dentro del panel (botón azul
   abajo a la derecha; hoja inferior en móvil). Usa **Cloudflare Workers AI** con el
   modelo `@cf/google/gemma-4-26b-a4b-it`, binding `AI` en `wrangler.jsonc`, **sin
@@ -193,10 +199,11 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   `seo_auditorias` existe con sus columnas, las inserciones de prueba pasan y el RLS deja al
   anónimo en 0. Workflow «Migrar base de datos» **#9 (en verde)**. Reporte:
   `supabase/verificacion-ultima.txt`.
-- **Migración 009 (Solicitudes) incluida en la 6.ª sesión:** crea `solicitudes_servicio`,
-  agrega plan/informe a `servicios`, RLS y las RPC `crear_solicitud_publica`,
-  `finalizar_solicitud` y `marcar_solicitud_error`. El workflow la aplica al publicar;
-  verificar el run en verde y el reporte `supabase/verificacion-ultima.txt`.
+- **Migración 009 (Solicitudes) aplicada y verificada el 19-oct-2026 23:10 RD / 20-oct 03:10 UTC:**
+  crea `solicitudes_servicio`, agrega plan/informe a `servicios`, RLS y las RPC
+  `crear_solicitud_publica`, `finalizar_solicitud` y `marcar_solicitud_error`. Workflow
+  «Migrar base de datos» **#10 (en verde)**; RLS anónimo en 0 y prueba anónima de creación +
+  cierre con token correcta (revertida). Reporte: `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -273,11 +280,12 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
 ## 📋 Próximos pasos
 
 1. **Solicitudes con IA (hecho, 6.ª sesión):** formulario público `/solicitud`, bandeja
-   interna y cierre automático con IA. Pendiente: verificar la migración 009 y el flujo en
-   producción; decidir si se agrega **Turnstile** o aprobación humana antes del cierre.
+   interna y cierre automático con IA. Migración 009 y endpoints verificados en producción.
+   Pendiente: probar una solicitud real desde el panel y decidir si se agrega **Turnstile**
+   o aprobación humana antes del cierre.
 2. **Rediseño de la interfaz (hecho, 19-oct):** se eligió el camino **(a)**: rediseñar el
    panel actual (React) con UI UX Pro Max, sin migrar a Flutter. Entregado el tema v3
-   «Claro profesional» (ver `docs/DESIGN.md`) y las 5 pruebas en verde. Pendiente: tu visto
+   «Claro profesional» (ver `docs/DESIGN.md`) y las pruebas en verde. Pendiente: tu visto
    bueno y ajustes finos de gusto (matiz del azul, densidad, tamaños).
 3. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
    Dominicana = 17:00 UTC). Los del 19-oct se hicieron manuales (1:04 PM, 1:42 PM y
