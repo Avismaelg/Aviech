@@ -169,7 +169,7 @@ export function Servicios() {
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((servicio) => (
               <li key={servicio.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-info-suave text-info">
                   <Briefcase size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -206,7 +206,7 @@ export function Servicios() {
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(servicio)}
-                    className="hover:bg-red-50 hover:text-red-700"
+                    className="hover:bg-peligro-suave hover:text-peligro"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>
@@ -239,7 +239,7 @@ export function Servicios() {
             </Selector>
           </Campo>
           {clientes.length === 0 && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
+            <p className="rounded-[18px] border border-aviso-borde bg-aviso-suave px-3 py-2 text-xs text-aviso sm:col-span-2">
               Todavía no hay clientes. Crea uno primero en la sección «Clientes».
             </p>
           )}
@@ -333,7 +333,7 @@ export function Servicios() {
               <Insignia color="slate">{formatoDinero(detalle.monto)}</Insignia>
             </div>
 
-            <dl className="grid gap-3 rounded-xl border border-borde-suave p-4 sm:grid-cols-2">
+            <dl className="grid gap-3 rounded-[20px] border border-borde-suave p-4 sm:grid-cols-2">
               <div>
                 <dt className="text-[11px] font-semibold tracking-wide text-tinta-tenue uppercase">Cliente</dt>
                 <dd className="mt-0.5 text-sm text-tinta">{detalle.clientes?.nombre ?? '—'}</dd>
@@ -355,19 +355,19 @@ export function Servicios() {
             </dl>
 
             {detalle.descripcion && (
-              <section className="rounded-xl border border-borde-suave bg-superficie-2/40 p-3.5">
+              <section className="rounded-[20px] border border-borde-suave bg-superficie-2/40 p-3.5">
                 <h4 className="mb-1.5 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Solicitud original</h4>
                 <p className="whitespace-pre-wrap text-sm text-tinta-suave">{detalle.descripcion}</p>
               </section>
             )}
 
             {detalle.entregables && (
-              <section className="rounded-xl border border-borde-suave p-3.5">
+              <section className="rounded-[20px] border border-borde-suave p-3.5">
                 <h4 className="mb-2 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Entregables</h4>
                 <ul className="space-y-1">
                   {detalle.entregables.split('\n').filter(Boolean).map((entregable, indice) => (
                     <li key={`${entregable}-${indice}`} className="flex gap-2 text-sm text-tinta-suave">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-exito-suave0" />
                       {entregable}
                     </li>
                   ))}
@@ -378,12 +378,12 @@ export function Servicios() {
             {detalle.plan_ia && (detalle.plan_ia.tareas.length > 0 || detalle.plan_ia.cronograma.length > 0) && (
               <div className="grid gap-3 sm:grid-cols-2">
                 {detalle.plan_ia.tareas.length > 0 && (
-                  <section className="rounded-xl border border-borde-suave p-3.5">
+                  <section className="rounded-[20px] border border-borde-suave p-3.5">
                     <h4 className="mb-2 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Tareas ejecutadas</h4>
                     <ul className="space-y-1">
                       {detalle.plan_ia.tareas.map((tarea, indice) => (
                         <li key={`${tarea}-${indice}`} className="flex gap-2 text-sm text-tinta-suave">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accion" />
                           {tarea}
                         </li>
                       ))}
@@ -391,12 +391,12 @@ export function Servicios() {
                   </section>
                 )}
                 {detalle.plan_ia.cronograma.length > 0 && (
-                  <section className="rounded-xl border border-borde-suave p-3.5">
+                  <section className="rounded-[20px] border border-borde-suave p-3.5">
                     <h4 className="mb-2 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Cronograma</h4>
                     <ul className="space-y-1">
                       {detalle.plan_ia.cronograma.map((fase, indice) => (
                         <li key={`${fase}-${indice}`} className="flex gap-2 text-sm text-tinta-suave">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-acento-claro" />
                           {fase}
                         </li>
                       ))}
@@ -407,10 +407,10 @@ export function Servicios() {
             )}
 
             {detalle.informe && (
-              <section className="rounded-xl border border-borde-suave">
+              <section className="rounded-[20px] border border-borde-suave">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-borde-suave px-3.5 py-3">
                   <h4 className="flex items-center gap-1.5 text-sm font-semibold text-tinta">
-                    <Bot size={15} className="text-blue-600" /> Informe de entrega
+                    <Bot size={15} className="text-acento" /> Informe de entrega
                   </h4>
                   <Boton
                     variante="secundario"
@@ -428,7 +428,7 @@ export function Servicios() {
             )}
 
             {detalle.plan_ia?.datos_pendientes && detalle.plan_ia.datos_pendientes.length > 0 && (
-              <div className="rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-900">
+              <div className="rounded-[20px] border border-aviso-borde bg-aviso-suave p-3.5 text-sm text-aviso">
                 <p className="font-semibold">Pendiente de validar</p>
                 <ul className="mt-1 list-disc space-y-0.5 pl-5">
                   {detalle.plan_ia.datos_pendientes.map((dato, indice) => (

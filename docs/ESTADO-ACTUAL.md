@@ -1,16 +1,24 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la sexta sesión: solicitudes con IA)
+> Última actualización: 20-oct-2026 (cierre de la séptima sesión: rediseño v4 Open Design)
 
 ## 📌 Punto de continuación
 
-- **Todo guardado en GitHub:** `main` = `origin/main`, sin cambios pendientes
+- **Todo guardado en GitHub:** `main` = `origin/main` al cierre de la 7.ª sesión.
+  El **rediseño v4** se publica en el commit de cierre de esta sesión.
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
   en el commit de cierre de esa sesión; 5.ª sesión: **asistente de IA** en
   `6344d13`; 6.ª sesión: **solicitudes con IA** en `98e1275` y reporte de migración
   en `78fa159`).
+- **Rediseño v4 «Open Design · Mastercard» (7.ª sesión, 20-oct):** nueva identidad
+  visual cálida y editorial en **todo el panel y el formulario público**: lienzo
+  crema, tinta casi negra, naranja de señal, tipografía **Sofia Sans**, **barra
+  lateral flotante** en escritorio y cabecera tipo píldora en móvil. Se mantuvieron
+  intactas las funciones, validaciones, RLS, RPC, límites y lógica de IA. Guía:
+  **`docs/DESIGN.md`**; binding en **`.open-design.json`**. Pruebas de humo y
+  revisión visual en verde; ver la sección de pruebas.
 - **Solicitudes con IA (6.ª sesión, 19-oct):** el cliente pide un servicio por el
   **formulario público** `https://aviech.avismael-eg.workers.dev/solicitud` o el
   personal lo registra en **Solicitudes**. La IA prepara diagnóstico, alcance,
@@ -24,8 +32,10 @@
   escritorio y móvil. El ejecutor sin sesión responde `401`, el preflight del formulario
   `204` y la migración **009** quedó aplicada. La prueba anónima de las RPC creó y cerró
   una solicitud dentro de una transacción revertida.
-- **Asistente IA (5.ª sesión, 19-oct):** chat flotante dentro del panel (botón azul
-  abajo a la derecha; hoja inferior en móvil). Usa **Cloudflare Workers AI** con el
+- **Asistente IA (5.ª sesión, 19-oct; acceso móvil actualizado en la v4):** chat dentro
+  del panel; en escritorio se abre desde el botón **Asistente IA** de la barra de
+  contexto y en móvil desde el icono de destellos de la cabecera fija (hoja inferior).
+  Usa **Cloudflare Workers AI** con el
   modelo `@cf/google/gemma-4-26b-a4b-it`, binding `AI` en `wrangler.jsonc`, **sin
   claves ni costo** (10,000 neuronas gratis al día). Exige sesión de Supabase
   (`POST /api/ia/chat`), limita el tamaño de los mensajes y no guarda el historial.
@@ -40,15 +50,16 @@
 - **Pruebas completas (4.ª sesión):** las **4 pruebas de esa sesión** (CRM, Auditor SEO,
   Prospección y PWA) en verde, `npm run build` y `npm run lint` limpios, y el Worker
   re-probado contra sitios reales.
-- **Rediseño v3 «Claro profesional» (4.ª sesión, 19-oct noche):** la interfaz se rehízo
-  de verdad — tema **claro**, navegación **superior** con grupos y píldora azul, menú
-  desplegable en móvil/tablet, tarjetas blancas `rounded-2xl`, botones en píldora,
-  titulares **Sora** + cuerpo **Inter**, y **auto-actualización** de la PWA (el service
-  worker recarga una vez al detectar versión nueva). El tema oscuro v2 quedó descartado
-  por el usuario por percibirse «igual». Guía: **`docs/DESIGN.md`**.
-- **Pruebas del rediseño:** las **4 pruebas de esa sesión** (CRM, Auditor SEO, Prospección y PWA)
-  pasaron en verde con el nuevo tema (`build` y `lint` limpios). Capturas nuevas en
-  `capturas-diseno`, `capturas-crm`, `capturas-seo`, `capturas-prospeccion` y `capturas-pwa`.
+- **Rediseño v3 «Claro profesional» (4.ª sesión, 19-oct noche, histórico):** tema
+  claro, navegación superior con grupos y píldora azul, menú desplegable en
+  móvil/tablet, titulares Sora + cuerpo Inter y auto-actualización de la PWA. Quedó
+  **sustituido por el rediseño v4** del 20-oct. Guía vigente: **`docs/DESIGN.md`**.
+- **Pruebas del rediseño v4:** las **5 pruebas de humo** (Solicitudes, CRM, Auditor
+  SEO, Prospección y PWA) pasaron en verde con la nueva identidad, `npm run build` y
+  `npm run lint` limpios, **0 errores de consola**. Se revisaron además Login, Inicio,
+  bandeja/detalle de Solicitudes, Asistente IA y `/solicitud` en escritorio y móvil.
+  Capturas nuevas en `capturas-solicitudes/open-design-*.png` (y las capturas de CRM,
+  SEO, Prospección y PWA regeneradas con el tema v4).
 - **Prospección integrada y en vivo:** busca **correos, teléfonos y redes sociales** de una web
   (página principal + hasta 2 páginas de contacto) y con un clic los guarda como **empresa y
   contacto en el CRM**, avisando si la empresa ya existe. **Gratis y sin claves**; no necesitó
@@ -113,22 +124,24 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
 
 - Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Solicitudes** (formulario público + bandeja y cierre con IA), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
   (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
-  **Pagos**, **Facturación**, **Gastos**, **Reportes** y **Asistente IA** (chat flotante).
+  **Pagos**, **Facturación**, **Gastos**, **Reportes** y **Asistente IA** (chat interno).
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
   campo **RNC** para facturación formal (DGII) y teléfonos con formato local (809 / 829 / 849).
 - **Toque tecnológico**: contadores que se animan, gráfica de ingresos de los últimos 6 meses,
   anillo de estado de cobro, transiciones suaves y app instalable (PWA con **service worker**:
   se puede «Añadir a pantalla de inicio» y **abrir sin conexión**; las visitas repetidas
   cargan al instante).
-- **Interfaz v3 «Claro»** (19-oct): tema claro tipo app, navegación superior con grupos
-  (Operación / Herramientas / Finanzas), menú móvil desplegable, tarjetas blancas,
-  titulares Sora, botones en píldora, cifras tabulares y marca `sky → blue`. La impresión
-  y las facturas se mantienen en claro (las hojas salen perfectas).
-- **Mejora de interfaz integral** (19-oct, con el skill UI UX Pro Max): tipografía **Inter**
-  autoalojada, foco visible en todo lo interactivo, acciones de tabla con etiqueta accesible
-  (`BotonIcono`), modales con bloqueo del fondo y auto-foco, **login rediseñado** (panel de
-  marca + ver/ocultar contraseña), **enlaces profundos por sección** (`#igualas`…),
-  estados vacíos con acción y contraste reforzado del texto tenue.
+- **Interfaz v4 «Open Design · Mastercard»** (20-oct): lienzo crema, tinta casi negra,
+  naranja de señal, tipografía **Sofia Sans** autoalojada, tarjetas `rounded-[28px]`,
+  botones en píldora y cifras tabulares. **Barra lateral flotante** con grupos
+  (Operación / Herramientas / Finanzas) en escritorio y **cabecera tipo píldora** con
+  menú desplegable en móvil/tablet. Login y `/solicitud` tienen panel de marca oscuro;
+  la impresión y las facturas se mantienen en claro (las hojas salen perfectas).
+- **Mejora de interfaz integral** (con UI UX Pro Max y Open Design): foco naranja visible
+  en todo lo interactivo, acciones de tabla con etiqueta accesible (`BotonIcono`), modales
+  con bloqueo del fondo y auto-foco, **login rediseñado** (panel de marca + ver/ocultar
+  contraseña), **enlaces profundos por sección** (`#igualas`…), estados vacíos con acción
+  y contraste reforzado del texto tenue.
 - **Gastos** con la regla del dinero ×3: cada gasto se cubre con ingresos reales;
   el tablero muestra **Gastos del mes** y **Balance del mes** (cobrado − gastos).
 - **Facturación**: facturas con **NCF/e-NCF** (B01, B02, B14, B15 y e-CF E31/E32/E44/E45),
@@ -167,8 +180,10 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   **servicio completado**; el equipo revisa confianza, datos pendientes y precio. El
   correo queda como borrador y **no se envía automáticamente**. Guía:
   **`docs/SOLICITUDES.md`**.
-- **Asistente IA** (nuevo, 5.ª sesión): botón azul flotante para abrir un chat de trabajo
-  (redactar correos y propuestas, resumir, revisar textos, ideas comerciales). Usa
+- **Asistente IA** (nuevo, 5.ª sesión): chat de trabajo para redactar correos y
+  propuestas, resumir, revisar textos y pensar ideas comerciales. En escritorio se abre
+  desde la barra de contexto; en móvil, desde el icono de destellos de la cabecera fija.
+  Usa
   **Workers AI** con el modelo Gemma 4, **sin claves ni costo** dentro del plan gratis;
   las conversaciones **no se guardan** y el asistente **no ve los datos del panel**. En
   móvil se abre como hoja inferior. Guía: **`docs/ASISTENTE.md`**.
@@ -235,6 +250,17 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   plan/informe/precio y vista móvil — **0 errores de consola**. Script:
   `docs/pruebas/prueba-solicitudes.js`; capturas en `capturas-solicitudes` (3 pantallas).
   El formulario público también se validó en escritorio (1440 px) y móvil (390 px).
+- **QA del rediseño v4** (20-oct, 7.ª sesión): `npm run build` y `npm run lint` limpios;
+  las 5 pruebas de humo repitieron en verde y se revisaron visualmente **Login, Inicio,
+  Solicitudes (bandeja y detalle), Asistente IA y `/solicitud`** en escritorio (1440 px)
+  y móvil (390 px), con **0 errores de consola**. Se corrigió el desborde horizontal de
+  Inicio, se movió el acceso móvil del asistente a la cabecera fija, se añadieron
+  márgenes de área segura, se destrabaron los subtítulos de pagos y se verificó la
+  impresión de factura (sin barra de contexto, sin tarjeta redondeada y a todo el ancho
+  imprimible). Capturas en `capturas-solicitudes`: `open-design-login.png` (+ `-movil`),
+  `open-design-inicio.png` (+ `-movil`), `open-design-asistente.png`,
+  `open-design-solicitud.png` (+ `-movil`), `open-design-factura-impresion.png`,
+  `01-bandeja.png`, `02-detalle.png` y `03-movil.png`.
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -256,16 +282,20 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   (ninguna tocó la base), así que el respaldo de las 6:25 PM UTC sigue siendo el más reciente.
 - Cómo restaurar y más detalles: ver **`docs/RESPALDOS.md`**.
 
-## 🎨 Herramientas de diseño (UI UX Pro Max)
+## 🎨 Herramientas de diseño (Open Design + UI UX Pro Max)
 
 - El **sistema de diseño** del panel está documentado en **`docs/DESIGN.md`** (tokens,
   componentes, reglas de impresión y checklist). Cualquier cambio visual debe seguirlo.
+- **Open Design** es la referencia visual vigente: el proyecto está vinculado al sistema
+  **Mastercard** («fintech cálido») y a la plantilla **`dashboard`** mediante
+  **`.open-design.json`**. El rediseño v4 se implementó con esa guía.
 - Quedó instalado el skill **UI UX Pro Max** (19-oct): motor de estilos, paletas por
   industria, tipografías, guías de UX y checklist de entrega.
   - **Global** (funciona en todo OpenCode): `C:\Users\User\.opencode\skills\`
   - **En el proyecto**: `avitech-panel\.opencode\skills\` (ignorado por Git; se reinstala
     con `npx ui-ux-pro-max-cli init --ai opencode`)
-  - Requiere **Python 3.12** (instalado en `C:\Users\User\AppData\Local\Programs\Python\Python312`).
+  - Requiere **Python 3.12**; en esta sesión Python no estuvo disponible en el PATH, así
+    que se usó la guía de respaldo y Open Design.
 - Uso: pedir en OpenCode cualquier tarea de interfaz («revisa esta pantalla», «mejora este
   formulario», «haz este reporte más claro») y el skill se activa solo.
 
@@ -283,10 +313,10 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
    interna y cierre automático con IA. Migración 009 y endpoints verificados en producción.
    Pendiente: probar una solicitud real desde el panel y decidir si se agrega **Turnstile**
    o aprobación humana antes del cierre.
-2. **Rediseño de la interfaz (hecho, 19-oct):** se eligió el camino **(a)**: rediseñar el
-   panel actual (React) con UI UX Pro Max, sin migrar a Flutter. Entregado el tema v3
-   «Claro profesional» (ver `docs/DESIGN.md`) y las pruebas en verde. Pendiente: tu visto
-   bueno y ajustes finos de gusto (matiz del azul, densidad, tamaños).
+2. **Rediseño de la interfaz (hecho, 20-oct):** se mantuvo el panel actual (React), sin
+   migrar a Flutter. Entregado el tema **v4 «Open Design · Mastercard»** (ver
+   `docs/DESIGN.md`) y las pruebas en verde. Pendiente: tu visto bueno y ajustes finos de
+   gusto (intensidad del naranja, densidad, tamaños).
 3. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
    Dominicana = 17:00 UTC). Los del 19-oct se hicieron manuales (1:04 PM, 1:42 PM y
    2:25 PM) y quedaron verificados.

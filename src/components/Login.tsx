@@ -33,73 +33,90 @@ export function Login() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 lg:px-8">
-      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-[28rem] w-[42rem] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[120px]" />
-
-      <div className="animar-entrada relative grid w-full max-w-6xl items-stretch gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10">
-        {/* Panel de marca (escritorio) */}
-        <aside className="relative hidden overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#071228] via-[#0c2148] to-[#123e8c] p-10 text-white shadow-2xl shadow-blue-950/25 lg:flex lg:flex-col">
+    <div className="flex min-h-screen items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
+      <div className="animar-entrada grid w-full max-w-6xl items-stretch gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6">
+        {/* Panel de marca: tinta cálida, arcos orbitales y tipografía editorial */}
+        <aside className="relative hidden min-h-[680px] overflow-hidden rounded-[40px] bg-tinta p-10 text-superficie shadow-[0_40px_90px_-48px_rgba(20,20,19,0.6)] lg:flex lg:flex-col">
+          <svg
+            aria-hidden
+            viewBox="0 0 520 520"
+            className="pointer-events-none absolute -top-32 -right-32 h-[560px] w-[560px] text-acento-claro"
+            fill="none"
+          >
+            <circle cx="260" cy="260" r="214" stroke="currentColor" strokeOpacity="0.16" />
+            <circle cx="260" cy="260" r="150" stroke="currentColor" strokeOpacity="0.1" />
+            <path d="M46 300C130 146 330 104 486 216" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.5" />
+            <circle cx="486" cy="216" r="6" fill="currentColor" />
+          </svg>
           <span
             aria-hidden
-            className="pointer-events-none absolute -top-24 -right-20 h-72 w-72 rounded-full border border-white/10"
-          />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute top-6 -right-10 h-52 w-52 rounded-full border border-white/[0.06]"
-          />
-          <span
-            aria-hidden
-            className="font-display pointer-events-none absolute -right-6 -bottom-16 text-[17rem] leading-none font-bold text-white/[0.04] select-none"
+            className="font-display pointer-events-none absolute -right-10 -bottom-24 text-[20rem] leading-none font-semibold text-superficie/[0.035] select-none"
           >
             A
           </span>
 
           <div className="relative flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-xl font-bold text-white shadow-md shadow-blue-950/30 ring-1 ring-white/15">
+            <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-superficie text-lg font-semibold text-tinta">
               A
+              <span aria-hidden className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-tinta bg-acento-claro" />
             </span>
             <div>
-              <p className="font-display text-lg font-semibold">AviTech Solutions Group</p>
-              <p className="text-xs text-slate-400">Auditoría · Contabilidad · Software · Asesoría legal</p>
+              <p className="font-display text-lg font-semibold tracking-[-0.02em]">AviTech Solutions Group</p>
+              <p className="text-[11px] tracking-[0.06em] text-superficie/55 uppercase">
+                Auditoría · Contabilidad · Software · Asesoría legal
+              </p>
             </div>
           </div>
 
-          <div className="relative mt-16 max-w-md">
-            <p className="mb-3 text-[11px] font-semibold tracking-[0.18em] text-sky-300 uppercase">Tu firma, en orden</p>
-            <h1 className="text-[34px] leading-[1.15] font-semibold tracking-tight text-white">
+          <div className="relative my-auto max-w-md py-12">
+            <p className="mb-4 flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-acento-claro uppercase">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-acento-claro" />
+              Tu firma, en orden
+            </p>
+            <h1 className="text-[44px] leading-[1.02] font-medium tracking-[-0.035em] text-superficie xl:text-[52px]">
               El centro de operaciones de tu firma, en un solo lugar.
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-slate-300">
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-superficie/65">
               Clientes, igualas mensuales, pagos, facturación con NCF y reportes — sin hojas de cálculo sueltas.
             </p>
 
-            <ul className="mt-9 space-y-3.5 text-sm text-slate-200">
+            <ul className="mt-9 space-y-4 text-sm text-superficie/80">
               {BENEFICIOS.map((beneficio) => (
-                <li key={beneficio} className="flex items-start gap-2.5">
-                  <CircleCheck size={17} className="mt-0.5 shrink-0 text-sky-300" />
+                <li key={beneficio} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-acento/15 text-acento-claro">
+                    <CircleCheck size={13} />
+                  </span>
                   {beneficio}
                 </li>
               ))}
             </ul>
           </div>
 
-          <p className="relative mt-auto pt-10 text-[10px] font-semibold tracking-[0.18em] text-slate-400 uppercase">
-            Sistema privado · Acceso restringido
+          <p className="relative flex items-center gap-2 text-[9px] font-semibold tracking-[0.18em] text-superficie/45 uppercase">
+            <LockKeyhole size={12} /> Sistema privado · Acceso restringido
           </p>
         </aside>
 
         {/* Tarjeta de acceso */}
         <div className="flex w-full items-center">
-          <div className="w-full rounded-3xl border border-borde bg-superficie p-7 shadow-xl shadow-slate-900/10 sm:p-9">
-            <header className="mb-7 text-center">
-              <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-xl font-bold text-white shadow-md shadow-blue-600/25 ring-1 ring-white/20 lg:hidden">
-                A
-              </span>
-              <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">
-                <LockKeyhole size={12} /> Acceso privado
+          <div className="w-full rounded-[40px] border border-borde bg-superficie p-7 shadow-[0_40px_90px_-50px_rgba(20,20,19,0.45)] sm:p-10">
+            <header className="mb-8">
+              <div className="mb-8 flex items-center gap-3 lg:hidden">
+                <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-accion text-sm font-semibold text-superficie">
+                  A
+                  <span aria-hidden className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-superficie bg-acento" />
+                </span>
+                <div className="leading-tight">
+                  <p className="font-display text-sm font-semibold text-tinta">AviTech Solutions Group</p>
+                  <p className="text-[10px] tracking-[0.08em] text-tinta-tenue uppercase">Panel interno</p>
+                </div>
+              </div>
+
+              <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-arena-borde bg-arena px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-clay uppercase">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-acento" /> Acceso privado
               </p>
-              <h2 className="text-[28px] leading-tight font-semibold tracking-tight text-tinta">AviTech Panel</h2>
-              <p className="mt-1.5 text-sm text-tinta-suave">Acceso del personal</p>
+              <h2 className="text-[32px] leading-tight font-medium tracking-[-0.03em] text-tinta">AviTech Panel</h2>
+              <p className="mt-1.5 text-sm text-tinta-suave">Acceso del personal autorizado.</p>
             </header>
 
             <form onSubmit={enviar} className="space-y-4">
@@ -107,7 +124,6 @@ export function Login() {
                 <Entrada
                   type="email"
                   autoComplete="email"
-                  autoFocus
                   required
                   value={email}
                   onChange={(evento) => setEmail(evento.target.value)}
@@ -123,14 +139,14 @@ export function Login() {
                     value={password}
                     onChange={(evento) => setPassword(evento.target.value)}
                     placeholder="••••••••"
-                    className="pr-11"
+                    className="pr-12"
                   />
                   <button
                     type="button"
                     onClick={() => setVerClave((valor) => !valor)}
                     title={verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                     aria-label={verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                    className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-full p-1.5 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta"
+                    className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-full p-1.5 text-tinta-tenue transition-colors hover:bg-arena hover:text-clay"
                   >
                     {verClave ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -138,18 +154,18 @@ export function Login() {
               </Campo>
 
               {error && (
-                <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
+                <p role="alert" className="rounded-[20px] border border-peligro-borde bg-peligro-suave px-4 py-3 text-sm text-peligro">
                   {error}
                 </p>
               )}
 
               <Boton type="submit" disabled={cargando} className="w-full">
                 {cargando && <Loader2 size={16} className="animate-spin" />}
-                {cargando ? 'Entrando…' : 'Entrar'}
+                {cargando ? 'Entrando…' : 'Entrar al panel'}
               </Boton>
             </form>
 
-            <p className="mt-6 text-center text-xs leading-relaxed text-tinta-tenue">
+            <p className="mt-6 border-t border-borde-suave pt-5 text-center text-xs leading-relaxed text-tinta-tenue">
               ¿Necesitas acceso? Pídele al administrador que cree tu usuario.
             </p>
           </div>

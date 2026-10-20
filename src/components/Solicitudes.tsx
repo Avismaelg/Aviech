@@ -102,7 +102,7 @@ function Dato({ etiqueta, valor }: { etiqueta: string; valor: string }) {
 
 function Bloque({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
-    <section className="rounded-xl border border-borde-suave bg-superficie-2/40 p-3.5">
+    <section className="rounded-[20px] border border-borde-suave bg-superficie-2/40 p-3.5">
       <h4 className="mb-1.5 text-xs font-semibold tracking-wide text-tinta-suave uppercase">{titulo}</h4>
       <div className="text-sm text-tinta-suave">{children}</div>
     </section>
@@ -115,7 +115,7 @@ function Lista({ elementos }: { elementos: string[] }) {
     <ul className="space-y-1">
       {elementos.map((elemento, indice) => (
         <li key={`${elemento}-${indice}`} className="flex gap-2">
-          <Check size={14} className="mt-0.5 shrink-0 text-emerald-600" aria-hidden />
+          <Check size={14} className="mt-0.5 shrink-0 text-exito" aria-hidden />
           <span>{elemento}</span>
         </li>
       ))}
@@ -290,19 +290,19 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
 
       <div className="mb-4 grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-4">
         {[
-          { titulo: 'Nuevas', valor: String(nuevas), detalle: 'esperando a la IA', Icono: ClipboardList, clase: 'bg-sky-50 text-sky-700' },
-          { titulo: 'Completadas', valor: String(completadas), detalle: 'servicios cerrados', Icono: Check, clase: 'bg-emerald-50 text-emerald-700' },
-          { titulo: 'Formulario público', valor: String(publicas), detalle: 'solicitudes recibidas', Icono: Globe2, clase: 'bg-blue-50 text-blue-700' },
-          { titulo: 'Valor sugerido', valor: formatoDinero(valorCerrado), detalle: 'en servicios completados', Icono: Sparkles, clase: 'bg-cyan-50 text-cyan-700' },
+          { titulo: 'Nuevas', valor: String(nuevas), detalle: 'esperando a la IA', Icono: ClipboardList, clase: 'bg-info-suave text-info' },
+          { titulo: 'Completadas', valor: String(completadas), detalle: 'servicios cerrados', Icono: Check, clase: 'bg-exito-suave text-exito' },
+          { titulo: 'Formulario público', valor: String(publicas), detalle: 'solicitudes recibidas', Icono: Globe2, clase: 'bg-arena text-clay' },
+          { titulo: 'Valor sugerido', valor: formatoDinero(valorCerrado), detalle: 'servicios completados', Icono: Sparkles, clase: 'bg-info-suave text-info' },
         ].map(({ titulo, valor, detalle: texto, Icono, clase }) => (
           <Tarjeta key={titulo} className="flex items-center gap-2.5 p-3 sm:gap-3 sm:p-4">
-            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-10 sm:w-10 ${clase}`}>
+            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[20px] sm:h-10 sm:w-10 ${clase}`}>
               <Icono size={17} />
             </span>
             <div className="min-w-0">
               <p className="truncate text-[11px] text-tinta-suave sm:text-xs">{titulo}</p>
               <p className="truncate text-[13px] font-semibold text-tinta tabular-nums sm:text-lg">{valor}</p>
-              <p className="truncate text-[10px] text-tinta-tenue sm:text-[11px]">{texto}</p>
+              <p className="text-[10px] leading-snug text-tinta-tenue sm:text-[11px]">{texto}</p>
             </div>
           </Tarjeta>
         ))}
@@ -354,7 +354,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
               const cerrada = solicitud.estado === 'completada'
               return (
                 <li key={solicitud.id} className="flex flex-col gap-3 px-4 py-3 transition-colors hover:bg-superficie-2/50 sm:flex-row sm:items-center">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-info-suave text-info">
                     {solicitud.origen === 'publico' ? <Globe2 size={15} /> : <ClipboardList size={15} />}
                   </span>
                   <button type="button" onClick={() => setDetalle(solicitud)} className="min-w-0 flex-1 text-left">
@@ -400,7 +400,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
                     <BotonIcono
                       etiqueta="Eliminar solicitud"
                       onClick={() => setPorEliminar(solicitud)}
-                      className="hover:bg-red-50 hover:text-red-700"
+                      className="hover:bg-peligro-suave hover:text-peligro"
                     >
                       <Trash2 size={15} />
                     </BotonIcono>
@@ -534,12 +534,12 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
               placeholder="Fechas, documentos disponibles, alcance esperado, restricciones…"
             />
           </Campo>
-          <label className="flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50 p-3.5 text-sm text-blue-900 sm:col-span-2">
+          <label className="flex items-start gap-2.5 rounded-[20px] border border-arena-borde bg-arena p-3.5 text-sm text-tinta sm:col-span-2">
             <input
               type="checkbox"
               checked={formulario.auto}
               onChange={(evento) => setFormulario({ ...formulario, auto: evento.target.checked })}
-              className="mt-0.5 h-4 w-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+              className="mt-0.5 h-4 w-4 rounded border-arena-borde text-acento focus:ring-acento"
             />
             <span>
               <strong>Ejecutar con IA al guardar.</strong> La IA crea el cliente, la oportunidad, el servicio, el
@@ -580,7 +580,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
               )}
             </div>
 
-            <dl className="grid gap-3 rounded-xl border border-borde-suave p-4 sm:grid-cols-2 lg:grid-cols-3">
+            <dl className="grid gap-3 rounded-[20px] border border-borde-suave p-4 sm:grid-cols-2 lg:grid-cols-3">
               <Dato etiqueta="Solicitante" valor={detalle.solicitante_nombre} />
               <Dato etiqueta="Empresa" valor={detalle.empresa ?? ''} />
               <Dato etiqueta="Correo" valor={detalle.email ?? ''} />
@@ -604,12 +604,12 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
             </Bloque>
 
             {detalle.error_ia && (
-              <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-800">
+              <div className="flex items-start gap-2 rounded-[20px] border border-peligro-borde bg-peligro-suave p-3.5 text-sm text-peligro">
                 <TriangleAlert size={17} className="mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold">La IA no pudo completar la solicitud</p>
                   <p className="mt-0.5">{detalle.error_ia}</p>
-                  <p className="mt-1 text-xs text-red-700/80">La solicitud quedó guardada. Puedes reintentarla.</p>
+                  <p className="mt-1 text-xs text-peligro/80">La solicitud quedó guardada. Puedes reintentarla.</p>
                 </div>
               </div>
             )}
@@ -618,7 +618,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="flex items-center gap-1.5 text-sm font-semibold text-tinta">
-                    <Bot size={16} className="text-blue-600" /> Plan preparado por la IA
+                    <Bot size={16} className="text-acento" /> Plan preparado por la IA
                   </h3>
                   <Insignia
                     color={
@@ -656,7 +656,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
                   </Bloque>
                 )}
                 {detalle.plan_ia.datos_pendientes.length > 0 && (
-                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-900">
+                  <div className="rounded-[20px] border border-aviso-borde bg-aviso-suave p-3.5 text-sm text-aviso">
                     <p className="font-semibold">Datos pendientes para validar</p>
                     <ul className="mt-1 list-disc space-y-0.5 pl-5">
                       {detalle.plan_ia.datos_pendientes.map((dato, indice) => (
@@ -666,7 +666,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
                   </div>
                 )}
                 {detalle.plan_ia.propuesta && (
-                  <details className="rounded-xl border border-borde-suave">
+                  <details className="rounded-[20px] border border-borde-suave">
                     <summary className="cursor-pointer px-3.5 py-3 text-sm font-semibold text-tinta">
                       Propuesta comercial
                     </summary>
@@ -686,7 +686,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
                   </details>
                 )}
                 {detalle.plan_ia.correo && (
-                  <details className="rounded-xl border border-borde-suave">
+                  <details className="rounded-[20px] border border-borde-suave">
                     <summary className="cursor-pointer px-3.5 py-3 text-sm font-semibold text-tinta">
                       Correo para el cliente
                     </summary>
@@ -706,7 +706,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
                   </details>
                 )}
                 {detalle.plan_ia.informe && (
-                  <details open={detalle.estado === 'completada'} className="rounded-xl border border-borde-suave">
+                  <details open={detalle.estado === 'completada'} className="rounded-[20px] border border-borde-suave">
                     <summary className="cursor-pointer px-3.5 py-3 text-sm font-semibold text-tinta">
                       Informe de entrega
                     </summary>
@@ -748,7 +748,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
                 variante="fantasma"
                 type="button"
                 onClick={() => setPorEliminar(detalle)}
-                className="justify-start text-red-700 hover:bg-red-50"
+                className="justify-start text-peligro hover:bg-peligro-suave"
               >
                 <Trash2 size={15} /> Eliminar
               </Boton>

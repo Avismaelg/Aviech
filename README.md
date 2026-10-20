@@ -10,7 +10,7 @@ Panel de gestión de AviTech Solutions Group: clientes, CRM, prospección de con
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
-Interfaz **clara profesional** (v3 «Claro»): tema luminoso tipo app, navegación superior con grupos, tarjetas blancas, titulares Sora, un solo acento azul y menú móvil desplegable.
+Interfaz **v4 «Open Design · Mastercard»**: lienzo crema, tinta casi negra y naranja de señal; tipografía **Sofia Sans** autoalojada, **barra lateral flotante** con grupos en escritorio y cabecera tipo píldora con menú desplegable en móvil. Las facturas y la impresión siguen en claro.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
@@ -31,7 +31,7 @@ Interfaz **clara profesional** (v3 «Claro»): tema luminoso tipo app, navegaci�
 | **Facturación** | Facturas con **NCF / e-NCF** e **ITBIS 18%**; líneas de detalle, estados borrador → emitida → pagada, **anulación**, impresión/PDF y pago registrado automáticamente al cobrar |
 | **Gastos** | Salidas por categoría (regla del dinero ×3); total del mes e histórico |
 | **Reportes** | Estado de cuenta por cliente y resumen mensual (12 meses) con **Imprimir / PDF** y exportación **CSV** |
-| **Asistente IA** | Chat flotante para redactar correos, propuestas y resúmenes, y para pensar ideas. Usa **Cloudflare Workers AI** (plan gratis, sin claves) y **no ve los datos del panel**; las conversaciones no se guardan. Ver **`docs/ASISTENTE.md`** |
+| **Asistente IA** | Chat para redactar correos, propuestas y resúmenes, y para pensar ideas. En escritorio se abre desde la barra de contexto; en móvil, desde el icono de destellos de la cabecera fija. Usa **Cloudflare Workers AI** (plan gratis, sin claves) y **no ve los datos del panel**; las conversaciones no se guardan. Ver **`docs/ASISTENTE.md`** |
 
 ### Requisitos
 
@@ -87,8 +87,8 @@ Copia semanal automática de la base (lunes ~1:00 PM, hora de República Dominic
 src/
   App.tsx                 # sesión de Supabase → Login o panel
   components/
-    Layout.tsx            # barra superior + navegación (menú en móvil)
-    AsistenteIA.tsx       # chat flotante del asistente (Workers AI)
+    Layout.tsx            # barra lateral flotante + cabecera móvil y navegación
+    AsistenteIA.tsx       # chat interno del asistente (Workers AI)
     Inicio.tsx            # tablero: contadores, gráfica, anillo de cobro y balance
     Clientes.tsx          # CRUD de clientes (con RNC)
     crm/

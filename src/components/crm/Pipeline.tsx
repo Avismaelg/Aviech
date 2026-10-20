@@ -44,13 +44,13 @@ const FORMULARIO_VACIO: FormularioOportunidad = {
 }
 
 const ACENTO_ETAPA: Record<string, string> = {
-  prospecto: 'bg-slate-400',
-  contactado: 'bg-sky-400',
-  reunion: 'bg-blue-400',
-  propuesta: 'bg-amber-400',
-  negociacion: 'bg-cyan-400',
-  ganado: 'bg-emerald-400',
-  perdido: 'bg-red-400',
+  prospecto: 'bg-tinta-tenue',
+  contactado: 'bg-acento-claro',
+  reunion: 'bg-acento',
+  propuesta: 'bg-aviso',
+  negociacion: 'bg-acento-claro',
+  ganado: 'bg-exito',
+  perdido: 'bg-peligro',
 }
 
 export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAEmpresas }: PropsPipeline) {
@@ -254,8 +254,8 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                     }}
                     onDrop={(evento) => soltar(evento, etapa)}
                     className={cx(
-                      'w-64 shrink-0 rounded-xl border bg-superficie/60 transition-colors',
-                      columnaActiva === etapa ? 'border-blue-200 bg-blue-400/5' : 'border-borde',
+                      'w-64 shrink-0 rounded-[20px] border bg-superficie/60 transition-colors',
+                      columnaActiva === etapa ? 'border-arena-borde bg-acento/5' : 'border-borde',
                     )}
                   >
                     <div className="flex items-center gap-2 border-b border-borde-suave px-3 py-2.5">
@@ -284,7 +284,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                             setColumnaActiva(null)
                           }}
                           className={cx(
-                            'group relative rounded-lg border border-borde-suave bg-superficie-2/80 transition-opacity',
+                            'group relative rounded-[18px] border border-borde-suave bg-superficie-2/80 transition-opacity',
                             arrastrandoId === oportunidad.id && 'opacity-50',
                           )}
                         >
@@ -292,7 +292,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                             type="button"
                             onClick={() => abrirEdicion(oportunidad)}
                             aria-label={`Editar ${oportunidad.titulo}`}
-                            className="block w-full rounded-lg p-3 pr-9 text-left"
+                            className="block w-full rounded-[18px] p-3 pr-9 text-left"
                           >
                             <p className="truncate text-sm font-medium text-tinta">{oportunidad.titulo}</p>
                             <p className="mt-0.5 truncate text-xs text-tinta-suave">
@@ -322,7 +322,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                             }}
                             aria-label={`Eliminar ${oportunidad.titulo}`}
                             title="Eliminar"
-                            className="absolute top-2 right-2 rounded-md p-1.5 text-tinta-tenue opacity-100 transition-opacity hover:bg-red-50 hover:text-red-700 focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+                            className="absolute top-2 right-2 rounded-md p-1.5 text-tinta-tenue opacity-100 transition-opacity hover:bg-peligro-suave hover:text-peligro focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                           >
                             <Trash2 size={13} />
                           </button>
@@ -381,7 +381,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
             </Selector>
           </Campo>
           {empresas.length === 0 && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
+            <p className="rounded-[18px] border border-aviso-borde bg-aviso-suave px-3 py-2 text-xs text-aviso sm:col-span-2">
               No hay empresas registradas. Crea una primero para poder guardar la oportunidad.{' '}
               <button
                 type="button"
@@ -442,9 +442,9 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
             />
           </Campo>
           {formulario.etapa === 'ganado' && empresaSeleccionada && !empresaSeleccionada.cliente_id && (
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 sm:col-span-2">
-              <p className="text-sm font-medium text-emerald-700">Oportunidad ganada</p>
-              <p className="mt-0.5 text-xs text-emerald-700/80">
+            <div className="rounded-[18px] border border-exito-borde bg-exito-suave p-3 sm:col-span-2">
+              <p className="text-sm font-medium text-exito">Oportunidad ganada</p>
+              <p className="mt-0.5 text-xs text-exito/80">
                 Convierte {empresaSeleccionada.nombre} en cliente para empezar a facturarle.
               </p>
               <Boton

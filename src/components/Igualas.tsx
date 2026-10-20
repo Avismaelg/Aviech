@@ -143,7 +143,7 @@ export function Igualas() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-exito-suave text-exito">
             <Repeat size={17} />
           </span>
           <div>
@@ -152,7 +152,7 @@ export function Igualas() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-info-suave text-info">
             <Handshake size={17} />
           </span>
           <div>
@@ -164,7 +164,7 @@ export function Igualas() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-aviso-suave text-aviso">
             <CalendarClock size={17} />
           </span>
           <div>
@@ -242,7 +242,7 @@ export function Igualas() {
           <ul className="divide-y divide-borde-suave">
             {filtradas.map((iguala) => (
               <li key={iguala.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-exito-suave text-exito">
                   <Handshake size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -272,7 +272,7 @@ export function Igualas() {
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(iguala)}
-                    className="hover:bg-red-50 hover:text-red-700"
+                    className="hover:bg-peligro-suave hover:text-peligro"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>
@@ -305,7 +305,7 @@ export function Igualas() {
             </Selector>
           </Campo>
           {clientes.length === 0 && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
+            <p className="rounded-[18px] border border-aviso-borde bg-aviso-suave px-3 py-2 text-xs text-aviso sm:col-span-2">
               Todavía no hay clientes. Crea uno primero en la sección «Clientes».
             </p>
           )}

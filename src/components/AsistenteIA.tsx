@@ -1,4 +1,4 @@
-import { CircleAlert, MessageCircle, RotateCcw, Send, Sparkles, X } from 'lucide-react'
+import { CircleAlert, RotateCcw, Send, Sparkles, X } from 'lucide-react'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { conversarConIA, obtenerToken } from '../lib/ia'
@@ -16,7 +16,7 @@ const SUGERENCIAS = [
   'Dame ideas para conseguir más clientes de consultoría.',
 ]
 
-/** Asistente de IA flotante del panel. Usa Workers AI (plan gratis, sin claves). */
+/** Asistente de IA interno del panel. Usa Workers AI (plan gratis, sin claves). */
 export function AsistenteIA() {
   const [abierto, setAbierto] = useState(false)
   const [mensajes, setMensajes] = useState<Mensaje[]>([])
@@ -31,6 +31,14 @@ export function AsistenteIA() {
     secuencia.current += 1
     return `${rol}-${secuencia.current}`
   }
+
+  useEffect(() => {
+    function abrir() {
+      setAbierto(true)
+    }
+    window.addEventListener('abrir-asistente-ia', abrir)
+    return () => window.removeEventListener('abrir-asistente-ia', abrir)
+  }, [])
 
   useEffect(() => {
     if (!abierto) return
@@ -96,32 +104,18 @@ export function AsistenteIA() {
     entrada.current?.focus()
   }
 
-  if (!abierto) {
-    return (
-      <button
-        type="button"
-        onClick={() => setAbierto(true)}
-        aria-haspopup="dialog"
-        aria-expanded={false}
-        className="no-imprimir fixed right-4 bottom-4 z-50 flex items-center gap-2 rounded-full border border-blue-700 bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5 hover:bg-blue-700 sm:right-6 sm:bottom-6"
-      >
-        <MessageCircle size={18} aria-hidden />
-        <span className="hidden sm:inline">Asistente IA</span>
-        <span className="sm:hidden">Asistente</span>
-      </button>
-    )
-  }
+  if (!abierto) return null
 
   return (
     <section
       role="dialog"
       aria-label="Asistente de IA"
-      className="no-imprimir animar-modal fixed inset-x-0 bottom-0 z-50 flex h-[min(88dvh,720px)] flex-col overflow-hidden rounded-t-3xl border border-borde bg-superficie shadow-2xl shadow-slate-900/25 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:h-[min(680px,calc(100dvh-5rem))] sm:w-[400px] sm:rounded-3xl"
+      className="no-imprimir animar-modal fixed inset-x-0 bottom-0 z-50 flex h-[min(88dvh,720px)] flex-col overflow-hidden rounded-t-[36px] border border-borde bg-superficie shadow-[0_40px_90px_-40px_rgba(20,20,19,0.55)] sm:inset-x-auto sm:right-6 sm:bottom-6 sm:h-[min(680px,calc(100dvh-5rem))] sm:w-[400px] sm:rounded-[36px]"
     >
       <header className="flex items-center gap-3 border-b border-borde bg-superficie px-4 py-3">
-        <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white shadow-sm shadow-blue-600/25">
+        <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accion text-superficie shadow-sm">
           <Sparkles size={17} aria-hidden />
-          <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-superficie bg-emerald-500" />
+          <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-superficie bg-acento-claro" />
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-display truncate text-sm font-semibold text-tinta">Asistente Avi</p>
@@ -134,7 +128,7 @@ export function AsistenteIA() {
             disabled={enviando}
             title="Nueva conversación"
             aria-label="Nueva conversación"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-tinta-tenue transition-colors hover:bg-arena hover:text-clay disabled:cursor-not-allowed disabled:opacity-40"
           >
             <RotateCcw size={16} aria-hidden />
           </button>
@@ -144,7 +138,7 @@ export function AsistenteIA() {
           onClick={() => setAbierto(false)}
           title="Cerrar asistente"
           aria-label="Cerrar asistente"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-tinta-tenue transition-colors hover:bg-arena hover:text-clay"
         >
           <X size={18} aria-hidden />
         </button>
@@ -152,9 +146,9 @@ export function AsistenteIA() {
 
       <div ref={lista} className="flex-1 space-y-4 overflow-y-auto bg-fondo/60 px-4 py-4" role="log" aria-live="polite">
         {mensajes.length === 0 ? (
-          <div className="rounded-2xl border border-borde bg-superficie p-4 shadow-sm">
+          <div className="rounded-[24px] border border-borde bg-superficie p-4 shadow-sm">
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-arena text-clay">
                 <Sparkles size={16} aria-hidden />
               </span>
               <p className="font-display text-sm font-semibold text-tinta">¿En qué te ayudo?</p>
@@ -168,7 +162,7 @@ export function AsistenteIA() {
                   key={sugerencia}
                   type="button"
                   onClick={() => enviar(sugerencia)}
-                  className="rounded-xl border border-borde bg-superficie px-3 py-2 text-left text-xs leading-snug text-tinta-suave transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
+                  className="rounded-[18px] border border-borde bg-superficie px-3 py-2 text-left text-xs leading-snug text-tinta-suave transition-colors hover:border-arena-borde hover:bg-arena hover:text-clay"
                 >
                   {sugerencia}
                 </button>
@@ -181,10 +175,10 @@ export function AsistenteIA() {
 
         {enviando && (
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-arena text-clay">
               <Sparkles size={13} aria-hidden />
             </span>
-            <span className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-borde bg-superficie px-3 py-3">
+            <span className="flex items-center gap-1 rounded-[20px] rounded-bl-md border border-borde bg-superficie px-3 py-3">
               {[0, 1, 2].map((indice) => (
                 <span
                   key={indice}
@@ -198,7 +192,7 @@ export function AsistenteIA() {
         )}
 
         {error && (
-          <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+          <div role="alert" className="rounded-[20px] border border-peligro-borde bg-peligro-suave p-3 text-xs text-peligro">
             <div className="flex items-start gap-2">
               <CircleAlert size={15} className="mt-0.5 shrink-0" aria-hidden />
               <p className="leading-relaxed">{error}</p>
@@ -207,7 +201,7 @@ export function AsistenteIA() {
               <button
                 type="button"
                 onClick={reintentar}
-                className="mt-2 font-semibold underline decoration-red-300 underline-offset-2 hover:text-red-800"
+                className="mt-2 font-semibold underline decoration-peligro/30 underline-offset-2 hover:text-[#8f1c13]"
               >
                 Reintentar
               </button>
@@ -216,8 +210,8 @@ export function AsistenteIA() {
         )}
       </div>
 
-      <div className="border-t border-borde bg-superficie p-3">
-        <div className="flex items-end gap-1.5 rounded-2xl border border-borde bg-superficie p-1.5 shadow-sm transition-shadow focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-500/10">
+      <div className="border-t border-borde bg-superficie p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3">
+        <div className="flex items-end gap-1.5 rounded-[20px] border border-borde bg-superficie p-1.5 shadow-sm transition-shadow focus-within:border-acento focus-within:ring-4 focus-within:ring-acento/15">
           <textarea
             ref={entrada}
             rows={1}
@@ -240,7 +234,7 @@ export function AsistenteIA() {
             disabled={!texto.trim() || enviando}
             title="Enviar mensaje"
             aria-label="Enviar mensaje"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white transition-all hover:bg-blue-700 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accion text-superficie transition-all hover:bg-accion-hover active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-borde"
           >
             <Send size={16} aria-hidden />
           </button>
@@ -260,16 +254,16 @@ function Burbuja({ mensaje }: { mensaje: Mensaje }) {
       {!esUsuario && (
         <span
           aria-hidden
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-arena text-clay"
         >
           <Sparkles size={13} />
         </span>
       )}
       <div
         className={cx(
-          'max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap',
+          'max-w-[85%] rounded-[20px] px-3.5 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap',
           esUsuario
-            ? 'rounded-br-md bg-blue-600 text-white shadow-sm shadow-blue-600/20'
+            ? 'rounded-br-md bg-accion text-superficie shadow-[0_10px_24px_-18px_rgba(20,20,19,0.7)]'
             : 'rounded-bl-md border border-borde bg-superficie text-tinta',
         )}
       >

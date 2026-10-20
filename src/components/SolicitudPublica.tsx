@@ -110,49 +110,55 @@ export function SolicitudPublica() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-52 left-1/2 h-[36rem] w-[54rem] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[130px]"
-      />
-
-      <div className="animar-entrada relative mx-auto grid w-full max-w-6xl items-start gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-stretch lg:gap-8">
-        <aside className="relative hidden overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#071228] via-[#0c2148] to-[#123e8c] p-9 text-white shadow-2xl shadow-blue-950/25 lg:flex lg:flex-col">
+    <div className="min-h-screen px-4 py-5 sm:px-6 lg:flex lg:items-center lg:px-8">
+      <div className="animar-entrada mx-auto grid w-full max-w-6xl items-start gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch lg:gap-6">
+        <aside className="relative hidden min-h-[720px] overflow-hidden rounded-[40px] bg-tinta p-9 text-superficie shadow-[0_40px_90px_-48px_rgba(20,20,19,0.6)] lg:flex lg:flex-col">
+          <svg
+            aria-hidden
+            viewBox="0 0 520 520"
+            className="pointer-events-none absolute -top-40 -right-36 h-[560px] w-[560px] text-acento-claro"
+            fill="none"
+          >
+            <circle cx="260" cy="260" r="216" stroke="currentColor" strokeOpacity="0.16" />
+            <circle cx="260" cy="260" r="150" stroke="currentColor" strokeOpacity="0.1" />
+            <path d="M54 286C136 138 338 98 486 212" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.5" />
+            <circle cx="486" cy="212" r="6" fill="currentColor" />
+          </svg>
           <span
             aria-hidden
-            className="pointer-events-none absolute -top-24 -right-20 h-72 w-72 rounded-full border border-white/10"
-          />
-          <span
-            aria-hidden
-            className="font-display pointer-events-none absolute -right-8 -bottom-20 text-[16rem] leading-none font-bold text-white/[0.04] select-none"
+            className="font-display pointer-events-none absolute -right-8 -bottom-24 text-[19rem] leading-none font-semibold text-superficie/[0.035] select-none"
           >
             A
           </span>
+
           <div className="relative flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-xl font-bold text-white shadow-md shadow-blue-950/30 ring-1 ring-white/15">
+            <span className="relative flex h-11 w-11 items-center justify-center rounded-full bg-superficie text-lg font-semibold text-tinta">
               A
+              <span aria-hidden className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-tinta bg-acento-claro" />
             </span>
             <div>
-              <p className="font-display text-lg font-semibold">AviTech Solutions Group</p>
-              <p className="text-xs text-slate-400">Auditoría · Contabilidad · Software · Asesoría legal</p>
+              <p className="font-display text-lg font-semibold tracking-[-0.02em]">AviTech Solutions Group</p>
+              <p className="text-[10px] tracking-[0.08em] text-superficie/55 uppercase">
+                Auditoría · Contabilidad · Software · Asesoría legal
+              </p>
             </div>
           </div>
 
-          <div className="relative mt-14">
-            <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-sky-200 ring-1 ring-white/10">
+          <div className="relative my-auto py-12">
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-superficie/15 bg-superficie/10 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-acento-claro uppercase">
               <Sparkles size={12} /> Solicitud con IA
             </p>
-            <p className="font-display text-[34px] leading-[1.15] font-semibold tracking-tight text-white">
+            <h1 className="max-w-md text-[40px] leading-[1.03] font-medium tracking-[-0.035em] text-superficie xl:text-[46px]">
               Cuéntanos qué necesitas. Nosotros preparamos el resto.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-slate-300">
+            </h1>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-superficie/65">
               Completa el formulario y nuestro equipo recibirá un diagnóstico inicial, un plan de trabajo y una
               propuesta. Sin compromiso.
             </p>
-            <ol className="mt-8 space-y-4 text-sm text-slate-200">
+            <ol className="mt-9 space-y-4 text-sm text-superficie/80">
               {PASOS.map((paso, indice) => (
                 <li key={paso} className="flex items-start gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold text-sky-200 ring-1 ring-white/10">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-superficie/10 text-[11px] font-semibold text-acento-claro ring-1 ring-superficie/10">
                     {indice + 1}
                   </span>
                   {paso}
@@ -161,44 +167,45 @@ export function SolicitudPublica() {
             </ol>
           </div>
 
-          <div className="relative mt-auto flex items-center gap-2 pt-10 text-[11px] text-slate-400">
+          <div className="relative flex items-center gap-2 border-t border-superficie/10 pt-5 text-[10px] text-superficie/50">
             <LockKeyhole size={13} /> Tus datos se usan solo para atender esta solicitud.
           </div>
         </aside>
 
         <div className="w-full">
-          <div className="mb-4 flex items-center gap-2.5 lg:hidden">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-sm font-bold text-white shadow-sm shadow-blue-600/25">
+          <div className="mb-4 flex items-center gap-3 px-1 lg:hidden">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-accion text-sm font-semibold text-superficie">
               A
+              <span aria-hidden className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-superficie bg-acento" />
             </span>
             <div className="leading-tight">
-              <p className="font-display text-sm font-semibold text-tinta">AviTech Solutions Group</p>
-              <p className="text-[11px] text-tinta-tenue">Solicitud de servicio</p>
+              <p className="font-display text-sm font-semibold tracking-tight text-tinta">AviTech Solutions Group</p>
+              <p className="text-[10px] tracking-[0.08em] text-tinta-tenue uppercase">Solicitud de servicio</p>
             </div>
           </div>
 
-          <Tarjeta className="p-6 sm:p-8">
+          <Tarjeta className="rounded-[40px] p-6 shadow-[0_40px_90px_-50px_rgba(20,20,19,0.4)] sm:p-8">
             {exito ? (
-              <div className="py-6 text-center">
-                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
-                  <CircleCheck size={28} />
+              <div className="py-6 text-center sm:py-10">
+                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-exito-suave text-exito ring-1 ring-exito-borde">
+                  <CircleCheck size={30} />
                 </span>
-                <p className="mt-5 text-[11px] font-semibold tracking-[0.16em] text-emerald-700 uppercase">
-                  Solicitud recibida
+                <p className="mt-5 flex items-center justify-center gap-2 text-[10px] font-bold tracking-[0.18em] text-exito uppercase">
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-exito" /> Solicitud recibida
                 </p>
-                <h2 className="mt-1 text-[27px] leading-tight font-semibold tracking-tight text-tinta">
+                <h2 className="mt-2 text-[32px] leading-tight font-medium tracking-[-0.03em] text-tinta">
                   Gracias, {formulario.nombre.split(' ')[0] || 'equipo'}.
                 </h2>
                 <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-tinta-suave">{exito.mensaje}</p>
-                <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-borde bg-superficie-2 px-4 py-2 text-sm font-semibold text-tinta">
-                  <span className="text-xs font-normal text-tinta-tenue">Folio</span>
-                  <span className="tracking-wider">{exito.folio}</span>
+                <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-arena-borde bg-arena px-4 py-2 text-sm font-semibold text-clay">
+                  <span className="text-[10px] font-normal tracking-[0.08em] text-clay/70 uppercase">Folio</span>
+                  <span className="tracking-[0.12em]">{exito.folio}</span>
                 </div>
-                <div className="mx-auto mt-6 max-w-md rounded-xl border border-blue-100 bg-blue-50 p-4 text-left text-sm text-blue-900">
+                <div className="mx-auto mt-6 max-w-md rounded-[24px] border border-info-borde bg-info-suave p-4 text-left text-sm text-info">
                   <p className="flex items-center gap-2 font-semibold">
                     <Clock3 size={16} /> ¿Qué sigue?
                   </p>
-                  <p className="mt-1 text-blue-900/80">
+                  <p className="mt-1 text-info/80">
                     La IA ya está preparando el análisis. Un especialista revisará el resultado y te contactará por
                     correo o teléfono.
                   </p>
@@ -210,7 +217,7 @@ export function SolicitudPublica() {
                     setConsentimiento(false)
                     setExito(null)
                   }}
-                  className="mt-6 text-sm font-semibold text-blue-700 hover:text-blue-800"
+                  className="mt-6 text-sm font-semibold text-clay transition-colors hover:text-acento"
                 >
                   Enviar otra solicitud
                 </button>
@@ -218,13 +225,13 @@ export function SolicitudPublica() {
             ) : (
               <>
                 <header className="mb-6">
-                  <p className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700 ring-1 ring-blue-100">
+                  <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-arena-borde bg-arena px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-clay uppercase">
                     <Sparkles size={12} /> Respuesta con IA
                   </p>
-                  <h1 className="text-[27px] leading-tight font-semibold tracking-tight text-tinta sm:text-[30px]">
+                  <h1 className="text-[30px] leading-tight font-medium tracking-[-0.03em] text-tinta sm:text-[34px]">
                     Solicita un servicio
                   </h1>
-                  <p className="mt-1.5 text-sm text-tinta-suave">
+                  <p className="mt-2 max-w-xl text-sm leading-relaxed text-tinta-suave">
                     Cuéntanos la situación de tu empresa. Mientras más detalle, mejor será el diagnóstico inicial.
                   </p>
                 </header>
@@ -288,8 +295,11 @@ export function SolicitudPublica() {
                       maxLength={300}
                       value={formulario.sitio_web}
                       onChange={(evento) => setFormulario({ ...formulario, sitio_web: evento.target.value })}
-                      placeholder="https://tuempresa.com (opcional; necesario para Auditoría SEO)"
+                      placeholder="https://tuempresa.com"
                     />
+                    <span className="mt-1.5 block text-[11px] text-tinta-tenue">
+                      Opcional. Necesario para una Auditoría SEO.
+                    </span>
                   </Campo>
                   <Campo etiqueta="Tipo de servicio">
                     <Selector
@@ -361,12 +371,12 @@ export function SolicitudPublica() {
                     />
                   </Campo>
 
-                  <label className="flex items-start gap-2.5 rounded-xl border border-borde bg-superficie-2/60 p-3.5 text-xs leading-relaxed text-tinta-suave sm:col-span-2">
+                  <label className="flex items-start gap-2.5 rounded-[20px] border border-arena-borde bg-arena/55 p-4 text-xs leading-relaxed text-tinta-suave sm:col-span-2">
                     <input
                       type="checkbox"
                       checked={consentimiento}
                       onChange={(evento) => setConsentimiento(evento.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-borde text-blue-600 focus:ring-blue-500"
+                      className="mt-0.5 h-4 w-4 rounded border-borde accent-acento focus:ring-acento"
                     />
                     <span>
                       Autorizo a AviTech Solutions Group a usar estos datos para analizar y responder a mi solicitud.
@@ -375,13 +385,16 @@ export function SolicitudPublica() {
                   </label>
 
                   {error && (
-                    <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 sm:col-span-2">
+                    <p
+                      role="alert"
+                      className="rounded-[20px] border border-peligro-borde bg-peligro-suave px-4 py-3 text-sm text-peligro sm:col-span-2"
+                    >
                       {error}
                     </p>
                   )}
 
                   <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-[11px] text-tinta-tenue">
+                    <p className="max-w-md text-[11px] leading-relaxed text-tinta-tenue">
                       Recibirás respuesta del equipo. La IA prepara el análisis, no envía correos automáticos.
                     </p>
                     <Boton type="submit" disabled={enviando} className="shrink-0">
@@ -396,7 +409,7 @@ export function SolicitudPublica() {
 
           <p className="mt-4 text-center text-xs text-tinta-tenue">
             ¿Eres del equipo?{' '}
-            <a href="/" className="font-semibold text-blue-700 hover:text-blue-800">
+            <a href="/" className="font-semibold text-clay transition-colors hover:text-acento">
               Entrar al panel
             </a>
           </p>

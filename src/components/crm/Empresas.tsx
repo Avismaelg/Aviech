@@ -194,7 +194,7 @@ export function Empresas({ empresas, contactos, oportunidades, refrescar }: Prop
               const numOportunidades = oportunidadesPorEmpresa.get(empresa.id) ?? 0
               return (
                 <li key={empresa.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-700">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-arena text-xs font-semibold text-clay">
                     {iniciales(empresa.nombre)}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -217,7 +217,7 @@ export function Empresas({ empresas, contactos, oportunidades, refrescar }: Prop
                       <BotonIcono
                         etiqueta="Convertir en cliente"
                         onClick={() => setPorConvertir(empresa)}
-                        className="hover:bg-emerald-50 hover:text-emerald-700"
+                        className="hover:bg-exito-suave hover:text-exito"
                       >
                         <UserPlus size={15} />
                       </BotonIcono>
@@ -228,7 +228,7 @@ export function Empresas({ empresas, contactos, oportunidades, refrescar }: Prop
                     <BotonIcono
                       etiqueta="Eliminar"
                       onClick={() => setPorEliminar(empresa)}
-                      className="hover:bg-red-50 hover:text-red-700"
+                      className="hover:bg-peligro-suave hover:text-peligro"
                     >
                       <Trash2 size={15} />
                     </BotonIcono>

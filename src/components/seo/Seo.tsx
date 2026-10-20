@@ -40,16 +40,16 @@ const GRUPOS: Array<{ id: GrupoChequeo; titulo: string }> = [
 ]
 
 const ESTILOS_CHEQUEO = {
-  bien: { Icono: CircleCheck, clase: 'text-emerald-400' },
-  mejorable: { Icono: TriangleAlert, clase: 'text-amber-400' },
-  mal: { Icono: CircleX, clase: 'text-red-400' },
+  bien: { Icono: CircleCheck, clase: 'text-exito' },
+  mejorable: { Icono: TriangleAlert, clase: 'text-acento-claro' },
+  mal: { Icono: CircleX, clase: 'text-peligro' },
 } as const
 
 /** Fondo y borde según el puntaje (0–100). */
 function clasePuntaje(puntaje: number): string {
-  if (puntaje >= 80) return 'border-emerald-200 bg-emerald-50 text-emerald-700'
-  if (puntaje >= 50) return 'border-amber-200 bg-amber-50 text-amber-700'
-  return 'border-red-200 bg-red-50 text-red-700'
+  if (puntaje >= 80) return 'border-exito-borde bg-exito-suave text-exito'
+  if (puntaje >= 50) return 'border-aviso-borde bg-aviso-suave text-aviso'
+  return 'border-peligro-borde bg-peligro-suave text-peligro'
 }
 
 export function Seo() {
@@ -214,12 +214,12 @@ export function Seo() {
                 key={fila.id}
                 className={cx(
                   'flex flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2/40',
-                  resultado?.id === fila.id && 'bg-blue-500/5',
+                  resultado?.id === fila.id && 'bg-accion/5',
                 )}
               >
                 <span
                   className={cx(
-                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold',
+                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] border text-sm font-semibold',
                     clasePuntaje(fila.puntaje),
                   )}
                 >
@@ -255,7 +255,7 @@ export function Seo() {
                   </BotonIcono>
                   <BotonIcono
                     etiqueta="Eliminar auditoría"
-                    className="hover:text-red-700"
+                    className="hover:text-peligro"
                     onClick={() => setPorEliminar(fila)}
                   >
                     <Trash2 size={15} />
@@ -301,7 +301,7 @@ function Informe({
         <div className="flex flex-wrap items-start gap-4 border-b border-borde p-5">
           <div
             className={cx(
-              'flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-xl border',
+              'flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-[20px] border',
               clasePuntaje(datos.puntaje),
             )}
           >
@@ -317,7 +317,7 @@ function Informe({
               href={datos.urlFinal}
               target="_blank"
               rel="noreferrer"
-              className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-blue-700 hover:text-blue-700"
+              className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-clay hover:text-clay"
             >
               <span className="truncate">{datos.urlFinal}</span>
               <ExternalLink size={12} className="shrink-0" />
@@ -327,7 +327,7 @@ function Informe({
               {fechaCompleta(datos.fecha)}
             </p>
             {datos.recortado && (
-              <p className="mt-1 text-xs text-amber-700/90">Página muy grande: se analizó el inicio del HTML.</p>
+              <p className="mt-1 text-xs text-aviso/90">Página muy grande: se analizó el inicio del HTML.</p>
             )}
           </div>
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
@@ -402,7 +402,7 @@ function TarjetaVelocidad({ datos, midiendo, onMedir }: { datos: DatosSeo; midie
   return (
     <Tarjeta className="p-5">
       <div className="flex items-center gap-2">
-        <Zap size={16} className="text-blue-700" aria-hidden />
+        <Zap size={16} className="text-clay" aria-hidden />
         <h4 className="text-sm font-semibold text-tinta">Velocidad (PageSpeed móvil)</h4>
       </div>
       {velocidad ? (
@@ -422,7 +422,7 @@ function TarjetaVelocidad({ datos, midiendo, onMedir }: { datos: DatosSeo; midie
             type="button"
             onClick={onMedir}
             disabled={midiendo}
-            className="mt-3 inline-flex items-center gap-1.5 text-xs text-blue-700 transition-colors hover:text-blue-700 disabled:opacity-50"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs text-clay transition-colors hover:text-clay disabled:opacity-50"
           >
             <RefreshCw size={12} /> {midiendo ? 'Midiendo…' : 'Medir de nuevo'}
           </button>
@@ -443,12 +443,12 @@ function TarjetaVelocidad({ datos, midiendo, onMedir }: { datos: DatosSeo; midie
 
 function PuntajeMini({ etiqueta, valor }: { etiqueta: string; valor: number }) {
   return (
-    <div className="rounded-lg border border-borde bg-superficie-2/50 px-3 py-2">
+    <div className="rounded-[18px] border border-borde bg-superficie-2/50 px-3 py-2">
       <p className="text-[10px] tracking-wide text-tinta-tenue uppercase">{etiqueta}</p>
       <p
         className={cx(
           'text-lg font-semibold',
-          valor >= 90 ? 'text-emerald-700' : valor >= 50 ? 'text-amber-700' : 'text-red-700',
+          valor >= 90 ? 'text-exito' : valor >= 50 ? 'text-aviso' : 'text-peligro',
         )}
       >
         {valor}

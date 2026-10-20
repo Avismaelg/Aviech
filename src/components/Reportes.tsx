@@ -114,7 +114,7 @@ export function Reportes() {
       <section>
         <CabeceraSeccion titulo="Reportes" descripcion="Estado de cuenta y resumen mensual." />
         <Tarjeta>
-          <div className="p-6 text-sm text-amber-700">
+          <div className="p-6 text-sm text-aviso">
             Alguna tabla todavía no existe en la base de datos. Aplica las migraciones: GitHub → Actions → «Migrar base de datos» →
             Run workflow.
           </div>
@@ -233,7 +233,7 @@ export function Reportes() {
             aria-pressed={vista === 'cliente'}
             className={cx(
               'rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150',
-              vista === 'cliente' ? 'bg-blue-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
+              vista === 'cliente' ? 'bg-accion text-superficie shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
             )}
           >
             Por cliente
@@ -244,7 +244,7 @@ export function Reportes() {
             aria-pressed={vista === 'mensual'}
             className={cx(
               'rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150',
-              vista === 'mensual' ? 'bg-blue-600 text-white shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
+              vista === 'mensual' ? 'bg-accion text-superficie shadow-sm' : 'text-tinta-suave hover:bg-superficie-2',
             )}
           >
             Resumen mensual
@@ -277,7 +277,7 @@ export function Reportes() {
         <div className="space-y-4">
           <Tarjeta className="flex flex-wrap items-center justify-between gap-3 p-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-700">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-arena text-sm font-semibold text-clay">
                 {iniciales(cliente.nombre)}
               </span>
               <div className="min-w-0">
@@ -301,11 +301,11 @@ export function Reportes() {
             </Tarjeta>
             <Tarjeta className="p-3.5">
               <p className="text-xs text-tinta-suave">Cobrado</p>
-              <p className="text-base font-semibold text-emerald-700">{formatoDinero(cobradoCliente)}</p>
+              <p className="text-base font-semibold text-exito">{formatoDinero(cobradoCliente)}</p>
             </Tarjeta>
             <Tarjeta className="p-3.5">
               <p className="text-xs text-tinta-suave">Por cobrar</p>
-              <p className="text-base font-semibold text-amber-700">{formatoDinero(pendienteCliente)}</p>
+              <p className="text-base font-semibold text-aviso">{formatoDinero(pendienteCliente)}</p>
             </Tarjeta>
           </div>
 
@@ -391,7 +391,7 @@ export function Reportes() {
                           )}
                         </td>
                         <td className="px-4 py-2.5 text-right">
-                          <Monto valor={pago.monto} clase={pago.estado === 'pagado' ? 'text-emerald-700' : 'text-tinta'} />
+                          <Monto valor={pago.monto} clase={pago.estado === 'pagado' ? 'text-exito' : 'text-tinta'} />
                         </td>
                       </tr>
                     ))}
@@ -468,19 +468,19 @@ export function Reportes() {
                     <tr key={fila.clave}>
                       <td className="px-4 py-2.5 text-tinta">{formatoMes(fila.clave)}</td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.facturado} clase="text-blue-700" />
+                        <Monto valor={fila.facturado} clase="text-clay" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.cobrado} clase="text-emerald-700" />
+                        <Monto valor={fila.cobrado} clase="text-exito" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.porCobrar} clase="text-amber-700" />
+                        <Monto valor={fila.porCobrar} clase="text-aviso" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.gastos} clase="text-rose-700" />
+                        <Monto valor={fila.gastos} clase="text-peligro" />
                       </td>
                       <td className="px-4 py-2.5 text-right">
-                        <Monto valor={fila.balance} clase={fila.balance >= 0 ? 'font-semibold text-tinta' : 'font-semibold text-rose-700'} />
+                        <Monto valor={fila.balance} clase={fila.balance >= 0 ? 'font-semibold text-tinta' : 'font-semibold text-peligro'} />
                       </td>
                     </tr>
                   ))}
@@ -488,10 +488,10 @@ export function Reportes() {
                 <tfoot>
                   <tr className="border-t border-borde bg-superficie-2">
                     <td className="px-4 py-2.5 font-semibold text-tinta">Total (12 meses)</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-blue-700">{formatoDinero(totales.facturado)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-emerald-700">{formatoDinero(totales.cobrado)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-amber-700">{formatoDinero(totales.porCobrar)}</td>
-                    <td className="px-4 py-2.5 text-right font-semibold text-rose-700">{formatoDinero(totales.gastos)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-clay">{formatoDinero(totales.facturado)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-exito">{formatoDinero(totales.cobrado)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-aviso">{formatoDinero(totales.porCobrar)}</td>
+                    <td className="px-4 py-2.5 text-right font-semibold text-peligro">{formatoDinero(totales.gastos)}</td>
                     <td className="px-4 py-2.5 text-right font-semibold text-tinta">{formatoDinero(totales.balance)}</td>
                   </tr>
                 </tfoot>

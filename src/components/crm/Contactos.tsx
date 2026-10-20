@@ -126,7 +126,7 @@ export function Contactos({ contactos, empresas, refrescar, onIrAEmpresas }: Pro
       </div>
 
       {empresas.length === 0 && (
-        <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+        <p className="mb-4 rounded-[18px] border border-aviso-borde bg-aviso-suave px-3 py-2 text-xs text-aviso">
           Los contactos pertenecen a una empresa. Crea una primero en{' '}
           <button type="button" onClick={onIrAEmpresas} className="font-medium underline underline-offset-2">
             Empresas
@@ -181,7 +181,7 @@ export function Contactos({ contactos, empresas, refrescar, onIrAEmpresas }: Pro
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((contacto) => (
               <li key={contacto.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cyan-50 text-xs font-semibold text-cyan-700">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-info-suave text-xs font-semibold text-info">
                   {iniciales(contacto.nombre)}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -200,7 +200,7 @@ export function Contactos({ contactos, empresas, refrescar, onIrAEmpresas }: Pro
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(contacto)}
-                    className="hover:bg-red-50 hover:text-red-700"
+                    className="hover:bg-peligro-suave hover:text-peligro"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>
@@ -232,7 +232,7 @@ export function Contactos({ contactos, empresas, refrescar, onIrAEmpresas }: Pro
             </Selector>
           </Campo>
           {empresas.length === 0 && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
+            <p className="rounded-[18px] border border-aviso-borde bg-aviso-suave px-3 py-2 text-xs text-aviso sm:col-span-2">
               No hay empresas registradas.{' '}
               <button
                 type="button"

@@ -20,23 +20,23 @@ import { isSupabaseConfigured, supabase } from './lib/supabase'
 function SinConfigurar() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-lg rounded-2xl border border-borde bg-superficie p-6 shadow-2xl shadow-slate-900/10">
+      <div className="w-full max-w-lg rounded-[28px] border border-borde bg-superficie p-6 shadow-2xl shadow-tinta/15">
         <h1 className="text-xl font-semibold tracking-tight text-tinta">AviTech Panel</h1>
         <p className="mt-2 text-sm text-tinta-suave">Falta conectar Supabase. Pasos:</p>
         <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-tinta-suave">
           <li>
-            Copia <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-blue-700">.env.example</code> como{' '}
-            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-blue-700">.env</code> y completa los
+            Copia <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-clay">.env.example</code> como{' '}
+            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-clay">.env</code> y completa los
             valores del proyecto.
           </li>
           <li>
             Aplica las migraciones de{' '}
-            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-blue-700">supabase/sql</code> en orden
+            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-clay">supabase/sql</code> en orden
             — o usa el workflow «Migrar base de datos» en GitHub.
           </li>
           <li>
             Reinicia el servidor de desarrollo:{' '}
-            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-blue-700">npm run dev</code>.
+            <code className="rounded-md bg-superficie-2 px-1.5 py-0.5 text-[13px] text-clay">npm run dev</code>.
           </li>
         </ol>
       </div>

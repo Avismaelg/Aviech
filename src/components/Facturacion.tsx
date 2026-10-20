@@ -504,7 +504,7 @@ export function Facturacion() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-arena text-clay">
             <ReceiptText size={17} />
           </span>
           <div>
@@ -513,7 +513,7 @@ export function Facturacion() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-aviso-suave text-aviso">
             <Printer size={17} />
           </span>
           <div>
@@ -522,7 +522,7 @@ export function Facturacion() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-info-suave text-info">
             <Check size={17} />
           </span>
           <div>
@@ -573,7 +573,7 @@ export function Facturacion() {
           <ul className="divide-y divide-borde-suave">
             {filtradas.map((factura) => (
               <li key={factura.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-arena text-clay">
                   <ReceiptText size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -611,14 +611,14 @@ export function Facturacion() {
                       <BotonIcono
                         etiqueta="Marcar como pagada"
                         onClick={() => setPorPagar(factura)}
-                        className="hover:bg-emerald-50 hover:text-emerald-700"
+                        className="hover:bg-exito-suave hover:text-exito"
                       >
                         <Check size={15} />
                       </BotonIcono>
                       <BotonIcono
                         etiqueta="Anular"
                         onClick={() => setPorAnular(factura)}
-                        className="hover:bg-red-50 hover:text-red-700"
+                        className="hover:bg-peligro-suave hover:text-peligro"
                       >
                         <X size={15} />
                       </BotonIcono>
@@ -632,7 +632,7 @@ export function Facturacion() {
                       <BotonIcono
                         etiqueta="Eliminar"
                         onClick={() => setPorEliminar(factura)}
-                        className="hover:bg-red-50 hover:text-red-700"
+                        className="hover:bg-peligro-suave hover:text-peligro"
                       >
                         <Trash2 size={15} />
                       </BotonIcono>
@@ -707,7 +707,7 @@ export function Facturacion() {
               <button
                 type="button"
                 onClick={agregarLinea}
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-50"
+                className="inline-flex items-center gap-1 rounded-[18px] px-2 py-1 text-xs font-medium text-clay transition-colors hover:bg-arena"
               >
                 <Plus size={13} /> Agregar línea
               </button>
@@ -746,7 +746,7 @@ export function Facturacion() {
                     etiqueta="Quitar línea"
                     onClick={() => quitarLinea(indice)}
                     disabled={formulario.lineas.length === 1}
-                    className="hover:bg-red-50 hover:text-red-700"
+                    className="hover:bg-peligro-suave hover:text-peligro"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>
@@ -765,7 +765,7 @@ export function Facturacion() {
             Aplica ITBIS (18%)
           </label>
 
-          <div className="rounded-lg bg-superficie-2 p-3 text-sm">
+          <div className="rounded-[18px] bg-superficie-2 p-3 text-sm">
             <div className="flex justify-between text-tinta-suave">
               <span>Subtotal</span>
               <span className="tabular-nums">{formatoDinero(subtotalForm)}</span>

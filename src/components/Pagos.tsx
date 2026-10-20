@@ -132,7 +132,7 @@ export function Pagos() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-exito-suave text-exito">
             <Banknote size={17} />
           </span>
           <div>
@@ -141,7 +141,7 @@ export function Pagos() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-aviso-suave text-aviso">
             <Clock size={17} />
           </span>
           <div>
@@ -150,7 +150,7 @@ export function Pagos() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-700">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[18px] bg-peligro-suave text-peligro">
             <AlertTriangle size={17} />
           </span>
           <div>
@@ -212,9 +212,9 @@ export function Pagos() {
                 <span
                   className={`shrink-0 text-sm font-semibold tabular-nums ${
                     pago.estado === 'pagado'
-                      ? 'text-emerald-700'
+                      ? 'text-exito'
                       : diasDeAtraso(pago.fecha) > 0
-                        ? 'text-red-700'
+                        ? 'text-peligro'
                         : 'text-tinta'
                   }`}
                 >
@@ -234,7 +234,7 @@ export function Pagos() {
                     <BotonIcono
                       etiqueta="Marcar como pagado"
                       onClick={() => void guardar({ estado: 'pagado' }, pago.id)}
-                      className="hover:bg-emerald-50 hover:text-emerald-700"
+                      className="hover:bg-exito-suave hover:text-exito"
                     >
                       <Check size={15} />
                     </BotonIcono>
@@ -245,7 +245,7 @@ export function Pagos() {
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(pago)}
-                    className="hover:bg-red-50 hover:text-red-700"
+                    className="hover:bg-peligro-suave hover:text-peligro"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>
@@ -274,7 +274,7 @@ export function Pagos() {
             </Selector>
           </Campo>
           {clientes.length === 0 && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
+            <p className="rounded-[18px] border border-aviso-borde bg-aviso-suave px-3 py-2 text-xs text-aviso sm:col-span-2">
               Todavía no hay clientes. Crea uno primero en la sección «Clientes».
             </p>
           )}

@@ -1,12 +1,14 @@
 # Asistente de IA — chat interno
 
-> Última actualización: 19-oct-2026.
+> Última actualización: 20-oct-2026.
 
 ## Qué es
 
-Un chat flotante dentro del panel (`Asistente IA`, abajo a la derecha). Ayuda a
-redactar correos y propuestas, resumir textos, revisar redacciones y pensar ideas
-comerciales. Responde en español y conoce las secciones del panel.
+Un chat dentro del panel (`Asistente IA`). En escritorio se abre desde el botón de
+la barra de contexto, arriba a la derecha; en móvil, desde el icono de destellos
+de la cabecera fija.
+Ayuda a redactar correos y propuestas, resumir textos, revisar redacciones y pensar
+ideas comerciales. Responde en español y conoce las secciones del panel.
 
 **Importante:** no tiene acceso a la base de datos. No ve clientes, facturas,
 pagos, montos ni conversaciones anteriores. Si necesitas analizar datos, hay que
@@ -30,7 +32,8 @@ pegarlos en el chat.
 ## Cómo se usa
 
 1. Entra al panel con tu cuenta.
-2. Pulsa el botón azul **Asistente IA** (abajo a la derecha).
+2. Pulsa **Asistente IA** en la barra de contexto (escritorio) o el icono de
+   destellos de la cabecera (móvil).
 3. Escribe y pulsa **Enter**; usa **Shift + Enter** para un salto de línea.
 4. Los botones de sugerencia del inicio sirven para empezar rápido.
 5. `Nueva conversación` (flecha circular) borra el chat actual de la pantalla.
