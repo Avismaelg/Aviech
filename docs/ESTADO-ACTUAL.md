@@ -8,8 +8,8 @@
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
-  en el commit de cierre de esa sesión; 5.ª sesión: **asistente de IA** en el
-  commit de cierre de esta sesión).
+  en el commit de cierre de esa sesión; 5.ª sesión: **asistente de IA** en
+  `6344d13`).
 - **Asistente IA (5.ª sesión, 19-oct):** chat flotante dentro del panel (botón azul
   abajo a la derecha; hoja inferior en móvil). Usa **Cloudflare Workers AI** con el
   modelo `@cf/google/gemma-4-26b-a4b-it`, binding `AI` en `wrangler.jsonc`, **sin
