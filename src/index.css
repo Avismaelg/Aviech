@@ -1,26 +1,28 @@
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/sora";
 @import "tailwindcss";
 
-/* ---------- Tokens del tema (azul profesional) ----------
+/* ---------- Tokens del tema (claro, tipo app) ----------
    Las utilidades (bg-superficie, text-tinta, border-borde…) usan estas
    variables. En impresión y dentro de .documento-factura se redefinen a
-   valores claros, así los reportes y las facturas imprimen perfectos. */
+   valores de papel, así los reportes y las facturas imprimen perfectos. */
 @theme {
-  --color-fondo: #070c17;
-  --color-superficie: #0e1626;
-  --color-superficie-2: #172136;
-  --color-borde: #22304b;
-  --color-borde-suave: #19233a;
-  --color-tinta: #f2f5fa;
-  --color-tinta-suave: #9fb0ca;
-  --color-tinta-tenue: #7b8aa5;
+  --color-fondo: #f4f6fa;
+  --color-superficie: #ffffff;
+  --color-superficie-2: #edf1f7;
+  --color-borde: #dbe3ee;
+  --color-borde-suave: #e9eef5;
+  --color-tinta: #0d1b33;
+  --color-tinta-suave: #4d5d75;
+  --color-tinta-tenue: #79879d;
 
-  /* Tipografía: Inter (recomendada por el motor de diseño para paneles financieros) */
+  /* Cuerpo: Inter. Titulares: Sora (más geométrica y con carácter). */
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Sora Variable', 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
@@ -34,18 +36,28 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background-color: var(--color-fondo);
-  background-image: radial-gradient(52rem 28rem at 50% -12%, rgb(37 99 235 / 0.12), transparent 62%);
+  background-image:
+    radial-gradient(48rem 26rem at 10% -10%, rgb(37 99 235 / 0.1), transparent 62%),
+    radial-gradient(40rem 24rem at 96% -14%, rgb(14 165 233 / 0.08), transparent 60%);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.018em;
+}
+
 ::selection {
-  background: rgb(37 99 235 / 0.35);
+  background: rgb(37 99 235 / 0.18);
 }
 
 /* Accesibilidad: anillo de foco visible al navegar con teclado */
 :where(a, button, [role='button'], summary):focus-visible {
-  outline: 2px solid rgb(96 165 250 / 0.9);
+  outline: 2px solid rgb(37 99 235 / 0.85);
   outline-offset: 2px;
 }
 
@@ -62,7 +74,7 @@ body {
   --color-tinta-tenue: #64748b;
 }
 
-/* ---------- Animaciones sutiles (estilo tecnológico) ---------- */
+/* ---------- Animaciones sutiles ---------- */
 
 @keyframes aparecer {
   from {
@@ -162,7 +174,7 @@ body {
 /* Barra de desplazamiento discreta */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(71 85 105 / 0.55) transparent;
+  scrollbar-color: rgb(100 116 139 / 0.35) transparent;
 }
 
 /* ---------- Impresión (reportes y facturas en claro) ---------- */

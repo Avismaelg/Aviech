@@ -112,7 +112,7 @@ export function Gastos() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-400/10 text-rose-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-700">
             <TrendingDown size={17} />
           </span>
           <div>
@@ -169,7 +169,7 @@ export function Gastos() {
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((gasto) => (
               <li key={gasto.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-400/10 text-rose-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-700">
                   <Receipt size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -180,7 +180,7 @@ export function Gastos() {
                       .join(' · ')}
                   </p>
                 </div>
-                <span className="shrink-0 text-sm font-semibold text-rose-300 tabular-nums">{formatoDinero(gasto.monto)}</span>
+                <span className="shrink-0 text-sm font-semibold text-rose-700 tabular-nums">{formatoDinero(gasto.monto)}</span>
                 <div className="hidden shrink-0 sm:block">
                   <Insignia color={colorCategoriaGasto[gasto.categoria] ?? 'slate'}>
                     {etiquetaCategoriaGasto[gasto.categoria] ?? gasto.categoria}
@@ -193,7 +193,7 @@ export function Gastos() {
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(gasto)}
-                    className="hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-50 hover:text-red-700"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>

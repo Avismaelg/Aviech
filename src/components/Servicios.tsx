@@ -167,7 +167,7 @@ export function Servicios() {
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((servicio) => (
               <li key={servicio.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-400/10 text-sky-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sky-700">
                   <Briefcase size={15} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -196,7 +196,7 @@ export function Servicios() {
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(servicio)}
-                    className="hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-50 hover:text-red-700"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>
@@ -229,7 +229,7 @@ export function Servicios() {
             </Selector>
           </Campo>
           {clientes.length === 0 && (
-            <p className="rounded-lg border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-xs text-amber-300 sm:col-span-2">
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
               Todavía no hay clientes. Crea uno primero en la sección «Clientes».
             </p>
           )}

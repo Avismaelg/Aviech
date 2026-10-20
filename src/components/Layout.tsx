@@ -1,7 +1,7 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, FileText, Handshake, LayoutDashboard, LogOut, Radar, Receipt, ReceiptText, SearchCheck, Target, Users, Wallet } from 'lucide-react'
+import { Briefcase, FileText, Handshake, LayoutDashboard, LogOut, Menu, Radar, Receipt, ReceiptText, SearchCheck, Target, Users, Wallet, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { Fragment, useState, type ReactNode } from 'react'
 import { cx } from '../lib/estilos'
 import { supabase } from '../lib/supabase'
 
@@ -50,111 +50,141 @@ export function Layout({
   children: ReactNode
 }) {
   const correo = sesion.user.email ?? ''
+  const inicial = correo.charAt(0).toUpperCase() || '?'
+  const [menuAbierto, setMenuAbierto] = useState(false)
+
+  function irA(destino: Seccion) {
+    setMenuAbierto(false)
+    onSeccion(destino)
+  }
 
   return (
     <div className="min-h-screen text-tinta">
-      {/* Barra lateral (escritorio) */}
-      <aside className="no-imprimir fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-borde bg-[#0a101d] md:flex">
-        <div className="flex items-center gap-2.5 px-5 py-5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 text-lg font-bold text-white shadow-sm ring-1 ring-white/15">
-            A
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-white">AviTech</p>
-            <p className="text-[11px] text-slate-400">Panel interno</p>
-          </div>
-        </div>
-
-        <nav aria-label="Secciones" className="mt-2 flex-1 overflow-y-auto px-3 pb-4">
-          {GRUPOS.map((grupo) => (
-            <div key={grupo} className="pb-2">
-              <p className="px-3 pt-4 pb-1.5 text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase">{grupo}</p>
-              <div className="space-y-0.5">
-                {NAVEGACION.filter((item) => item.grupo === grupo).map(({ id, etiqueta, Icono }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => onSeccion(id)}
-                    aria-current={seccion === id ? 'page' : undefined}
-                    className={cx(
-                      'relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150',
-                      seccion === id
-                        ? 'bg-blue-500/10 text-white shadow-[inset_0_0_0_1px_rgba(59,130,246,0.28)]'
-                        : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100',
-                    )}
-                  >
-                    {seccion === id && (
-                      <span aria-hidden className="absolute top-1/2 left-0 h-4 w-1 -translate-y-1/2 rounded-r-full bg-blue-400" />
-                    )}
-                    <Icono size={17} className={seccion === id ? 'text-blue-300' : ''} />
-                    {etiqueta}
-                  </button>
-                ))}
-              </div>
+      {/* Barra superior: marca, cuenta y navegación en una sola pieza */}
+      <header className="no-imprimir sticky top-0 z-40 border-b border-borde bg-superficie shadow-[0_1px_0_rgba(15,23,42,0.02)]">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-sm font-bold text-white shadow-sm shadow-blue-600/25">
+              A
+            </span>
+            <div className="min-w-0 leading-tight">
+              <p className="font-display truncate text-sm font-semibold tracking-tight text-tinta">AviTech</p>
+              <p className="hidden text-[11px] text-tinta-tenue sm:block">Panel interno</p>
             </div>
-          ))}
-        </nav>
+          </div>
 
-        <div className="border-t border-borde p-3">
-          <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-500/15 text-xs font-semibold text-blue-300 uppercase ring-1 ring-blue-400/25">
-              {correo.charAt(0) || '?'}
-            </span>
-            <span className="min-w-0 flex-1 truncate text-xs text-slate-400" title={correo}>
-              {correo}
-            </span>
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-[11px] font-semibold text-blue-700 uppercase ring-1 ring-blue-100">
+                {inicial}
+              </span>
+              <span className="hidden max-w-44 truncate text-xs text-tinta-suave md:block" title={correo}>
+                {correo}
+              </span>
+            </div>
+            <span aria-hidden className="hidden h-5 w-px bg-borde md:block" />
             <button
               type="button"
               onClick={salir}
               title="Cerrar sesión"
-              aria-label="Cerrar sesión"
-              className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-white/5 hover:text-white"
+              className="flex items-center gap-1.5 rounded-full border border-borde px-2.5 py-1.5 text-xs font-medium text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta"
             >
-              <LogOut size={15} />
+              <LogOut size={14} />
+              <span className="hidden sm:inline">Salir</span>
+              <span className="sr-only sm:hidden">Cerrar sesión</span>
             </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Barra superior (móvil) */}
-      <header className="no-imprimir sticky top-0 z-40 border-b border-borde bg-[#0a101d] md:hidden">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 text-sm font-bold text-white ring-1 ring-white/15">
-              A
-            </span>
-            <span className="text-sm font-semibold text-white">AviTech</span>
-          </div>
-          <button
-            type="button"
-            onClick={salir}
-            className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:bg-white/5"
-          >
-            <LogOut size={13} /> Salir
-          </button>
-        </div>
-        <nav aria-label="Secciones" className="sin-barra mascara-desvanecida flex gap-1 overflow-x-auto px-3 pb-2">
-          {NAVEGACION.map(({ id, etiqueta, Icono }) => (
             <button
-              key={id}
               type="button"
-              onClick={() => onSeccion(id)}
-              aria-current={seccion === id ? 'page' : undefined}
-              className={cx(
-                'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150',
-                seccion === id
-                  ? 'bg-blue-500/15 text-white shadow-[inset_0_0_0_1px_rgba(59,130,246,0.35)]'
-                  : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-200',
-              )}
+              onClick={() => setMenuAbierto((valor) => !valor)}
+              aria-expanded={menuAbierto}
+              aria-controls="menu-movil"
+              aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-borde text-tinta-suave transition-colors hover:bg-superficie-2 hover:text-tinta lg:hidden"
             >
-              <Icono size={14} /> {etiqueta}
+              {menuAbierto ? <X size={17} /> : <Menu size={17} />}
             </button>
+          </div>
+        </div>
+
+        <nav
+          aria-label="Secciones"
+          className="sin-barra mx-auto hidden max-w-7xl items-center gap-1 overflow-x-auto px-3 pb-2 sm:px-5 lg:flex lg:px-7"
+        >
+          {GRUPOS.map((grupo, indice) => (
+            <Fragment key={grupo}>
+              {indice > 0 && <span aria-hidden className="mx-1.5 h-4 w-px shrink-0 bg-borde" />}
+              <span
+                aria-hidden
+                className="hidden shrink-0 pr-0.5 pl-1 text-[10px] font-semibold tracking-[0.14em] text-tinta-tenue uppercase xl:inline"
+              >
+                {grupo}
+              </span>
+              {NAVEGACION.filter((item) => item.grupo === grupo).map(({ id, etiqueta }) => {
+                const activo = seccion === id
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => onSeccion(id)}
+                    aria-current={activo ? 'page' : undefined}
+                    className={cx(
+                      'shrink-0 rounded-full px-3 py-1.5 text-[13px] font-medium whitespace-nowrap transition-colors duration-150',
+                      activo
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/25'
+                        : 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
+                    )}
+                  >
+                    {etiqueta}
+                  </button>
+                )
+              })}
+            </Fragment>
           ))}
         </nav>
+
+        {/* Menú de secciones para móvil y tablet */}
+        {menuAbierto && (
+          <div
+            id="menu-movil"
+            className="animar-fundido max-h-[calc(100vh-3.5rem)] overflow-y-auto border-t border-borde bg-superficie px-4 pt-3 pb-5 shadow-lg shadow-slate-900/5 sm:px-6 lg:hidden"
+          >
+            <p className="mb-3 truncate text-xs text-tinta-tenue" title={correo}>
+              {correo}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {GRUPOS.map((grupo) => (
+                <div key={grupo}>
+                  <p className="mb-1.5 px-1 text-[10px] font-semibold tracking-[0.14em] text-tinta-tenue uppercase">{grupo}</p>
+                  <div className="grid grid-cols-2 gap-1">
+                    {NAVEGACION.filter((item) => item.grupo === grupo).map(({ id, etiqueta }) => {
+                      const activo = seccion === id
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => irA(id)}
+                          aria-current={activo ? 'page' : undefined}
+                          className={cx(
+                            'rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors',
+                            activo
+                              ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20'
+                              : 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
+                          )}
+                        >
+                          {etiqueta}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
-      <main className="area-impresion md:pl-60">
-        <div className="area-impresion-contenido mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">{children}</div>
+      <main className="area-impresion">
+        <div className="area-impresion-contenido mx-auto max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8">{children}</div>
       </main>
     </div>
   )

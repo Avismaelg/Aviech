@@ -32,14 +32,14 @@ export function ProveedorAvisos({ children }: { children: ReactNode }) {
           <div
             key={aviso.id}
             className={cx(
-              'animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-lg border bg-superficie/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl',
-              aviso.tipo === 'ok' ? 'border-emerald-400/30' : 'border-red-400/30',
+              'animar-aviso pointer-events-auto flex items-start gap-2.5 rounded-xl border bg-superficie/95 px-4 py-3 shadow-xl shadow-slate-900/15 backdrop-blur-xl',
+              aviso.tipo === 'ok' ? 'border-emerald-200' : 'border-red-200',
             )}
           >
             {aviso.tipo === 'ok' ? (
-              <CircleCheck size={18} className="mt-0.5 shrink-0 text-emerald-400" />
+              <CircleCheck size={18} className="mt-0.5 shrink-0 text-emerald-600" />
             ) : (
-              <CircleAlert size={18} className="mt-0.5 shrink-0 text-red-400" />
+              <CircleAlert size={18} className="mt-0.5 shrink-0 text-red-600" />
             )}
             <p className="text-sm text-tinta">{aviso.texto}</p>
           </div>

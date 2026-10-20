@@ -200,7 +200,7 @@ export function Prospeccion({ onIrAlCrm }: { onIrAlCrm?: () => void }) {
           </div>
         </form>
         {errorUrl ? (
-          <p id="prospeccion-error" className="mt-2 text-xs text-red-300">
+          <p id="prospeccion-error" className="mt-2 text-xs text-red-700">
             {errorUrl}
           </p>
         ) : (
@@ -235,7 +235,7 @@ export function Prospeccion({ onIrAlCrm }: { onIrAlCrm?: () => void }) {
 
       <Modal abierto={modalAbierto} titulo="Guardar en el CRM" onCerrar={() => setModalAbierto(false)}>
         {empresaExistente && (
-          <p className="mb-4 rounded-lg border border-sky-400/25 bg-sky-400/10 px-3 py-2 text-xs text-sky-200">
+          <p className="mb-4 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-700">
             Ya tienes «{empresaExistente.nombre}» en el CRM: solo se añadirá el contacto a esa empresa.
           </p>
         )}
@@ -383,7 +383,7 @@ function Resultado({
             href={datos.urlFinal}
             target="_blank"
             rel="noreferrer"
-            className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-blue-300 transition-colors hover:text-blue-200"
+            className="mt-1 inline-flex max-w-full items-center gap-1 text-xs text-blue-700 transition-colors hover:text-blue-700"
           >
             <span className="truncate">{datos.urlFinal}</span>
             <ExternalLink size={12} aria-hidden className="shrink-0" />
@@ -400,9 +400,9 @@ function Resultado({
               <li key={hallazgo.valor}>
                 <a
                   href={`mailto:${hallazgo.valor}`}
-                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-blue-200"
+                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-blue-700"
                 >
-                  <AtSign size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-blue-300" />
+                  <AtSign size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-blue-700" />
                   <span className="truncate">{hallazgo.valor}</span>
                 </a>
                 {hallazgo.origen && <p className="pl-6 text-[11px] text-tinta-tenue">en {hallazgo.origen}</p>}
@@ -415,9 +415,9 @@ function Resultado({
               <li key={hallazgo.valor}>
                 <a
                   href={`tel:${hallazgo.valor.replace(/[^\d+]/g, '')}`}
-                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-blue-200"
+                  className="group flex items-center gap-2 text-sm text-tinta transition-colors hover:text-blue-700"
                 >
-                  <Phone size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-blue-300" />
+                  <Phone size={14} aria-hidden className="shrink-0 text-tinta-tenue group-hover:text-blue-700" />
                   <span className="truncate">{hallazgo.valor}</span>
                 </a>
                 {hallazgo.origen && <p className="pl-6 text-[11px] text-tinta-tenue">en {hallazgo.origen}</p>}
@@ -441,8 +441,8 @@ function Resultado({
                   className={cx(
                     'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs transition-colors',
                     hallazgo.red === 'WhatsApp'
-                      ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200 hover:bg-emerald-400/20'
-                      : 'border-borde bg-superficie-2/60 text-tinta-suave hover:border-blue-400/30 hover:text-tinta',
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50'
+                      : 'border-borde bg-superficie-2/60 text-tinta-suave hover:border-blue-200 hover:text-tinta',
                   )}
                 >
                   {hallazgo.red}
@@ -459,7 +459,7 @@ function Resultado({
           <h3 className="text-sm font-semibold text-tinta">Guardar en el CRM</h3>
           {guardadoNombre ? (
             <>
-              <p className="mt-2 flex items-start gap-2 text-xs text-emerald-300">
+              <p className="mt-2 flex items-start gap-2 text-xs text-emerald-700">
                 <CircleCheck size={14} aria-hidden className="mt-0.5 shrink-0" />
                 «{guardadoNombre}» y su contacto ya están en el CRM.
               </p>
@@ -522,7 +522,7 @@ function BloqueHallazgos({
   return (
     <section className={className}>
       <h4 className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.14em] text-tinta-tenue uppercase">
-        <span className="text-blue-300">{icono}</span>
+        <span className="text-blue-700">{icono}</span>
         {titulo}
       </h4>
       {sinDatos ? (

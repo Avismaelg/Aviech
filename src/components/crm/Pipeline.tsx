@@ -255,7 +255,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                     onDrop={(evento) => soltar(evento, etapa)}
                     className={cx(
                       'w-64 shrink-0 rounded-xl border bg-superficie/60 transition-colors',
-                      columnaActiva === etapa ? 'border-blue-400/40 bg-blue-400/5' : 'border-borde',
+                      columnaActiva === etapa ? 'border-blue-200 bg-blue-400/5' : 'border-borde',
                     )}
                   >
                     <div className="flex items-center gap-2 border-b border-borde-suave px-3 py-2.5">
@@ -322,7 +322,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
                             }}
                             aria-label={`Eliminar ${oportunidad.titulo}`}
                             title="Eliminar"
-                            className="absolute top-2 right-2 rounded-md p-1.5 text-tinta-tenue opacity-100 transition-opacity hover:bg-red-400/10 hover:text-red-300 focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+                            className="absolute top-2 right-2 rounded-md p-1.5 text-tinta-tenue opacity-100 transition-opacity hover:bg-red-50 hover:text-red-700 focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                           >
                             <Trash2 size={13} />
                           </button>
@@ -381,7 +381,7 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
             </Selector>
           </Campo>
           {empresas.length === 0 && (
-            <p className="rounded-lg border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-xs text-amber-300 sm:col-span-2">
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 sm:col-span-2">
               No hay empresas registradas. Crea una primero para poder guardar la oportunidad.{' '}
               <button
                 type="button"
@@ -442,9 +442,9 @@ export function Pipeline({ oportunidades, empresas, contactos, refrescar, onIrAE
             />
           </Campo>
           {formulario.etapa === 'ganado' && empresaSeleccionada && !empresaSeleccionada.cliente_id && (
-            <div className="rounded-lg border border-emerald-400/25 bg-emerald-400/10 p-3 sm:col-span-2">
-              <p className="text-sm font-medium text-emerald-200">Oportunidad ganada</p>
-              <p className="mt-0.5 text-xs text-emerald-200/80">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 sm:col-span-2">
+              <p className="text-sm font-medium text-emerald-700">Oportunidad ganada</p>
+              <p className="mt-0.5 text-xs text-emerald-700/80">
                 Convierte {empresaSeleccionada.nombre} en cliente para empezar a facturarle.
               </p>
               <Boton

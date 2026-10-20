@@ -11,7 +11,7 @@ y reportes, con tablero de resumen. Pensado para **República Dominicana**: mont
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
-Interfaz **oscura profesional** (v2 «Azul»): superficies sólidas con bordes finos, un solo acento azul, cifras tabulares y barra lateral con grupos.
+Interfaz **clara profesional** (v3 «Claro»): tema luminoso tipo app, navegación superior con grupos, tarjetas blancas, titulares Sora, un solo acento azul y menú móvil desplegable.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
@@ -82,7 +82,7 @@ Copia semanal automática de la base (lunes ~1:00 PM, hora de República Dominic
 src/
   App.tsx                 # sesión de Supabase → Login o panel
   components/
-    Layout.tsx            # barra lateral + navegación
+    Layout.tsx            # barra superior + navegación (menú en móvil)
     Inicio.tsx            # tablero: contadores, gráfica, anillo de cobro y balance
     Clientes.tsx          # CRUD de clientes (con RNC)
     crm/

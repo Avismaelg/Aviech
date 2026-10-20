@@ -139,7 +139,7 @@ export function Crm() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-400/10 text-blue-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
             <Target size={17} />
           </span>
           <div>
@@ -151,7 +151,7 @@ export function Crm() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-400/10 text-sky-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-700">
             <Gauge size={17} />
           </span>
           <div>
@@ -161,7 +161,7 @@ export function Crm() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
             <Trophy size={17} />
           </span>
           <div>
@@ -173,13 +173,13 @@ export function Crm() {
           </div>
         </Tarjeta>
         <Tarjeta className="flex items-center gap-3 p-3.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-400/10 text-amber-300">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
             <CalendarClock size={17} />
           </span>
           <div>
             <p className="text-xs text-tinta-suave">Actividades pendientes</p>
             <p className="text-base font-semibold text-tinta">{pendientes}</p>
-            <p className={cx('text-xs', atrasadas > 0 ? 'text-red-300' : 'text-tinta-tenue')}>
+            <p className={cx('text-xs', atrasadas > 0 ? 'text-red-700' : 'text-tinta-tenue')}>
               {atrasadas > 0 ? `${atrasadas} atrasada${atrasadas === 1 ? '' : 's'}` : 'al día'}
             </p>
           </div>
@@ -190,7 +190,7 @@ export function Crm() {
         role="tablist"
         aria-label="Secciones del CRM"
         onKeyDown={alTeclearPestana}
-        className="mb-4 flex gap-1 overflow-x-auto rounded-lg border border-borde bg-superficie/70 p-1"
+        className="mb-4 flex gap-1 overflow-x-auto rounded-2xl border border-borde bg-superficie p-1 shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
       >
         {PESTANAS.map(({ id, etiqueta }) => {
           const activa = pestana === id
@@ -205,9 +205,9 @@ export function Crm() {
               tabIndex={activa ? 0 : -1}
               onClick={() => setPestana(id)}
               className={cx(
-                'flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150',
+                'flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-150',
                 activa
-                  ? 'bg-blue-500/15 text-white shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]'
+                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20'
                   : 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
               )}
             >
@@ -215,7 +215,7 @@ export function Crm() {
               <span
                 className={cx(
                   'rounded-full px-1.5 py-0.5 text-[10px] tabular-nums',
-                  activa ? 'bg-blue-400/15 text-blue-200' : 'bg-superficie-2 text-tinta-tenue',
+                  activa ? 'bg-white/20 text-white' : 'bg-superficie-2 text-tinta-tenue',
                 )}
               >
                 {contadores[id]}

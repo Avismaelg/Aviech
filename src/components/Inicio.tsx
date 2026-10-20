@@ -44,21 +44,23 @@ function TarjetaDato({
 }) {
   const animado = useContador(valor)
   return (
-    <Tarjeta className="group p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400/30 hover:shadow-lg hover:shadow-blue-950/40">
-      <div className="flex items-center gap-3">
+    <Tarjeta className="group p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg hover:shadow-slate-900/5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-tinta-suave">{titulo}</p>
+          <p className={cx('mt-2.5 truncate text-[26px] leading-none font-semibold tabular-nums', claseValor ?? 'text-tinta')}>
+            {formatear(animado)}
+          </p>
+          {detalle && <p className="mt-2 truncate text-[11px] text-tinta-tenue">{detalle}</p>}
+        </div>
         <span
           className={cx(
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-transform duration-200 group-hover:scale-105',
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105',
             claseIcono,
           )}
         >
           <Icono size={19} />
         </span>
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-tinta-suave">{titulo}</p>
-          <p className={cx('truncate text-lg font-semibold tabular-nums', claseValor ?? 'text-tinta')}>{formatear(animado)}</p>
-          {detalle && <p className="truncate text-[11px] text-tinta-tenue">{detalle}</p>}
-        </div>
       </div>
     </Tarjeta>
   )
@@ -96,18 +98,18 @@ function GraficoIngresos({ serie }: { serie: PuntoSerie[] }) {
       {serie.map((punto) => (
         <div key={punto.clave} className="group flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="relative flex-1">
-            <div className="pointer-events-none absolute -top-4 left-1/2 z-10 -translate-x-1/2 rounded-md bg-superficie-2 px-2 py-1 text-[10px] font-medium whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
+            <div className="pointer-events-none absolute -top-4 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-slate-900 px-2 py-1 text-[10px] font-medium whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
               {formatoDinero(punto.valor)}
             </div>
             <div
               className={cx(
-                'animar-barra absolute right-0 bottom-0 left-0 rounded-t-md bg-gradient-to-t from-blue-600 to-cyan-400 shadow-[0_0_24px_rgba(129,140,248,0.3)] transition-[filter] duration-150 group-hover:brightness-110',
-                punto.actual && 'from-blue-500 to-cyan-300',
+                'animar-barra absolute right-0 bottom-0 left-0 rounded-t-md bg-gradient-to-t from-blue-600 to-cyan-400 shadow-[0_10px_24px_-14px_rgba(37,99,235,0.55)] transition-[filter] duration-150 group-hover:brightness-105',
+                punto.actual && 'from-blue-700 to-cyan-500',
               )}
               style={{ height: `${Math.max((punto.valor / maximo) * 100, punto.valor > 0 ? 8 : 3)}%` }}
             />
           </div>
-          <span className={cx('text-center text-[10px]', punto.actual ? 'font-semibold text-blue-300' : 'text-tinta-tenue')}>
+          <span className={cx('text-center text-[10px]', punto.actual ? 'font-semibold text-blue-700' : 'text-tinta-tenue')}>
             {punto.etiqueta}
           </span>
         </div>
@@ -136,11 +138,11 @@ function AnilloCobro({ cobrado, porCobrar }: { cobrado: number; porCobrar: numbe
         <svg viewBox="0 0 100 100" className="h-32 w-32 -rotate-90">
           <defs>
             <linearGradient id="gradiente-anillo" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#6366f1" />
-              <stop offset="100%" stopColor="#a78bfa" />
+              <stop offset="0%" stopColor="#2563eb" />
+              <stop offset="100%" stopColor="#22d3ee" />
             </linearGradient>
           </defs>
-          <circle cx="50" cy="50" r={radio} fill="none" strokeWidth="9" className="stroke-white/10" />
+          <circle cx="50" cy="50" r={radio} fill="none" strokeWidth="9" className="stroke-slate-200" />
           <circle
             cx="50"
             cy="50"
@@ -162,11 +164,11 @@ function AnilloCobro({ cobrado, porCobrar }: { cobrado: number; porCobrar: numbe
       <dl className="w-full space-y-1.5 text-sm">
         <div className="flex items-center justify-between gap-2">
           <dt className="text-tinta-suave">Cobrado (histórico)</dt>
-          <dd className="font-semibold text-emerald-300 tabular-nums">{formatoDinero(cobrado)}</dd>
+          <dd className="font-semibold text-emerald-700 tabular-nums">{formatoDinero(cobrado)}</dd>
         </div>
         <div className="flex items-center justify-between gap-2">
           <dt className="text-tinta-suave">Por cobrar</dt>
-          <dd className="font-semibold text-amber-300 tabular-nums">{formatoDinero(porCobrar)}</dd>
+          <dd className="font-semibold text-amber-700 tabular-nums">{formatoDinero(porCobrar)}</dd>
         </div>
         <div className="flex items-center justify-between gap-2 border-t border-borde-suave pt-1.5">
           <dt className="text-tinta-suave">Facturado</dt>
@@ -208,7 +210,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
       <section>
         <CabeceraSeccion titulo={`Hola, ${nombre}`} descripcion="Resumen general de AviTech." />
         <Tarjeta>
-          <div className="p-6 text-sm text-amber-200">
+          <div className="p-6 text-sm text-amber-700">
             Alguna tabla todavía no existe en la base de datos. Aplica las migraciones: GitHub → Actions → «Migrar base de datos» →
             Run workflow.
           </div>
@@ -268,33 +270,38 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
 
   return (
     <section>
-      <CabeceraSeccion titulo={`Hola, ${nombre}`} descripcion="Este es el resumen de AviTech hoy." />
-
-      <div className="mb-6 flex flex-wrap gap-2">
-        <Boton onClick={() => onIr('clientes')}>
-          <Plus size={16} /> Cliente
-        </Boton>
-        <Boton variante="secundario" onClick={() => onIr('servicios')}>
-          <Plus size={16} /> Servicio
-        </Boton>
-        <Boton variante="secundario" onClick={() => onIr('pagos')}>
-          <Plus size={16} /> Pago
-        </Boton>
-        <Boton variante="secundario" onClick={() => onIr('facturacion')}>
-          <Plus size={16} /> Factura
-        </Boton>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="mb-1.5 text-[11px] font-semibold tracking-[0.16em] text-blue-700 uppercase">Resumen de hoy</p>
+          <h2 className="text-[30px] leading-tight font-semibold tracking-tight text-tinta sm:text-[34px]">Hola, {nombre}</h2>
+          <p className="mt-1.5 text-sm text-tinta-suave">Este es el pulso de AviTech hoy.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Boton onClick={() => onIr('clientes')}>
+            <Plus size={16} /> Cliente
+          </Boton>
+          <Boton variante="secundario" onClick={() => onIr('servicios')}>
+            <Plus size={16} /> Servicio
+          </Boton>
+          <Boton variante="secundario" onClick={() => onIr('pagos')}>
+            <Plus size={16} /> Pago
+          </Boton>
+          <Boton variante="secundario" onClick={() => onIr('facturacion')}>
+            <Plus size={16} /> Factura
+          </Boton>
+        </div>
       </div>
 
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-400/20 bg-teal-400/[0.06] px-4 py-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-teal-200 bg-teal-50 px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-400/10 text-teal-300">
-            <Handshake size={17} />
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/80 text-teal-700 ring-1 ring-teal-200">
+            <Handshake size={18} />
           </span>
           <div>
-            <p className="text-xs text-tinta-suave">Ingreso mensual recurrente (igualas)</p>
-            <p className="text-base font-semibold text-tinta tabular-nums">
+            <p className="text-xs font-medium text-teal-800/80">Ingreso mensual recurrente (igualas)</p>
+            <p className="text-lg font-semibold text-tinta tabular-nums">
               {formatoDinero(ingresoRecurrente)}
-              <span className="ml-2 text-xs font-normal text-tinta-tenue">
+              <span className="ml-2 text-xs font-normal text-teal-800/70">
                 {igualasActivas.length} activa{igualasActivas.length === 1 ? '' : 's'} en {clientesConIguala} cliente
                 {clientesConIguala === 1 ? '' : 's'}
               </span>
@@ -304,7 +311,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         <button
           type="button"
           onClick={() => onIr('igualas')}
-          className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-teal-300 transition-colors hover:text-teal-200"
+          className="flex items-center gap-1 rounded-full px-2.5 py-1.5 text-xs font-semibold text-teal-800 transition-colors hover:bg-teal-100"
         >
           Ver igualas <ArrowRight size={13} />
         </button>
@@ -313,21 +320,21 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <TarjetaDato
           Icono={Users}
-          claseIcono="bg-blue-400/10 text-blue-300"
+          claseIcono="bg-blue-50 text-blue-700"
           titulo="Clientes activos"
           valor={activos}
           detalle={`de ${clientes.length} en total`}
         />
         <TarjetaDato
           Icono={Briefcase}
-          claseIcono="bg-sky-400/10 text-sky-300"
+          claseIcono="bg-sky-50 text-sky-700"
           titulo="Servicios en curso"
           valor={enCurso}
           detalle={`${pendientesServicio} ${pendientesServicio === 1 ? 'pendiente' : 'pendientes'} de iniciar`}
         />
         <TarjetaDato
           Icono={Banknote}
-          claseIcono="bg-emerald-400/10 text-emerald-300"
+          claseIcono="bg-emerald-50 text-emerald-700"
           titulo="Cobrado este mes"
           valor={cobradoMes}
           formatear={(numero) => formatoDinero(Math.round(numero))}
@@ -335,7 +342,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         />
         <TarjetaDato
           Icono={Clock}
-          claseIcono="bg-amber-400/10 text-amber-300"
+          claseIcono="bg-amber-50 text-amber-700"
           titulo="Por cobrar"
           valor={porCobrar}
           formatear={(numero) => formatoDinero(Math.round(numero))}
@@ -343,7 +350,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         />
         <TarjetaDato
           Icono={TrendingDown}
-          claseIcono="bg-rose-400/10 text-rose-300"
+          claseIcono="bg-rose-50 text-rose-700"
           titulo="Gastos este mes"
           valor={gastosMes}
           formatear={(numero) => formatoDinero(Math.round(numero))}
@@ -351,25 +358,25 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         />
         <TarjetaDato
           Icono={PiggyBank}
-          claseIcono="bg-cyan-400/10 text-cyan-300"
+          claseIcono="bg-cyan-50 text-cyan-700"
           titulo="Balance del mes"
           valor={balanceMes}
           formatear={(numero) => formatoDinero(Math.round(numero))}
-          claseValor={balanceMes >= 0 ? 'text-emerald-300' : 'text-rose-300'}
+          claseValor={balanceMes >= 0 ? 'text-emerald-700' : 'text-rose-700'}
           detalle="Cobrado − gastos"
         />
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <Tarjeta className="lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-borde-suave px-4 py-3">
+          <div className="flex items-center justify-between border-b border-borde-suave px-5 py-4">
             <div>
-              <h3 className="text-sm font-semibold text-tinta">Ingresos últimos 6 meses</h3>
+              <h3 className="text-[15px] font-semibold text-tinta">Ingresos últimos 6 meses</h3>
               <p className="mt-0.5 text-xs text-tinta-tenue">
                 Total del periodo: <span className="font-medium text-tinta-suave">{formatoDinero(totalPeriodo)}</span>
               </p>
             </div>
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
               <TrendingUp size={17} />
             </span>
           </div>
@@ -377,8 +384,8 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         </Tarjeta>
 
         <Tarjeta>
-          <div className="border-b border-borde-suave px-4 py-3">
-            <h3 className="text-sm font-semibold text-tinta">Estado de cobro</h3>
+          <div className="border-b border-borde-suave px-5 py-4">
+            <h3 className="text-[15px] font-semibold text-tinta">Estado de cobro</h3>
             <p className="mt-0.5 text-xs text-tinta-tenue">Pagado vs. pendiente (todo el historial)</p>
           </div>
           <AnilloCobro cobrado={cobradoHistorico} porCobrar={porCobrar} />
@@ -387,12 +394,12 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <Tarjeta>
-          <div className="flex items-center justify-between border-b border-borde-suave px-4 py-3">
-            <h3 className="text-sm font-semibold text-tinta">Últimos clientes</h3>
+          <div className="flex items-center justify-between border-b border-borde-suave px-5 py-4">
+            <h3 className="text-[15px] font-semibold text-tinta">Últimos clientes</h3>
             <button
               type="button"
               onClick={() => onIr('clientes')}
-              className="flex items-center gap-1 text-xs font-medium text-blue-300 hover:text-blue-200"
+              className="flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-blue-700 transition-colors hover:bg-blue-50"
             >
               Ver todos <ArrowRight size={13} />
             </button>
@@ -403,7 +410,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
             <ul className="divide-y divide-borde-suave">
               {recientes.map((cliente) => (
                 <li key={cliente.id} className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-superficie-2">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-400/10 text-[11px] font-semibold text-blue-300">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[11px] font-semibold text-blue-700">
                     {iniciales(cliente.nombre)}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -420,12 +427,12 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         </Tarjeta>
 
         <Tarjeta>
-          <div className="flex items-center justify-between border-b border-borde-suave px-4 py-3">
-            <h3 className="text-sm font-semibold text-tinta">Pagos pendientes</h3>
+          <div className="flex items-center justify-between border-b border-borde-suave px-5 py-4">
+            <h3 className="text-[15px] font-semibold text-tinta">Pagos pendientes</h3>
             <button
               type="button"
               onClick={() => onIr('pagos')}
-              className="flex items-center gap-1 text-xs font-medium text-blue-300 hover:text-blue-200"
+              className="flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-blue-700 transition-colors hover:bg-blue-50"
             >
               Ver todos <ArrowRight size={13} />
             </button>
@@ -443,7 +450,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
                       {diasDeAtraso(pago.fecha) > 0 && (
                         <>
                           {' · '}
-                          <span className="font-medium text-red-300">
+                          <span className="font-medium text-red-700">
                             vencido hace {diasDeAtraso(pago.fecha)} día{diasDeAtraso(pago.fecha) === 1 ? '' : 's'}
                           </span>
                         </>
@@ -453,7 +460,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
                   <span
                     className={cx(
                       'shrink-0 text-sm font-semibold tabular-nums',
-                      diasDeAtraso(pago.fecha) > 0 ? 'text-red-300' : 'text-tinta',
+                      diasDeAtraso(pago.fecha) > 0 ? 'text-red-700' : 'text-tinta',
                     )}
                   >
                     {formatoDinero(pago.monto)}

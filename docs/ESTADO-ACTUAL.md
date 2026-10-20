@@ -1,13 +1,14 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la cuarta sesión: PWA, pruebas y rediseño v2)
+> Última actualización: 19-oct-2026 (cierre de la cuarta sesión: rediseño v3 «Claro profesional»)
 
 ## 📌 Punto de continuación
 
 - **Todo guardado en GitHub:** `main` = `origin/main`, sin cambios pendientes
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
-  optimizaciones** en `83860bb` y **rediseño v2** en `88d9378`).
+  optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
+  en el commit de cierre de esta sesión).
 - **PWA con service worker (4.ª sesión):** el panel guarda su armazón y **abre sin
   conexión**; las visitas repetidas cargan al instante. La API y Supabase **nunca** entran
   en la caché. Verificado en producción (`/sw.js` servido y el bundle lo registra) y con la
@@ -15,11 +16,15 @@
 - **Pruebas completas (4.ª sesión):** las **4 pruebas** de navegador (CRM, Auditor SEO,
   Prospección y PWA) en verde, `npm run build` y `npm run lint` limpios, y el Worker
   re-probado contra sitios reales.
-- **Rediseño v2 «Azul profesional» (4.ª sesión):** toda la interfaz cambió de piel —
-  superficies sólidas con bordes finos, un solo acento azul (se retiraron las auroras y los
-  degradados violeta), barra lateral con grupos (Operación / Herramientas / Finanzas),
-  botones sólidos y cifras tabulares. Módulos, impresión y PWA intactos. Guía:
-  **`docs/DESIGN.md`**; capturas: `capturas-diseno` (acceso, tablero y móvil).
+- **Rediseño v3 «Claro profesional» (4.ª sesión, 19-oct noche):** la interfaz se rehízo
+  de verdad — tema **claro**, navegación **superior** con grupos y píldora azul, menú
+  desplegable en móvil/tablet, tarjetas blancas `rounded-2xl`, botones en píldora,
+  titulares **Sora** + cuerpo **Inter**, y **auto-actualización** de la PWA (el service
+  worker recarga una vez al detectar versión nueva). El tema oscuro v2 quedó descartado
+  por el usuario por percibirse «igual». Guía: **`docs/DESIGN.md`**.
+- **Pruebas del rediseño:** las **4 pruebas** (CRM, Auditor SEO, Prospección y PWA)
+  pasaron en verde con el nuevo tema (`build` y `lint` limpios). Capturas nuevas en
+  `capturas-diseno`, `capturas-crm`, `capturas-seo`, `capturas-prospeccion` y `capturas-pwa`.
 - **Prospección integrada y en vivo:** busca **correos, teléfonos y redes sociales** de una web
   (página principal + hasta 2 páginas de contacto) y con un clic los guarda como **empresa y
   contacto en el CRM**, avisando si la empresa ya existe. **Gratis y sin claves**; no necesitó
@@ -88,10 +93,10 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   anillo de estado de cobro, transiciones suaves y app instalable (PWA con **service worker**:
   se puede «Añadir a pantalla de inicio» y **abrir sin conexión**; las visitas repetidas
   cargan al instante).
-- **Interfaz v2 «Azul profesional»** (19-oct): superficies sólidas con bordes finos, un solo
-  acento azul (sin auroras ni degradados violeta), barra lateral con grupos
-  (Operación / Herramientas / Finanzas), botones sólidos, cifras tabulares y marca
-  `sky → blue`. La impresión y las facturas se mantienen en claro (las hojas salen perfectas).
+- **Interfaz v3 «Claro»** (19-oct): tema claro tipo app, navegación superior con grupos
+  (Operación / Herramientas / Finanzas), menú móvil desplegable, tarjetas blancas,
+  titulares Sora, botones en píldora, cifras tabulares y marca `sky → blue`. La impresión
+  y las facturas se mantienen en claro (las hojas salen perfectas).
 - **Mejora de interfaz integral** (19-oct, con el skill UI UX Pro Max): tipografía **Inter**
   autoalojada, foco visible en todo lo interactivo, acciones de tabla con etiqueta accesible
   (`BotonIcono`), modales con bloqueo del fondo y auto-foco, **login rediseñado** (panel de
@@ -220,8 +225,8 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 ## 📋 Próximos pasos
 
 1. **Rediseño de la interfaz (hecho, 19-oct):** se eligió el camino **(a)**: rediseñar el
-   panel actual (React) con UI UX Pro Max, sin migrar a Flutter. Entregado el tema v2 «Azul
-   profesional» (ver `docs/DESIGN.md`) y las 4 pruebas siguen en verde. Pendiente: tu visto
+   panel actual (React) con UI UX Pro Max, sin migrar a Flutter. Entregado el tema v3
+   «Claro profesional» (ver `docs/DESIGN.md`) y las 4 pruebas en verde. Pendiente: tu visto
    bueno y ajustes finos de gusto (matiz del azul, densidad, tamaños).
 2. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
    Dominicana = 17:00 UTC). Los del 19-oct se hicieron manuales (1:04 PM, 1:42 PM y

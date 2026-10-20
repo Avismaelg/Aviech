@@ -234,8 +234,8 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
                     className={cx(
                       'mt-0.5 shrink-0 rounded-full p-0.5 transition-colors',
                       actividad.completada
-                        ? 'text-emerald-300 hover:text-emerald-200'
-                        : 'text-tinta-tenue hover:text-blue-300',
+                        ? 'text-emerald-700 hover:text-emerald-700'
+                        : 'text-tinta-tenue hover:text-blue-700',
                     )}
                   >
                     {actividad.completada ? <CheckCircle2 size={19} /> : <Circle size={19} />}
@@ -243,7 +243,7 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
                   <span
                     className={cx(
                       'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                      actividad.completada ? 'bg-superficie-2 text-tinta-tenue' : 'bg-blue-400/10 text-blue-300',
+                      actividad.completada ? 'bg-superficie-2 text-tinta-tenue' : 'bg-blue-50 text-blue-700',
                     )}
                   >
                     <Icono size={15} />
@@ -272,7 +272,7 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
                     )}
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1">
-                    <span className={cx('text-xs', atrasada ? 'font-medium text-red-300' : 'text-tinta-tenue')}>
+                    <span className={cx('text-xs', atrasada ? 'font-medium text-red-700' : 'text-tinta-tenue')}>
                       {formatoFecha(actividad.fecha)}
                     </span>
                     {atrasada && <Insignia color="red">Atrasada</Insignia>}
@@ -284,7 +284,7 @@ export function Actividades({ actividades, oportunidades, contactos }: PropsActi
                     <BotonIcono
                       etiqueta="Eliminar"
                       onClick={() => setPorEliminar(actividad)}
-                      className="hover:bg-red-400/10 hover:text-red-300"
+                      className="hover:bg-red-50 hover:text-red-700"
                     >
                       <Trash2 size={15} />
                     </BotonIcono>

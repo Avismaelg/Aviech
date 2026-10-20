@@ -154,7 +154,7 @@ export function Clientes() {
           <ul className="divide-y divide-borde-suave">
             {filtrados.map((cliente) => (
               <li key={cliente.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-superficie-2">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-400/10 text-xs font-semibold text-blue-300">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-700">
                   {iniciales(cliente.nombre)}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -178,7 +178,7 @@ export function Clientes() {
                   <BotonIcono
                     etiqueta="Eliminar"
                     onClick={() => setPorEliminar(cliente)}
-                    className="hover:bg-red-400/10 hover:text-red-300"
+                    className="hover:bg-red-50 hover:text-red-700"
                   >
                     <Trash2 size={15} />
                   </BotonIcono>

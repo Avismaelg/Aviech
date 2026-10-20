@@ -13,11 +13,11 @@ import type { ColorInsignia } from '../lib/etiquetas'
 
 const variantesBoton = {
   primario:
-    'border border-blue-500/50 bg-blue-600 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_1px_2px_rgba(2,6,23,0.5)] hover:bg-blue-500',
+    'border border-blue-600 bg-blue-600 text-white shadow-sm shadow-blue-600/20 hover:border-blue-700 hover:bg-blue-700',
   secundario:
-    'border border-borde bg-superficie-2/50 text-tinta hover:border-blue-500/40 hover:bg-superficie-2',
+    'border border-borde bg-superficie text-tinta hover:border-slate-300 hover:bg-superficie-2',
   peligro:
-    'border border-red-500/50 bg-red-600 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] hover:bg-red-500',
+    'border border-red-600 bg-red-600 text-white shadow-sm shadow-red-600/20 hover:border-red-700 hover:bg-red-700',
   fantasma: 'text-tinta-suave hover:bg-superficie-2 hover:text-tinta',
 }
 
@@ -30,7 +30,7 @@ export function Boton({
     <button
       {...propiedades}
       className={cx(
-        'inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50',
         variantesBoton[variante],
         className,
       )}
@@ -51,7 +51,7 @@ export function BotonIcono({
       title={etiqueta}
       aria-label={etiqueta}
       className={cx(
-        'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-tinta-tenue transition-colors duration-150 hover:bg-superficie-2 hover:text-tinta disabled:cursor-not-allowed disabled:opacity-40',
+        'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-tinta-tenue transition-colors duration-150 hover:bg-superficie-2 hover:text-tinta disabled:cursor-not-allowed disabled:opacity-40',
         className,
       )}
     />
@@ -59,20 +59,20 @@ export function BotonIcono({
 }
 
 const coloresInsignia: Record<ColorInsignia, string> = {
-  emerald: 'border-emerald-400/25 bg-emerald-400/10 text-emerald-300',
-  amber: 'border-amber-400/25 bg-amber-400/10 text-amber-300',
-  sky: 'border-sky-400/25 bg-sky-400/10 text-sky-300',
-  red: 'border-red-400/25 bg-red-400/10 text-red-300',
-  slate: 'border-slate-400/20 bg-slate-400/10 text-slate-300',
-  blue: 'border-blue-400/25 bg-blue-400/10 text-blue-300',
-  cyan: 'border-cyan-400/25 bg-cyan-400/10 text-cyan-300',
+  emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  amber: 'border-amber-200 bg-amber-50 text-amber-700',
+  sky: 'border-sky-200 bg-sky-50 text-sky-700',
+  red: 'border-red-200 bg-red-50 text-red-700',
+  slate: 'border-slate-200 bg-slate-50 text-slate-700',
+  blue: 'border-blue-200 bg-blue-50 text-blue-700',
+  cyan: 'border-cyan-200 bg-cyan-50 text-cyan-700',
 }
 
 export function Insignia({ color = 'slate', children }: { color?: ColorInsignia; children: ReactNode }) {
   return (
     <span
       className={cx(
-        'insignia inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap',
+        'insignia inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap',
         coloresInsignia[color],
       )}
     >
@@ -85,7 +85,7 @@ export function Tarjeta({ className, children }: { className?: string; children:
   return (
     <div
       className={cx(
-        'rounded-xl border border-borde bg-superficie shadow-[0_1px_2px_rgba(2,6,23,0.35),0_18px_40px_-32px_rgba(2,6,23,0.9)]',
+        'rounded-2xl border border-borde bg-superficie shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-22px_rgba(15,23,42,0.18)]',
         className,
       )}
     >
@@ -98,8 +98,8 @@ export function CabeceraSeccion({ titulo, descripcion, acciones }: { titulo: str
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight text-tinta">{titulo}</h2>
-        {descripcion && <p className="mt-1 text-sm text-tinta-suave">{descripcion}</p>}
+        <h2 className="text-[27px] leading-tight font-semibold tracking-tight text-tinta sm:text-[30px]">{titulo}</h2>
+        {descripcion && <p className="mt-1.5 text-sm text-tinta-suave">{descripcion}</p>}
       </div>
       {acciones}
     </div>
@@ -109,7 +109,7 @@ export function CabeceraSeccion({ titulo, descripcion, acciones }: { titulo: str
 export function Campo({ etiqueta, className, children }: { etiqueta: string; className?: string; children: ReactNode }) {
   return (
     <label className={cx('block', className)}>
-      <span className="mb-1.5 block text-xs font-medium tracking-wide text-tinta-suave">{etiqueta}</span>
+      <span className="mb-1.5 block text-xs font-semibold text-tinta-suave">{etiqueta}</span>
       {children}
     </label>
   )
@@ -175,7 +175,7 @@ export function Modal({
     <div
       role="presentation"
       onMouseDown={onCerrar}
-      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-[#02060f]/80 p-4 backdrop-blur-sm sm:items-center"
+      className="animar-fundido fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 backdrop-blur-sm sm:items-center"
     >
       <div
         ref={contenedor}
@@ -184,7 +184,7 @@ export function Modal({
         aria-label={titulo}
         onMouseDown={(evento) => evento.stopPropagation()}
         className={cx(
-          'animar-modal max-h-[90vh] w-full overflow-y-auto rounded-xl border border-borde bg-superficie shadow-2xl shadow-black/50',
+          'animar-modal max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-borde bg-superficie shadow-2xl shadow-slate-900/25',
           ancho,
         )}
       >
@@ -194,7 +194,7 @@ export function Modal({
             type="button"
             onClick={onCerrar}
             aria-label="Cerrar"
-            className="rounded-lg p-1.5 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta"
+            className="rounded-full p-1.5 text-tinta-tenue transition-colors hover:bg-superficie-2 hover:text-tinta"
           >
             <X size={18} />
           </button>
@@ -248,10 +248,10 @@ export function Vacio({
 }) {
   return (
     <div className="flex flex-col items-center gap-1 px-6 py-14 text-center">
-      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl border border-borde-suave bg-superficie-2 text-tinta-tenue">
+      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-superficie-2 text-tinta-tenue">
         {icono}
       </div>
-      <p className="text-sm font-medium text-tinta">{titulo}</p>
+      <p className="text-sm font-semibold text-tinta">{titulo}</p>
       {texto && <p className="max-w-sm text-sm text-tinta-suave">{texto}</p>}
       {accion && <div className="mt-3">{accion}</div>}
     </div>
@@ -270,7 +270,7 @@ export function FilasCargando({ filas = 4 }: { filas?: number }) {
 
 export function ErrorTabla({ mensaje }: { mensaje: string }) {
   return (
-    <div className="m-4 rounded-lg border border-amber-400/25 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+    <div className="m-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
       {mensaje}
     </div>
   )

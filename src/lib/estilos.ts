@@ -5,4 +5,4 @@ export function cx(...clases: Array<string | false | null | undefined>): string 
 
 /** Clase base compartida por todos los campos de formulario. */
 export const claseEntrada =
-  'w-full rounded-lg border border-borde bg-fondo/60 px-3 py-2 text-sm text-tinta transition-colors placeholder:text-tinta-tenue hover:border-blue-500/30 focus:border-blue-500/70 focus:bg-fondo focus:outline-none focus:ring-2 focus:ring-blue-500/20'
+  'w-full rounded-xl border border-borde bg-superficie px-3.5 py-2.5 text-sm text-tinta shadow-[inset_0_1px_2px_rgba(15,23,42,0.03)] transition-colors placeholder:text-tinta-tenue hover:border-slate-300 focus:border-blue-500 focus:bg-superficie focus:outline-none focus:ring-4 focus:ring-blue-500/10'
