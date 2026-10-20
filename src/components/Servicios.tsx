@@ -1,5 +1,6 @@
-import { Briefcase, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { Bot, Briefcase, Download, FileText, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { useMemo, useState, type FormEvent } from 'react'
+import { descargarTexto } from '../lib/descargas'
 import {
   ESTADOS_SERVICIO,
   TIPOS_SERVICIO,
@@ -61,6 +62,7 @@ export function Servicios() {
   const [editandoId, setEditandoId] = useState<string | null>(null)
   const [formulario, setFormulario] = useState<FormularioServicio>(FORMULARIO_VACIO)
   const [porEliminar, setPorEliminar] = useState<Servicio | null>(null)
+  const [detalle, setDetalle] = useState<Servicio | null>(null)
   const [guardando, setGuardando] = useState(false)
 
   const filtrados = useMemo(() => {
@@ -172,10 +174,13 @@ export function Servicios() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-tinta">{servicio.titulo}</p>
-                  <p className="truncate text-xs text-tinta-suave">
-                    {[servicio.clientes?.nombre ?? 'Cliente', etiquetaTipoServicio[servicio.tipo] ?? servicio.tipo].join(
-                      ' · ',
-                    )}
+                  <p className="flex items-center gap-1.5 truncate text-xs text-tinta-suave">
+                    <span className="truncate">
+                      {[servicio.clientes?.nombre ?? 'Cliente', etiquetaTipoServicio[servicio.tipo] ?? servicio.tipo].join(
+                        ' · ',
+                      )}
+                    </span>
+                    {servicio.ejecutado_por_ia && <Insignia color="blue">IA</Insignia>}
                   </p>
                 </div>
                 <span className="hidden shrink-0 text-xs text-tinta-tenue lg:block">
@@ -190,6 +195,11 @@ export function Servicios() {
                   </Insignia>
                 </div>
                 <div className="flex shrink-0 items-center gap-0.5">
+                  {(servicio.informe || servicio.plan_ia) && (
+                    <BotonIcono etiqueta="Ver informe de la IA" onClick={() => setDetalle(servicio)}>
+                      <FileText size={15} />
+                    </BotonIcono>
+                  )}
                   <BotonIcono etiqueta="Editar" onClick={() => abrirEdicion(servicio)}>
                     <Pencil size={15} />
                   </BotonIcono>
@@ -304,6 +314,147 @@ export function Servicios() {
             </Boton>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        abierto={detalle !== null}
+        titulo={detalle?.titulo ?? 'Detalle del servicio'}
+        onCerrar={() => setDetalle(null)}
+        ancho="sm:max-w-3xl"
+      >
+        {detalle && (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <Insignia color={colorEstadoServicio[detalle.estado] ?? 'slate'}>
+                {etiquetaEstadoServicio[detalle.estado] ?? detalle.estado}
+              </Insignia>
+              <Insignia color="sky">{etiquetaTipoServicio[detalle.tipo] ?? detalle.tipo}</Insignia>
+              {detalle.ejecutado_por_ia && <Insignia color="blue">Completado por IA</Insignia>}
+              <Insignia color="slate">{formatoDinero(detalle.monto)}</Insignia>
+            </div>
+
+            <dl className="grid gap-3 rounded-xl border border-borde-suave p-4 sm:grid-cols-2">
+              <div>
+                <dt className="text-[11px] font-semibold tracking-wide text-tinta-tenue uppercase">Cliente</dt>
+                <dd className="mt-0.5 text-sm text-tinta">{detalle.clientes?.nombre ?? '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold tracking-wide text-tinta-tenue uppercase">Fechas</dt>
+                <dd className="mt-0.5 text-sm text-tinta">
+                  {[formatoFecha(detalle.fecha_inicio), formatoFecha(detalle.fecha_fin)].join(' → ')}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold tracking-wide text-tinta-tenue uppercase">Progreso</dt>
+                <dd className="mt-0.5 text-sm text-tinta">{detalle.progreso ?? 0}%</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-semibold tracking-wide text-tinta-tenue uppercase">Origen</dt>
+                <dd className="mt-0.5 text-sm text-tinta">{detalle.solicitud_id ? 'Solicitud automatizada' : 'Registro manual'}</dd>
+              </div>
+            </dl>
+
+            {detalle.descripcion && (
+              <section className="rounded-xl border border-borde-suave bg-superficie-2/40 p-3.5">
+                <h4 className="mb-1.5 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Solicitud original</h4>
+                <p className="whitespace-pre-wrap text-sm text-tinta-suave">{detalle.descripcion}</p>
+              </section>
+            )}
+
+            {detalle.entregables && (
+              <section className="rounded-xl border border-borde-suave p-3.5">
+                <h4 className="mb-2 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Entregables</h4>
+                <ul className="space-y-1">
+                  {detalle.entregables.split('\n').filter(Boolean).map((entregable, indice) => (
+                    <li key={`${entregable}-${indice}`} className="flex gap-2 text-sm text-tinta-suave">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                      {entregable}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {detalle.plan_ia && (detalle.plan_ia.tareas.length > 0 || detalle.plan_ia.cronograma.length > 0) && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {detalle.plan_ia.tareas.length > 0 && (
+                  <section className="rounded-xl border border-borde-suave p-3.5">
+                    <h4 className="mb-2 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Tareas ejecutadas</h4>
+                    <ul className="space-y-1">
+                      {detalle.plan_ia.tareas.map((tarea, indice) => (
+                        <li key={`${tarea}-${indice}`} className="flex gap-2 text-sm text-tinta-suave">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                          {tarea}
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+                {detalle.plan_ia.cronograma.length > 0 && (
+                  <section className="rounded-xl border border-borde-suave p-3.5">
+                    <h4 className="mb-2 text-xs font-semibold tracking-wide text-tinta-suave uppercase">Cronograma</h4>
+                    <ul className="space-y-1">
+                      {detalle.plan_ia.cronograma.map((fase, indice) => (
+                        <li key={`${fase}-${indice}`} className="flex gap-2 text-sm text-tinta-suave">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500" />
+                          {fase}
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+              </div>
+            )}
+
+            {detalle.informe && (
+              <section className="rounded-xl border border-borde-suave">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-borde-suave px-3.5 py-3">
+                  <h4 className="flex items-center gap-1.5 text-sm font-semibold text-tinta">
+                    <Bot size={15} className="text-blue-600" /> Informe de entrega
+                  </h4>
+                  <Boton
+                    variante="secundario"
+                    type="button"
+                    className="text-xs"
+                    onClick={() => descargarTexto(`informe-${detalle.titulo.replace(/\s+/g, '-').toLowerCase()}.txt`, detalle.informe ?? '')}
+                  >
+                    <Download size={14} /> Descargar
+                  </Boton>
+                </div>
+                <pre className="max-h-96 overflow-y-auto whitespace-pre-wrap p-3.5 font-sans text-sm leading-relaxed text-tinta-suave">
+                  {detalle.informe}
+                </pre>
+              </section>
+            )}
+
+            {detalle.plan_ia?.datos_pendientes && detalle.plan_ia.datos_pendientes.length > 0 && (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-900">
+                <p className="font-semibold">Pendiente de validar</p>
+                <ul className="mt-1 list-disc space-y-0.5 pl-5">
+                  {detalle.plan_ia.datos_pendientes.map((dato, indice) => (
+                    <li key={`${dato}-${indice}`}>{dato}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="flex flex-wrap justify-end gap-2 border-t border-borde-suave pt-4">
+              <Boton variante="secundario" type="button" onClick={() => setDetalle(null)}>
+                Cerrar
+              </Boton>
+              <Boton
+                type="button"
+                onClick={() => {
+                  const servicio = detalle
+                  setDetalle(null)
+                  abrirEdicion(servicio)
+                }}
+              >
+                <Pencil size={15} /> Editar servicio
+              </Boton>
+            </div>
+          </div>
+        )}
       </Modal>
 
       <Confirmar

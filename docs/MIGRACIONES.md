@@ -36,3 +36,7 @@ El orden importa: primero 001, luego 002, etc.
 | `003_rnc_clientes.sql` | Columna `rnc` en clientes (RNC dominicano, República Dominicana) |
 | `004_gastos.sql` | Tabla `gastos` (regla del dinero ×3) + políticas RLS |
 | `005_facturas.sql` | Tablas `facturas` (NCF/e-NCF, ITBIS, estados, pago vinculado) y `factura_items` (líneas) + políticas RLS |
+| `006_igualas.sql` | Tabla `igualas` (contratos mensuales de contabilidad, software y asesoría legal) + políticas RLS |
+| `007_crm.sql` | Tablas `crm_empresas`, `crm_contactos`, `crm_oportunidades` y `crm_actividades` + RLS |
+| `008_seo.sql` | Tabla `seo_auditorias` (historial de Auditor SEO) + RLS |
+| `009_solicitudes.sql` | Bandeja `solicitudes_servicio`, campos de ejecución en `servicios`, RPC públicas con token y RLS |

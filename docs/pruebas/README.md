@@ -1,6 +1,6 @@
 # Pruebas de navegador
 
-> Cuatro pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Cinco pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
 ## CRM (`prueba-crm.js`)
@@ -79,3 +79,31 @@ de consola. Devuelve JSON con `ok`, los pasos y los errores (debe ser `[]`).
 5181 y pide en OpenCode `docs/pruebas/prueba-pwa.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
 `C:\Users\User\avitech\capturas-pwa` (2 imágenes).
+
+## Solicitudes (`prueba-solicitudes.js`)
+
+Prueba de humo de **Solicitudes** con datos simulados: intercepta `**/rest/v1/**`,
+`**/auth/v1/**` y `**/api/solicitudes/ejecutar**`. No usa la base real, no llama a
+Workers AI y no contiene secretos.
+
+**Qué comprueba:** carga de la bandeja con una solicitud pública y una completada,
+creación de una solicitud interna, ejecución simulada de la IA (la fila pasa a
+**Completada**), apertura del detalle con plan, informe y precio sugerido, y vista móvil
+a 390 px. Al final devuelve un JSON con `ok`, los pasos y los errores de consola
+(debe ser `[]`).
+
+**Cómo ejecutarla:**
+
+1. Compila y levanta la vista previa en el puerto **5182**:
+
+   ```powershell
+   cd C:\Users\User\avitech\avitech-panel
+   npm run build
+   npm run preview -- --port 5182 --strictPort
+   ```
+
+2. Pide en OpenCode `docs/pruebas/prueba-solicitudes.js` con la herramienta de Playwright
+   (`browser_run_code_unsafe`, parámetro `filename`).
+
+3. Las capturas se guardan en `C:\Users\User\avitech\capturas-solicitudes` (3 imágenes:
+   bandeja, detalle y móvil). Si usas otro puerto, cambia `BASE` al inicio del script.

@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { createPortal } from 'react-dom'
 import {
   useEffect,
   useRef,
@@ -171,7 +172,9 @@ export function Modal({
   }, [abierto])
 
   if (!abierto) return null
-  return (
+  // Portal al body: evita que un ancestro con animación/transform recorte el
+  // modal fijo (por ejemplo, al abrir el detalle de una solicitud).
+  return createPortal(
     <div
       role="presentation"
       onMouseDown={onCerrar}
@@ -201,7 +204,8 @@ export function Modal({
         </div>
         <div className="px-5 py-4">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

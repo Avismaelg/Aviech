@@ -6,13 +6,14 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, CRM, prospección de contactos, auditoría SEO, servicios, pagos, facturación, gastos, reportes y un asistente de IA, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
+Panel de gestión de AviTech Solutions Group: clientes, CRM, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
 Interfaz **clara profesional** (v3 «Claro»): tema luminoso tipo app, navegación superior con grupos, tarjetas blancas, titulares Sora, un solo acento azul y menú móvil desplegable.
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
+- Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
 
 ### Módulos
@@ -24,7 +25,8 @@ Interfaz **clara profesional** (v3 «Claro»): tema luminoso tipo app, navegaci�
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
 | **Auditor SEO** | Analiza cualquier página como la ve Google (título, meta, encabezados, imágenes, enlaces, HTTPS, canonical, Open Graph, `robots.txt` y `sitemap.xml`) con puntaje 0–100 e historial; **velocidad** gratis con PageSpeed Insights. Sin claves ni costo |
 | **Prospección** | Busca los **correos, teléfonos y redes sociales** de una web (página principal + contacto) y con un clic los guarda como empresa/contacto en el **CRM**; avisa si la empresa ya existe. Sin claves ni costo |
-| **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas |
+| **Solicitudes** | Bandeja de pedidos con **formulario público** (`/solicitud`) y alta interna. La IA prepara plan, propuesta, correo e informe; crea cliente/CRM/servicio y lo cierra. El equipo revisa. Sin correos automáticos. Ver **`docs/SOLICITUDES.md`** |
+| **Servicios** | Trabajos por cliente con tipo, estado, monto (RD$) y fechas; incluye el informe y el plan de la IA |
 | **Pagos** | Ingresos por cliente; cobrado vs. pendiente, **vencidos** y «marcar como pagado» en un clic |
 | **Facturación** | Facturas con **NCF / e-NCF** e **ITBIS 18%**; líneas de detalle, estados borrador → emitida → pagada, **anulación**, impresión/PDF y pago registrado automáticamente al cobrar |
 | **Gastos** | Salidas por categoría (regla del dinero ×3); total del mes e histórico |
@@ -60,11 +62,13 @@ npm run lint       # revisión de código (oxlint)
 ### Seguridad (recordatorio permanente)
 
 - La clave «publishable» es pública por diseño; la seguridad real vive en **RLS** en cada tabla.
-- RLS activado en `clientes`, `servicios` y `pagos`: solo usuarios autenticados del panel.
+- RLS activado en `clientes`, `servicios`, `pagos`, CRM, SEO y `solicitudes_servicio`: solo usuarios autenticados del panel.
+- El **formulario público** no crea cuentas ni lee la tabla: crea y cierra solicitudes con funciones SQL y un token aleatorio por solicitud.
 - El registro público está cerrado; los usuarios se crean desde Supabase → Authentication → Users.
 - La clave `service_role` **nunca** va en el frontend ni en Git.
 - `.env` está excluido de Git; el repositorio solo contiene `.env.production` con valores públicos.
 - El **Asistente IA** usa Cloudflare Workers AI con el binding `AI` (sin claves), no guarda conversaciones y no tiene acceso a la base de datos. Ver **`docs/ASISTENTE.md`**.
+- La **IA de solicitudes** solo recibe el pedido y la auditoría SEO de ese pedido; tampoco consulta la base de datos. Ver **`docs/SOLICITUDES.md`**.
 
 ### Despliegue
 
@@ -97,7 +101,9 @@ src/
       Seo.tsx             # Auditor SEO: formulario, informe, velocidad e historial
     prospeccion/
       Prospeccion.tsx     # Prospección: búsqueda de contactos y guardado en el CRM
-    Servicios.tsx         # CRUD de servicios
+    Solicitudes.tsx       # bandeja, alta interna, detalle y ejecución con IA
+    SolicitudPublica.tsx  # formulario público /solicitud (sin sesión)
+    Servicios.tsx         # CRUD de servicios + detalle del informe de la IA
     Pagos.tsx             # CRUD de pagos (con vencidos)
     Facturacion.tsx       # facturas con NCF/e-NCF, ITBIS y PDF
     Gastos.tsx            # CRUD de gastos (regla ×3)
@@ -111,19 +117,20 @@ src/
     seo.ts                # auditoría SEO (Worker) y PageSpeed
     prospeccion.ts        # prospección: Worker + guardado en el CRM
     ia.ts                 # chat del asistente (Worker /api/ia/chat)
+    descargas.ts          # descarga de informes en texto
     urls.ts               # normalizar direcciones (compartido)
     formato.ts            # moneda (RD$), fechas e iniciales
     etiquetas.ts          # estados, tipos y colores
     useContador.ts        # animación de números del tablero
     csv.ts                # exportar tablas a Excel (CSV)
     empresa.ts            # datos fiscales de la empresa (encabezado de facturas)
-  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM, SEO y Prospección
+  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM, SEO, Solicitud y Prospección
 worker/
-  index.js                # API del panel en Cloudflare (SEO, prospección y asistente IA)
+  index.js                # API del panel en Cloudflare (SEO, prospección, asistente y solicitudes)
 public/
   sw.js                   # service worker: abre sin conexión y repite visitas al instante
   manifest.webmanifest    # datos de la app instalable (PWA)
-supabase/sql/             # migraciones (001…008)
+supabase/sql/             # migraciones (001…009)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 
@@ -134,7 +141,8 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)
 - `docs/PROSPECCION.md` — guía de Prospección (contactos de una web → CRM; gratis)
-- `docs/pruebas/README.md` — pruebas de humo del CRM, del Auditor SEO, de Prospección y de la PWA con datos simulados
+- `docs/SOLICITUDES.md` — formulario público, bandeja interna y cierre automático con IA
+- `docs/pruebas/README.md` — pruebas de humo del CRM, Auditor SEO, Prospección, PWA y Solicitudes con datos simulados
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

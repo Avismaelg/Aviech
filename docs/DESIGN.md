@@ -54,7 +54,7 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - Barras (`header`) **blancas y sólidas** con borde inferior; sin `backdrop-blur`.
 - Selección de texto: azul al 18 %. Foco de teclado: azul `#2563eb`.
 - Tarjetas sobre blanco con sombra baja; nada de superficies oscuras salvo:
-  el panel de marca del **Login**, el *tooltip* del gráfico y el velo del modal.
+  el panel de marca del **Login**, el panel de marca del **formulario público**, el *tooltip* del gráfico y el velo del modal.
 
 ## 4. Tipografía y datos
 
@@ -88,16 +88,18 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 | `Tarjeta` | `rounded-2xl`, borde `--color-borde`, `bg-superficie` y sombra neutra baja. |
 | `CabeceraSeccion` | Título grande + descripción + acciones. |
 | `Campo` / `Entrada` / `Selector` / `AreaTexto` | `claseEntrada` (`lib/estilos.ts`): fondo blanco, borde gris, hover gris medio y foco azul con anillo suave de 4 px. |
-| `Modal` | Velo `bg-slate-900/40` + blur; panel `rounded-2xl`; se cierra con Escape, clic fuera o la X; cabecera fija blanca; bloquea el scroll y auto-enfoca el primer campo. |
+| `Modal` | Velo `bg-slate-900/40` + blur; panel `rounded-2xl`; se cierra con Escape, clic fuera o la X; cabecera fija blanca; bloquea el scroll y auto-enfoca el primer campo. Se monta en un **portal al `body`** para que ninguna animación de sección recorte el modal fijo. |
 | `Confirmar` | Modal pequeño con botón de peligro. |
 | `BotonIcono` | Círculo con etiqueta accesible (`title` + `aria-label`). |
 | `Vacio`, `FilasCargando`, `ErrorTabla` | Estado vacío, esqueleto `animate-pulse` y aviso ámbar claro. |
-| `Layout` | **Barra superior blanca**: marca + cuenta + Salir, y navegación por grupos (Operación / Herramientas / Finanzas) con píldora azul activa. En móvil/tablet (`< lg`) se sustituye por un **menú desplegable** con las 11 secciones. Enlaces profundos con `#seccion`. |
+| `Layout` | **Barra superior blanca**: marca + cuenta + Salir, y navegación por grupos (Operación / Herramientas / Finanzas) con píldora azul activa. En móvil/tablet (`< lg`) se sustituye por un **menú desplegable** con las 12 secciones. Enlaces profundos con `#seccion`. |
 | `Asistente IA` | Botón flotante azul abajo a la derecha. En escritorio abre un panel blanco de 400 px; en móvil, una hoja inferior. Cabecera con estado, nueva conversación y cerrar; burbujas azul/blanco, sugerencias iniciales, indicador de escritura y compositor con `Enter` para enviar y `Shift+Enter` para salto de línea. No guarda el historial y avisa que no ve los datos del panel. |
 | `Login` | Dos columnas: panel de marca azul marino (escritorio) + tarjeta blanca de acceso. Incluye píldora «Acceso privado», ver/ocultar contraseña y error legible. |
 | `CRM` | Pestañas accesibles (flechas ←/→), kanban horizontal de 16 rem, arrastre nativo y edición en modal. |
 | `Auditor SEO` | Puntaje 0–100 (verde ≥ 80, ámbar ≥ 50, rojo < 50), comprobaciones agrupadas y columna de PageSpeed + ficha técnica. |
 | `Prospección` | Validación en línea, hallazgos de correo/teléfono/redes, guardado en el CRM con aviso si la empresa ya existe. |
+| `Solicitudes` | Bandeja con 4 tarjetas (2×2 en móvil), búsqueda, filtro por estado y filas con origen, urgencia, estado y acciones. El detalle muestra plan, confianza, datos pendientes, propuesta, correo, informe descargable y enlace a Servicios. |
+| `Solicitud pública` | Página `/solicitud` sin sesión: panel de marca azul marino en escritorio, formulario blanco con consentimiento, honeypot invisible y pantalla de éxito con folio. En móvil se oculta el panel de marca y se muestra una cabecera compacta. |
 
 - **Enlaces profundos:** la sección activa vive en la URL (`#inicio`, `#clientes`…).
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
@@ -138,6 +140,8 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 - [ ] Contraste de texto ≥ 4.5:1
 - [ ] Focus visible en botones, campos y enlaces
 - [ ] Responsive 375 / 768 / 1024 / 1440 sin recortes (menú móvil incluido)
+- [ ] Formulario público `/solicitud` sin recortes a 390 px y con consentimiento visible
+- [ ] Modales abiertos desde cualquier sección sin recortes (portal al `body`)
 - [ ] Impresión: fondo blanco, sin menús, acentos legibles
 - [ ] `prefers-reduced-motion` respetado
 - [ ] Montos en RD$ y fechas en es-DO (usar `lib/formato.ts`)
@@ -154,4 +158,4 @@ Se usan como utilidades semánticas de Tailwind v4: `bg-superficie`, `text-tinta
 ---
 
 > Enfoque de sistema de diseño: tokens → componentes → reglas → checklist.
-> Última revisión: 19-oct-2026 (v3 «Claro profesional»).
+> Última revisión: 19-oct-2026 (v3 «Claro profesional» + solicitudes con IA).

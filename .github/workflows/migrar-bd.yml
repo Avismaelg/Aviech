@@ -67,14 +67,14 @@ jobs:
             echo "## Tablas de public"
             psql "$DB" -c '\dt public.*'
             echo "## Columnas de todas las tablas"
-            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades','seo_auditorias') order by table_name, ordinal_position;"
+            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades','seo_auditorias','solicitudes_servicio') order by table_name, ordinal_position;"
             echo "## Conteos"
-            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas union all select 'crm_empresas', count(*) from public.crm_empresas union all select 'crm_contactos', count(*) from public.crm_contactos union all select 'crm_oportunidades', count(*) from public.crm_oportunidades union all select 'crm_actividades', count(*) from public.crm_actividades union all select 'seo_auditorias', count(*) from public.seo_auditorias;"
+            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas union all select 'crm_empresas', count(*) from public.crm_empresas union all select 'crm_contactos', count(*) from public.crm_contactos union all select 'crm_oportunidades', count(*) from public.crm_oportunidades union all select 'crm_actividades', count(*) from public.crm_actividades union all select 'seo_auditorias', count(*) from public.seo_auditorias union all select 'solicitudes_servicio', count(*) from public.solicitudes_servicio;"
             echo "## Prueba de inserciones (se revierte al final)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
           do $$
-          declare c uuid; f uuid; e uuid; ct uuid; o uuid;
+          declare c uuid; f uuid; e uuid; ct uuid; o uuid; s uuid; v_sol jsonb;
           begin
             insert into public.clientes (nombre, empresa, estado) values ('__prueba_migracion__', 'Prueba', 'prospecto') returning id into c;
             insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
@@ -86,8 +86,22 @@ jobs:
             insert into public.crm_empresas (nombre) values ('__prueba__') returning id into e;
             insert into public.crm_contactos (empresa_id, nombre) values (e, '__prueba__') returning id into ct;
             insert into public.crm_oportunidades (empresa_id, contacto_id, titulo, monto) values (e, ct, '__prueba__', 11) returning id into o;
-            insert into public.crm_actividades (oportunidad_id, contacto_id, titulo) values (o, ct, '__prueba__');
+            insert into public.crm_actividades (oportunidad_id, contacto_id, titulo, completada) values (o, ct, '__prueba__', true);
             insert into public.seo_auditorias (url, dominio, puntaje, datos) values ('https://ejemplo.com', 'ejemplo.com', 90, '{}'::jsonb);
+            insert into public.solicitudes_servicio (solicitante_nombre, titulo, descripcion, origen)
+              values ('__prueba__', '__prueba__', 'Descripción de prueba de la migración 009.', 'interno')
+              returning id into s;
+            v_sol := public.crear_solicitud_publica(
+              '__prueba_publica__', 'Prueba', 'prueba@ejemplo.com', '8095550101',
+              'https://ejemplo.com', 'seo', 'Auditoría de prueba',
+              'Solicitud de prueba creada y cerrada por la función pública.', null, 100, 'media', null
+            );
+            perform public.finalizar_solicitud(
+              (v_sol ->> 'id')::uuid, (v_sol ->> 'token')::uuid,
+              '{"resumen":"prueba","entregables":["Entregable de prueba"]}'::jsonb,
+              'Informe de prueba', 'Propuesta de prueba', 'Correo de prueba', 100,
+              '{"url":"https://ejemplo.com","dominio":"ejemplo.com","puntaje":90,"datos":{}}'::jsonb
+            );
             raise notice 'Inserciones de prueba: OK';
           end $$;
           rollback;
@@ -108,7 +122,8 @@ jobs:
                  (select count(*) from public.crm_contactos) as crm_contactos,
                  (select count(*) from public.crm_oportunidades) as crm_oportunidades,
                  (select count(*) from public.crm_actividades) as crm_actividades,
-                 (select count(*) from public.seo_auditorias) as seo_auditorias;
+                 (select count(*) from public.seo_auditorias) as seo_auditorias,
+                 (select count(*) from public.solicitudes_servicio) as solicitudes_servicio;
           rollback;
           SQL
             echo "## RLS: lectura como anónimo (debe dar 0 en todo)"
@@ -126,7 +141,26 @@ jobs:
                  (select count(*) from public.crm_contactos) as crm_contactos,
                  (select count(*) from public.crm_oportunidades) as crm_oportunidades,
                  (select count(*) from public.crm_actividades) as crm_actividades,
-                 (select count(*) from public.seo_auditorias) as seo_auditorias;
+                 (select count(*) from public.seo_auditorias) as seo_auditorias,
+                 (select count(*) from public.solicitudes_servicio) as solicitudes_servicio;
+          rollback;
+          SQL
+            echo "## RPC pública como anónimo (crea y cierra con token; se revierte)"
+            psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
+          begin;
+          set local role anon;
+          with creada as (
+            select public.crear_solicitud_publica(
+              'Prueba anónima', 'Prueba', 'anonimo@ejemplo.com', null, null,
+              'consultoria', 'Solicitud anónima de prueba',
+              'Descripción de prueba con más de veinte caracteres.', null, null, 'media', null
+            ) as datos
+          )
+          select public.finalizar_solicitud(
+            (datos ->> 'id')::uuid,
+            (datos ->> 'token')::uuid,
+            '{}'::jsonb, 'Informe de prueba', 'Propuesta de prueba', 'Correo de prueba', 0, null
+          ) from creada;
           rollback;
           SQL
           } > "$REPORTE" 2>&1

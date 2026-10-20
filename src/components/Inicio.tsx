@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { ArrowRight, Banknote, Briefcase, Clock, Handshake, PiggyBank, Plus, TrendingDown, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, Banknote, Briefcase, Clock, Handshake, Inbox, PiggyBank, Plus, TrendingDown, TrendingUp, Users } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { cx } from '../lib/estilos'
@@ -12,6 +12,7 @@ import type { Gasto } from '../types/gasto'
 import type { Iguala } from '../types/iguala'
 import type { Pago } from '../types/pago'
 import type { Servicio } from '../types/servicio'
+import type { SolicitudServicio } from '../types/solicitud'
 import type { Seccion } from './Layout'
 import { Boton, CabeceraSeccion, Insignia, Tarjeta, Vacio } from './ui'
 
@@ -21,6 +22,7 @@ interface Resumen {
   pagos: Pago[]
   gastos: Gasto[]
   igualas: Iguala[]
+  solicitudes: SolicitudServicio[]
 }
 
 const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -191,7 +193,8 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
       supabase.from('pagos').select('*, clientes(nombre)').order('fecha', { ascending: false }),
       supabase.from('gastos').select('*').order('fecha', { ascending: false }),
       supabase.from('igualas').select('*'),
-    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos, consultaIgualas]) => {
+      supabase.from('solicitudes_servicio').select('id, estado, titulo, created_at').order('created_at', { ascending: false }),
+    ]).then(([consultaClientes, consultaServicios, consultaPagos, consultaGastos, consultaIgualas, consultaSolicitudes]) => {
       if (consultaClientes.error || consultaServicios.error || consultaPagos.error) setErrorTablas(true)
       setDatos({
         clientes: (consultaClientes.data ?? []) as Cliente[],
@@ -199,6 +202,7 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
         pagos: (consultaPagos.data ?? []) as Pago[],
         gastos: (consultaGastos.error ? [] : (consultaGastos.data ?? [])) as Gasto[],
         igualas: (consultaIgualas.error ? [] : (consultaIgualas.data ?? [])) as Iguala[],
+        solicitudes: (consultaSolicitudes.error ? [] : (consultaSolicitudes.data ?? [])) as SolicitudServicio[],
       })
     })
   }, [])
@@ -264,6 +268,9 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
   const igualasActivas = datos.igualas.filter((iguala) => iguala.estado === 'activa')
   const ingresoRecurrente = igualasActivas.reduce((total, iguala) => total + Number(iguala.monto_mensual), 0)
   const clientesConIguala = new Set(igualasActivas.map((iguala) => iguala.cliente_id)).size
+  const solicitudesPendientes = datos.solicitudes.filter((solicitud) =>
+    ['nueva', 'analizando', 'error'].includes(solicitud.estado),
+  )
   const serie = serieIngresos(pagos)
   const totalPeriodo = serie.reduce((total, punto) => total + punto.valor, 0)
   const recientes = clientes.slice(0, 5)
@@ -277,6 +284,9 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
           <p className="mt-1.5 text-sm text-tinta-suave">Este es el pulso de AviTech hoy.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Boton variante="secundario" onClick={() => onIr('solicitudes')}>
+            <Inbox size={16} /> Solicitud
+          </Boton>
           <Boton onClick={() => onIr('clientes')}>
             <Plus size={16} /> Cliente
           </Boton>
@@ -316,6 +326,29 @@ export function Inicio({ sesion, onIr }: { sesion: Session; onIr: (seccion: Secc
           Ver igualas <ArrowRight size={13} />
         </button>
       </div>
+
+      {solicitudesPendientes.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-sky-200 bg-sky-50 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/80 text-sky-700 ring-1 ring-sky-200">
+              <Inbox size={18} />
+            </span>
+            <div>
+              <p className="text-xs font-medium text-sky-800/80">Solicitudes por revisar</p>
+              <p className="text-lg font-semibold text-tinta">
+                {solicitudesPendientes.length} pendiente{solicitudesPendientes.length === 1 ? '' : 's'} de revisión
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => onIr('solicitudes')}
+            className="flex items-center gap-1 rounded-full px-2.5 py-1.5 text-xs font-semibold text-sky-800 transition-colors hover:bg-sky-100"
+          >
+            Ver solicitudes <ArrowRight size={13} />
+          </button>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <TarjetaDato

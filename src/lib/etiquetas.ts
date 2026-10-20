@@ -16,13 +16,15 @@ export const colorEstadoCliente: Record<string, ColorInsignia> = {
 }
 
 // ---------- Servicios ----------
-export const TIPOS_SERVICIO = ['auditoria', 'consultoria', 'implementacion', 'capacitacion', 'otro'] as const
+export const TIPOS_SERVICIO = ['auditoria', 'consultoria', 'implementacion', 'capacitacion', 'seo', 'contabilidad', 'otro'] as const
 
 export const etiquetaTipoServicio: Record<string, string> = {
   auditoria: 'Auditoría',
   consultoria: 'Consultoría',
   implementacion: 'Implementación',
   capacitacion: 'Capacitación',
+  seo: 'Auditoría SEO',
+  contabilidad: 'Contabilidad',
   otro: 'Otro',
 }
 
@@ -191,4 +193,53 @@ export const colorTipoActividadCrm: Record<string, ColorInsignia> = {
   reunion: 'cyan',
   tarea: 'amber',
   nota: 'slate',
+}
+
+// ---------- Solicitudes de servicio ----------
+export const ESTADOS_SOLICITUD = ['nueva', 'analizando', 'completada', 'error', 'rechazada'] as const
+
+export const etiquetaEstadoSolicitud: Record<string, string> = {
+  nueva: 'Nueva',
+  analizando: 'IA trabajando',
+  completada: 'Completada',
+  error: 'Para reintentar',
+  rechazada: 'Rechazada',
+}
+
+export const colorEstadoSolicitud: Record<string, ColorInsignia> = {
+  nueva: 'sky',
+  analizando: 'blue',
+  completada: 'emerald',
+  error: 'red',
+  rechazada: 'slate',
+}
+
+export const URGENCIAS_SOLICITUD = ['baja', 'media', 'alta'] as const
+
+export const etiquetaUrgenciaSolicitud: Record<string, string> = {
+  baja: 'Baja',
+  media: 'Media',
+  alta: 'Alta',
+}
+
+export const colorUrgenciaSolicitud: Record<string, ColorInsignia> = {
+  baja: 'slate',
+  media: 'amber',
+  alta: 'red',
+}
+
+export const CANALES_SOLICITUD = ['formulario', 'whatsapp', 'correo', 'llamada', 'presencial', 'otro'] as const
+
+export const etiquetaCanalSolicitud: Record<string, string> = {
+  formulario: 'Formulario',
+  whatsapp: 'WhatsApp',
+  correo: 'Correo',
+  llamada: 'Llamada',
+  presencial: 'Presencial',
+  otro: 'Otro',
+}
+
+export const etiquetaOrigenSolicitud: Record<string, string> = {
+  interno: 'Interna',
+  publico: 'Formulario público',
 }

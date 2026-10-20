@@ -1,6 +1,6 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 19-oct-2026 (cierre de la quinta sesión: asistente de IA)
+> Última actualización: 19-oct-2026 (cierre de la sexta sesión: solicitudes con IA)
 
 ## 📌 Punto de continuación
 
@@ -9,7 +9,15 @@
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
   en el commit de cierre de esa sesión; 5.ª sesión: **asistente de IA** en
-  `6344d13`).
+  `6344d13`; 6.ª sesión: **solicitudes con IA** en el commit de cierre).
+- **Solicitudes con IA (6.ª sesión, 19-oct):** el cliente pide un servicio por el
+  **formulario público** `https://aviech.avismael-eg.workers.dev/solicitud` o el
+  personal lo registra en **Solicitudes**. La IA prepara diagnóstico, alcance,
+  propuesta, correo e informe; crea/reutiliza cliente, empresa, contacto,
+  oportunidad ganada y **servicio completado**. Queda en la bandeja para revisión.
+  Migración **009**, endpoints públicos con token y límites; el correo es un
+  **borrador** (no se envía solo). Guía: **`docs/SOLICITUDES.md`**. Prueba de
+  humo en `docs/pruebas/prueba-solicitudes.js` (0 errores de consola).
 - **Asistente IA (5.ª sesión, 19-oct):** chat flotante dentro del panel (botón azul
   abajo a la derecha; hoja inferior en móvil). Usa **Cloudflare Workers AI** con el
   modelo `@cf/google/gemma-4-26b-a4b-it`, binding `AI` en `wrangler.jsonc`, **sin
@@ -23,7 +31,7 @@
   conexión**; las visitas repetidas cargan al instante. La API y Supabase **nunca** entran
   en la caché. Verificado en producción (`/sw.js` servido y el bundle lo registra) y con la
   prueba nueva `docs/pruebas/prueba-pwa.js`.
-- **Pruebas completas (4.ª sesión):** las **4 pruebas** de navegador (CRM, Auditor SEO,
+- **Pruebas completas (4.ª sesión):** las **4 pruebas de esa sesión** (CRM, Auditor SEO,
   Prospección y PWA) en verde, `npm run build` y `npm run lint` limpios, y el Worker
   re-probado contra sitios reales.
 - **Rediseño v3 «Claro profesional» (4.ª sesión, 19-oct noche):** la interfaz se rehízo
@@ -32,7 +40,7 @@
   titulares **Sora** + cuerpo **Inter**, y **auto-actualización** de la PWA (el service
   worker recarga una vez al detectar versión nueva). El tema oscuro v2 quedó descartado
   por el usuario por percibirse «igual». Guía: **`docs/DESIGN.md`**.
-- **Pruebas del rediseño:** las **4 pruebas** (CRM, Auditor SEO, Prospección y PWA)
+- **Pruebas del rediseño:** las **4 pruebas de esa sesión** (CRM, Auditor SEO, Prospección y PWA)
   pasaron en verde con el nuevo tema (`build` y `lint` limpios). Capturas nuevas en
   `capturas-diseno`, `capturas-crm`, `capturas-seo`, `capturas-prospeccion` y `capturas-pwa`.
 - **Prospección integrada y en vivo:** busca **correos, teléfonos y redes sociales** de una web
@@ -48,7 +56,7 @@
   actividades, con conversión de empresa en cliente. Migración **007** aplicada por el
   workflow «Migrar base de datos» **#8 (en verde)** y verificada con RLS.
 - **Sitio:** https://aviech.avismael-eg.workers.dev — sirve la compilación con el CRM, el
-  Auditor SEO y Prospección.
+  Auditor SEO, Prospección y Solicitudes.
 - **Respaldo manual al cerrar** (19-oct, 6:25 PM UTC): `backup-2026-10-19_1825.sql.gz`
   verificado; ver la sección de respaldos (las sesiones 3.ª y 4.ª no cambiaron la base
   de datos).
@@ -65,14 +73,14 @@
 6. Revisa los workflows:
    - `Avismaelg/Aviech` → **Actions** → «Migrar base de datos».
    - `Avismaelg/Aviech-backup` → **Actions** → «Respaldo de la base de datos».
-7. Lee **`docs/CRM.md`**, **`docs/SEO.md`**, **`docs/PROSPECCION.md`** y
-   **`docs/ASISTENTE.md`** para usar esos módulos, **`docs/pruebas/README.md`** para las
-   4 pruebas de humo y este archivo para el estado general.
+7. Lee **`docs/CRM.md`**, **`docs/SEO.md`**, **`docs/PROSPECCION.md`**,
+   **`docs/ASISTENTE.md`** y **`docs/SOLICITUDES.md`** para usar esos módulos,
+   **`docs/pruebas/README.md`** para las 5 pruebas de humo y este archivo para el estado general.
 8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
-9. Si agregas una migración, créala como `supabase/sql/009_....sql`; el push la aplica.
+9. Si agregas una migración, créala como `supabase/sql/010_....sql`; el push la aplica.
 
-**Pruebas guardadas:** cuatro pruebas de humo en `docs/pruebas/` (CRM, Auditor SEO,
-Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la base real
+**Pruebas guardadas:** cinco pruebas de humo en `docs/pruebas/` (CRM, Auditor SEO,
+Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`. No usan la base real
 (datos simulados) ni contienen secretos.
 
 ## ✅ El panel está PUBLICADO y en uso
@@ -87,15 +95,17 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
   del repositorio — no hay que configurar nada dentro de Cloudflare.
 - El mismo Worker atiende la **API interna** del panel: `/api/seo/*` (Auditor SEO),
-  `/api/scraper/*` (Prospección) y `/api/ia/chat` (Asistente IA); todas exigen la
-  sesión de Supabase (`Authorization: Bearer …`) y sin ella responden `401`.
+  `/api/scraper/*` (Prospección), `/api/ia/chat` (Asistente IA) y
+  `/api/solicitudes/ejecutar` (cierre con IA). Todas exigen la sesión de Supabase
+  (`Authorization: Bearer …`) y sin ella responden `401`. El formulario público usa
+  `POST /api/solicitudes`, que solo crea una solicitud y devuelve un folio.
   Declarado en `wrangler.jsonc` (`main`, `assets.run_worker_first` y binding `ai`). ✅
 - ⚠️ Cuidado con direcciones parecidas: `avitech.workers.dev` **no** es de este proyecto
   (es de otra empresa; da `error code: 1042`). La nuestra termina en `avismael-eg.workers.dev`.
 
 ## ✅ La app está completa (local y en internet)
 
-- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
+- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Solicitudes** (formulario público + bandeja y cierre con IA), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
   (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
   **Pagos**, **Facturación**, **Gastos**, **Reportes** y **Asistente IA** (chat flotante).
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
@@ -144,6 +154,13 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   Con un clic crea la **empresa y el contacto en el CRM** (o añade el contacto si la empresa
   ya existe; avisa antes). Gratis, sin claves, con el mismo login. Guía:
   **`docs/PROSPECCION.md`**.
+- **Solicitudes con IA** (nuevo, 6.ª sesión): el cliente pide un servicio desde el
+  **formulario público** (`/solicitud`, sin cuenta, con consentimiento y folio) o el
+  personal lo registra en **Solicitudes**. La IA prepara diagnóstico, alcance, propuesta,
+  correo e informe; crea o reutiliza cliente, empresa, contacto, oportunidad ganada y
+  **servicio completado**; el equipo revisa confianza, datos pendientes y precio. El
+  correo queda como borrador y **no se envía automáticamente**. Guía:
+  **`docs/SOLICITUDES.md`**.
 - **Asistente IA** (nuevo, 5.ª sesión): botón azul flotante para abrir un chat de trabajo
   (redactar correos y propuestas, resumir, revisar textos, ideas comerciales). Usa
   **Workers AI** con el modelo Gemma 4, **sin claves ni costo** dentro del plan gratis;
@@ -159,12 +176,13 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 
 ## ✅ Base de datos al día (migraciones automáticas)
 
-- Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios`, `igualas`
-  (categoría, monto mensual y día de cobro), `pagos`, `gastos`, `facturas`, `factura_items`
-  (líneas de factura), las cuatro del CRM (`crm_empresas`, `crm_contactos`,
-  `crm_oportunidades`, `crm_actividades`) y `seo_auditorias` (informes del Auditor SEO).
-  Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
-- Las migraciones viven en **`supabase/sql/`** (001…008) y se aplican solas con el
+- Tablas: `clientes` (con **empresa**, **estado** y **RNC**), `servicios` (con plan,
+  informe y ejecución de IA), `igualas` (categoría, monto mensual y día de cobro), `pagos`,
+  `gastos`, `facturas`, `factura_items` (líneas de factura), las cuatro del CRM
+  (`crm_empresas`, `crm_contactos`, `crm_oportunidades`, `crm_actividades`),
+  `seo_auditorias` (informes del Auditor SEO) y `solicitudes_servicio` (bandeja y
+  automatización). Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
+- Las migraciones viven en **`supabase/sql/`** (001…009) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -175,15 +193,20 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   `seo_auditorias` existe con sus columnas, las inserciones de prueba pasan y el RLS deja al
   anónimo en 0. Workflow «Migrar base de datos» **#9 (en verde)**. Reporte:
   `supabase/verificacion-ultima.txt`.
+- **Migración 009 (Solicitudes) incluida en la 6.ª sesión:** crea `solicitudes_servicio`,
+  agrega plan/informe a `servicios`, RLS y las RPC `crear_solicitud_publica`,
+  `finalizar_solicitud` y `marcar_solicitud_error`. El workflow la aplica al publicar;
+  verificar el run en verde y el reporte `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
   repos se actualizaron y el **respaldo + las migraciones quedaron verificados en
   verde** con la clave nueva. Procedimiento: **`docs/ROTAR-CLAVE-BD.md`**.
-- **Pruebas completas 19-oct-2026** (con datos simulados, sin tocar la base real): las 9
-  secciones del panel (incluidas **Igualas** y **CRM**), factura (con NCF, RNC e ITBIS),
-  impresión siempre en claro, vista móvil, login y navegación — **0 errores de consola**.
-  Capturas en `capturas-mejora` (14 pantallas) y `capturas-crm` (5 pantallas).
+- **Pruebas completas 19-oct-2026** (con datos simulados, sin tocar la base real): las 12
+  secciones del panel (incluidas **Igualas**, **CRM** y **Solicitudes**), factura (con NCF,
+  RNC e ITBIS), impresión siempre en claro, vista móvil, login y navegación — **0 errores de consola**.
+  Capturas en `capturas-mejora` (14 pantallas), `capturas-crm` (5 pantallas) y
+  `capturas-solicitudes` (3 pantallas).
 - **Prueba del Auditor SEO** (19-oct, 2ª sesión): 9 pasos con datos simulados — informe,
   velocidad con PageSpeed, historial, borrado, validación, recarga y vista móvil —
   **0 errores de consola**. Script: `docs/pruebas/prueba-seo.js`; capturas en `capturas-seo`
@@ -200,6 +223,11 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
   en escritorio (1440 px) y móvil (390 px), sin desbordes y con **0 errores de consola**.
   Además se probó el modelo real en Cloudflare: respondió en español (`200`). Capturas en
   `capturas-ia` (5 pantallas). El endpoint exige sesión: `401` sin token.
+- **Prueba de Solicitudes** (19-oct, 6.ª sesión): 5 pasos con Supabase y Worker simulados —
+  bandeja con solicitud pública y completada, alta interna, ejecución de IA, detalle con
+  plan/informe/precio y vista móvil — **0 errores de consola**. Script:
+  `docs/pruebas/prueba-solicitudes.js`; capturas en `capturas-solicitudes` (3 pantallas).
+  El formulario público también se validó en escritorio (1440 px) y móvil (390 px).
 
 ## ✅ Respaldos automáticos de la base de datos
 
@@ -244,28 +272,33 @@ Prospección y PWA), con instrucciones en `docs/pruebas/README.md`. No usan la b
 
 ## 📋 Próximos pasos
 
-1. **Rediseño de la interfaz (hecho, 19-oct):** se eligió el camino **(a)**: rediseñar el
+1. **Solicitudes con IA (hecho, 6.ª sesión):** formulario público `/solicitud`, bandeja
+   interna y cierre automático con IA. Pendiente: verificar la migración 009 y el flujo en
+   producción; decidir si se agrega **Turnstile** o aprobación humana antes del cierre.
+2. **Rediseño de la interfaz (hecho, 19-oct):** se eligió el camino **(a)**: rediseñar el
    panel actual (React) con UI UX Pro Max, sin migrar a Flutter. Entregado el tema v3
-   «Claro profesional» (ver `docs/DESIGN.md`) y las 4 pruebas en verde. Pendiente: tu visto
+   «Claro profesional» (ver `docs/DESIGN.md`) y las 5 pruebas en verde. Pendiente: tu visto
    bueno y ajustes finos de gusto (matiz del azul, densidad, tamaños).
-2. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
+3. Confirmar el respaldo automático del lunes 26-oct (~1:00 PM, hora de República
    Dominicana = 17:00 UTC). Los del 19-oct se hicieron manuales (1:04 PM, 1:42 PM y
    2:25 PM) y quedaron verificados.
-3. Revisar en Supabase → **Account → Access Tokens** y borrar el token
+4. Revisar en Supabase → **Account → Access Tokens** y borrar el token
    `cli_User@ThinkBook-15IIL_1792390971` (se creó el 19-oct solo para rotar la
    contraseña; ya no hace falta). En este PC ya no queda copia.
-4. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
+5. Completar los datos fiscales de AviTech en `src/lib/empresa.ts` (razón social, RNC,
    dirección, teléfono y correo) y, cuando estén, conectar el **e-CF** con el certificado
    digital de DGII (ver `docs/FACTURACION.md`).
-5. CRM fase 2: recordatorios de actividades atrasadas (correo o notificación), sincronización
+6. CRM fase 2: recordatorios de actividades atrasadas (correo o notificación), sincronización
    de correo/WhatsApp y resúmenes con IA (evaluar costo antes de activar).
-6. Auditor SEO fase 2 (solo si algún día se decide pagar): palabras clave, backlinks y
+7. Auditor SEO fase 2 (solo si algún día se decide pagar): palabras clave, backlinks y
    seguimiento de posiciones con OpenSEO hospedado (US$10/mes) o DataForSEO (recarga mínima
    US$50). Hoy: no pagar.
-7. Prospección fase 2 (solo si se pide): rastrear más páginas por sitio, exportar los
+8. Prospección fase 2 (solo si se pide): rastrear más páginas por sitio, exportar los
    hallazgos a CSV y marcar empresas ya descartadas.
-8. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
-   recordatorios de vencimientos y más analítica del tablero.
-9. **Asistente IA fase 2 (opcional):** contexto automático de la sección o del cliente con
-   permiso explícito, historial por usuario con RLS, respuestas en streaming y voz. Evaluar
-   privacidad y consumo antes de activar.
+9. **Solicitudes fase 2:** editar el informe dentro del panel, adjuntos, envío de correo
+   desde el panel (si hay proveedor gratuito) y aprobación humana opcional.
+10. Ideas para después: portal de solo lectura para que cada cliente vea su estado de cuenta,
+    recordatorios de vencimientos y más analítica del tablero.
+11. **Asistente IA fase 2 (opcional):** contexto automático de la sección o del cliente con
+    permiso explícito, historial por usuario con RLS, respuestas en streaming y voz. Evaluar
+    privacidad y consumo antes de activar.

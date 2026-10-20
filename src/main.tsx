@@ -2,10 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { SolicitudPublica } from './components/SolicitudPublica.tsx'
+
+const esFormularioPublico = /^\/solicitud\/?$/i.test(window.location.pathname)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    {esFormularioPublico ? <SolicitudPublica /> : <App />}
   </StrictMode>,
 )
 
