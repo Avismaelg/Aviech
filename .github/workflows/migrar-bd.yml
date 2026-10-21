@@ -75,6 +75,7 @@ jobs:
           begin;
           do $$
           declare c uuid; f uuid; e uuid; ct uuid; o uuid; s uuid; v_sol jsonb; tc uuid; te uuid; tv uuid;
+            tv_ia uuid; v_token uuid; v_perfil jsonb; v_aplic jsonb;
           begin
             insert into public.clientes (nombre, empresa, estado) values ('__prueba_migracion__', 'Prueba', 'prospecto') returning id into c;
             insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
@@ -93,15 +94,28 @@ jobs:
               returning id into s;
             insert into public.talento_candidatos (nombre, email, puesto_objetivo, consentimiento)
               values ('__prueba__', 'prueba@talento.test', '__prueba__', true)
-              returning id into tc;
+              returning id, token_publico into tc, v_token;
             insert into public.talento_empresas (nombre, contacto_nombre, contacto_email)
               values ('__prueba_talento__', '__prueba__', 'prueba@talento.test')
               returning id into te;
             insert into public.talento_vacantes (empresa_id, titulo, descripcion)
               values (te, '__prueba__', 'Descripción de prueba de la migración 010.')
               returning id into tv;
+            insert into public.talento_vacantes (empresa_id, titulo, descripcion, estado, publica)
+              values (te, '__prueba_ia__', 'Descripción de prueba de la postulación asistida con IA.', 'abierta', true)
+              returning id into tv_ia;
             insert into public.talento_postulaciones (candidato_id, empresa_id, vacante_id)
               values (tc, te, tv);
+            v_perfil := public.perfil_para_ia_publico(tc, v_token);
+            if v_perfil is null then
+              raise exception 'perfil_para_ia_publico no devolvió el perfil de prueba.';
+            end if;
+            v_aplic := public.postular_con_ia_publica(
+              tc, v_token, array[tv_ia], array[88], array['Prueba de postulación asistida.']
+            );
+            if coalesce((v_aplic ->> 'aplicadas')::integer, 0) <> 1 then
+              raise exception 'postular_con_ia_publica no creó la postulación: %', v_aplic;
+            end if;
             v_sol := public.crear_solicitud_publica(
               '__prueba_publica__', 'Prueba', 'prueba@ejemplo.com', '8095550101',
               'https://ejemplo.com', 'seo', 'Auditoría de prueba',
@@ -113,7 +127,7 @@ jobs:
               'Informe de prueba', 'Propuesta de prueba', 'Correo de prueba', 100,
               '{"url":"https://ejemplo.com","dominio":"ejemplo.com","puntaje":90,"datos":{}}'::jsonb
             );
-            raise notice 'Inserciones de prueba: OK';
+            raise notice 'Inserciones y postulación IA de prueba: OK';
           end $$;
           rollback;
           SQL
@@ -162,6 +176,8 @@ jobs:
           SQL
             echo "## Permisos directos de Talento para anónimo (debe ser false)"
             psql "$DB" -c "select has_table_privilege('anon','public.talento_candidatos','select') as candidatos, has_table_privilege('anon','public.talento_empresas','select') as empresas, has_table_privilege('anon','public.talento_vacantes','select') as vacantes, has_table_privilege('anon','public.talento_postulaciones','select') as postulaciones;"
+            echo "## RPC de postulación con IA disponibles para anónimo (debe ser true)"
+            psql "$DB" -c "select has_function_privilege('anon','public.perfil_para_ia_publico(uuid,uuid)','execute') as perfil_ia, has_function_privilege('anon','public.postular_con_ia_publica(uuid,uuid,uuid[],integer[],text[])','execute') as postular_ia;"
             echo "## RPC pública como anónimo (crea y cierra con token; se revierte)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
@@ -185,7 +201,7 @@ jobs:
           begin;
           set local role anon;
           do $$
-          declare v_cand jsonb; v_emp jsonb; v_vac jsonb;
+          declare v_cand jsonb; v_emp jsonb; v_vac jsonb; v_perfil jsonb; v_aplic jsonb;
           begin
             v_cand := public.crear_postulacion_publica(
               '__prueba_candidato_publico__', 'anonimo@talento.test', null, null,
@@ -206,8 +222,22 @@ jobs:
             );
             perform public.listar_vacantes_publicas();
             perform public.listar_candidatos_publicos();
-            raise notice 'Talento público: candidato %, empresa %, vacante %',
-              v_cand ->> 'candidato_id', v_emp ->> 'empresa_id', v_vac ->> 'vacante_id';
+            v_perfil := public.perfil_para_ia_publico(
+              (v_cand ->> 'candidato_id')::uuid,
+              (v_cand ->> 'token_publico')::uuid
+            );
+            if v_perfil is null then
+              raise exception 'perfil_para_ia_publico falló como anónimo.';
+            end if;
+            v_aplic := public.postular_con_ia_publica(
+              (v_cand ->> 'candidato_id')::uuid,
+              (v_cand ->> 'token_publico')::uuid,
+              array[(v_vac ->> 'vacante_id')::uuid],
+              array[80],
+              array['Prueba de permisos públicos.']
+            );
+            raise notice 'Talento público: candidato %, empresa %, vacante %, IA %',
+              v_cand ->> 'candidato_id', v_emp ->> 'empresa_id', v_vac ->> 'vacante_id', v_aplic;
           end $$;
           rollback;
           SQL
