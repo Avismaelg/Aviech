@@ -1,6 +1,6 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-21 04:49 UTC
+Fecha: 2026-10-21 13:57 UTC
 
 ## Tablas de public
                  List of relations
@@ -198,6 +198,7 @@ Fecha: 2026-10-21 04:49 UTC
  talento_candidatos    | notas                | text
  talento_candidatos    | created_at           | timestamp with time zone
  talento_candidatos    | updated_at           | timestamp with time zone
+ talento_candidatos    | token_publico        | uuid
  talento_empresas      | id                   | uuid
  talento_empresas      | nombre               | text
  talento_empresas      | sector               | text
@@ -246,7 +247,7 @@ Fecha: 2026-10-21 04:49 UTC
  talento_vacantes      | publica              | boolean
  talento_vacantes      | created_at           | timestamp with time zone
  talento_vacantes      | updated_at           | timestamp with time zone
-(218 rows)
+(219 rows)
 
 ## Conteos
          tabla         | filas 
@@ -272,7 +273,7 @@ Fecha: 2026-10-21 04:49 UTC
 
 ## Prueba de inserciones (se revierte al final)
 BEGIN
-NOTICE:  Inserciones de prueba: OK
+NOTICE:  Inserciones y postulación IA de prueba: OK
 DO
 ROLLBACK
 ## RLS: lectura simulando usuario autenticado
@@ -300,18 +301,24 @@ ROLLBACK
  f          | f        | f        | f
 (1 row)
 
+## RPC de postulación con IA disponibles para anónimo (debe ser true)
+ perfil_ia | postular_ia 
+-----------+-------------
+ t         | t
+(1 row)
+
 ## RPC pública como anónimo (crea y cierra con token; se revierte)
 BEGIN
 SET
                                                                                                                                                                        finalizar_solicitud                                                                                                                                                                       
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- {"repetida": false, "cliente_id": "262cd8e0-a156-4847-a1cd-8c9921977f30", "empresa_id": "7da936fb-c7fe-46eb-bd77-6d4775bcafd3", "contacto_id": "8c1ca409-b9b7-4751-a4f5-ead70eaf37cd", "servicio_id": "d7c2622a-460a-4e44-9c7d-7a76ff9b3136", "solicitud_id": "904ee0cb-09e3-4a74-8feb-6a0b22168630", "oportunidad_id": "f303da7b-cdf9-45c9-b944-ab9662a3899f"}
+ {"repetida": false, "cliente_id": "40825d43-800e-4af1-a0db-7574ae556863", "empresa_id": "9d938094-f68b-41a5-840c-c52f75645c80", "contacto_id": "f5f8b4fc-eab2-4761-a576-26b737551e70", "servicio_id": "cfee433e-776e-4fc2-82f9-463159324303", "solicitud_id": "d0b410cf-30f0-4002-a9d6-aa18bbb8918e", "oportunidad_id": "b1e10d41-f6aa-463a-9b6a-e483876a4001"}
 (1 row)
 
 ROLLBACK
 ## RPC pública de Talento como anónimo (se revierte)
 BEGIN
 SET
-NOTICE:  Talento público: candidato dbc87458-a640-46e2-8762-d6e7056e76f1, empresa fc86c87b-e808-4348-b57b-5b4a7bf341e8, vacante 2d9c506a-e715-4240-be84-0d6c6265959f
+NOTICE:  Talento público: candidato f09169eb-b655-4ae7-8892-e1c12159bda7, empresa 94697740-5ea7-443d-958b-dffacedefe25, vacante 4ff81d4e-c410-426c-b0a3-5f56e0394fdd, IA {"vacantes": [], "aplicadas": 0, "existentes": 0}
 DO
 ROLLBACK
