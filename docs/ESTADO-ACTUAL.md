@@ -21,7 +21,8 @@
   0 errores de consola). Sin pagos ni cuentas públicas.
 - **Todo guardado y desplegado:** la **postulación asistida con IA** está en `main`
   (`7388be2`) y en producción desde el 21-oct-2026. La migración **011** se aplicó y
-  verificó: las RPC `perfil_ia` y `postular_ia` están disponibles para `anon`, los
+  verificó: las RPC `perfil_para_ia_publico` y `postular_con_ia_publica` están
+  disponibles para `anon`, los
   permisos directos de las tablas de Talento siguen en `false` y el reporte quedó en
   `supabase/verificacion-ultima.txt`. Cloudflare sirve el asset
   `index-JJNQJXRT.js` y el service worker `avitech-v2026-10-21-talento-ia`;
