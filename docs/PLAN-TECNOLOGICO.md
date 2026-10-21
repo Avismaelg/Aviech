@@ -134,7 +134,7 @@ Todo con free tiers. La IA para probar sale de Groq/Gemini gratis.
 
 1. **Un solo servidor de desarrollo a la vez.** Al terminar: `Ctrl+C`. No dejar `dev` corriendo "por si acaso".
 2. **Un solo navegador durante desarrollo** y con pocas pestañas. Cerrar Chrome si usas Edge o viceversa. Cerrar apps de fondo (Widgets, Teams, WebView2).
-3. **Limitar Node:** definir `NODE_OPTIONS=--max-old-space-size=2048` para evitar que consuma todo.
+3. **Limitar Node:** `NODE_OPTIONS=--max-old-space-size=4096` en las variables de entorno del usuario. La mitad de la RAM deja margen para Windows, Chrome y VS Code; no subirlo a 8192 en esta PC.
 4. **Usar pnpm** en lugar de npm: misma compatibilidad, store único con hardlinks → ahorra varios GB de disco (crítico con 10.7 GB libres).
 5. **Excluir carpetas de proyecto del antivirus** (Seguridad de Windows → Exclusiones): acelera builds y escaneos.
 6. **VS Code con extensiones mínimas** (lista en sección 8). Desinstalar/deshabilitar las que no se usen hoy.
