@@ -1,6 +1,6 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-21 15:20 UTC
+Fecha: 2026-10-21 22:52 UTC
 
 ## Tablas de public
                   List of relations
@@ -27,228 +27,232 @@ Fecha: 2026-10-21 15:20 UTC
 (18 rows)
 
 ## Columnas de todas las tablas
-      table_name       |     column_name      |        data_type         
------------------------+----------------------+--------------------------
- clientes              | id                   | uuid
- clientes              | nombre               | text
- clientes              | email                | text
- clientes              | telefono             | text
- clientes              | notas                | text
- clientes              | created_at           | timestamp with time zone
- clientes              | empresa              | text
- clientes              | estado               | text
- clientes              | rnc                  | text
- crm_actividades       | id                   | uuid
- crm_actividades       | oportunidad_id       | uuid
- crm_actividades       | contacto_id          | uuid
- crm_actividades       | tipo                 | text
- crm_actividades       | titulo               | text
- crm_actividades       | detalle              | text
- crm_actividades       | fecha                | date
- crm_actividades       | completada           | boolean
- crm_actividades       | created_at           | timestamp with time zone
- crm_contactos         | id                   | uuid
- crm_contactos         | empresa_id           | uuid
- crm_contactos         | nombre               | text
- crm_contactos         | cargo                | text
- crm_contactos         | email                | text
- crm_contactos         | telefono             | text
- crm_contactos         | linkedin             | text
- crm_contactos         | notas                | text
- crm_contactos         | created_at           | timestamp with time zone
- crm_empresas          | id                   | uuid
- crm_empresas          | nombre               | text
- crm_empresas          | dominio              | text
- crm_empresas          | industria            | text
- crm_empresas          | telefono             | text
- crm_empresas          | sitio_web            | text
- crm_empresas          | notas                | text
- crm_empresas          | cliente_id           | uuid
- crm_empresas          | created_at           | timestamp with time zone
- crm_oportunidades     | id                   | uuid
- crm_oportunidades     | empresa_id           | uuid
- crm_oportunidades     | contacto_id          | uuid
- crm_oportunidades     | titulo               | text
- crm_oportunidades     | etapa                | text
- crm_oportunidades     | monto                | numeric
- crm_oportunidades     | probabilidad         | integer
- crm_oportunidades     | fecha_cierre         | date
- crm_oportunidades     | notas                | text
- crm_oportunidades     | created_at           | timestamp with time zone
- crm_oportunidades     | updated_at           | timestamp with time zone
- factura_items         | id                   | uuid
- factura_items         | factura_id           | uuid
- factura_items         | descripcion          | text
- factura_items         | cantidad             | numeric
- factura_items         | precio               | numeric
- factura_items         | created_at           | timestamp with time zone
- facturas              | id                   | uuid
- facturas              | cliente_id           | uuid
- facturas              | cliente_nombre       | text
- facturas              | cliente_rnc          | text
- facturas              | numero               | text
- facturas              | tipo                 | text
- facturas              | fecha                | date
- facturas              | aplica_itbis         | boolean
- facturas              | subtotal             | numeric
- facturas              | itbis                | numeric
- facturas              | total                | numeric
- facturas              | estado               | text
- facturas              | notas                | text
- facturas              | pago_id              | uuid
- facturas              | created_at           | timestamp with time zone
- gastos                | id                   | uuid
- gastos                | concepto             | text
- gastos                | categoria            | text
- gastos                | monto                | numeric
- gastos                | fecha                | date
- gastos                | notas                | text
- gastos                | created_at           | timestamp with time zone
- igualas               | id                   | uuid
- igualas               | cliente_id           | uuid
- igualas               | categoria            | text
- igualas               | descripcion          | text
- igualas               | monto_mensual        | numeric
- igualas               | dia_cobro            | integer
- igualas               | fecha_inicio         | date
- igualas               | estado               | text
- igualas               | notas                | text
- igualas               | created_at           | timestamp with time zone
- pagos                 | id                   | uuid
- pagos                 | cliente_id           | uuid
- pagos                 | concepto             | text
- pagos                 | monto                | numeric
- pagos                 | fecha                | date
- pagos                 | estado               | text
- pagos                 | metodo               | text
- pagos                 | created_at           | timestamp with time zone
- seo_auditorias        | id                   | uuid
- seo_auditorias        | url                  | text
- seo_auditorias        | dominio              | text
- seo_auditorias        | puntaje              | integer
- seo_auditorias        | datos                | jsonb
- seo_auditorias        | created_at           | timestamp with time zone
- servicios             | id                   | uuid
- servicios             | cliente_id           | uuid
- servicios             | titulo               | text
- servicios             | tipo                 | text
- servicios             | estado               | text
- servicios             | monto                | numeric
- servicios             | fecha_inicio         | date
- servicios             | fecha_fin            | date
- servicios             | notas                | text
- servicios             | created_at           | timestamp with time zone
- servicios             | solicitud_id         | uuid
- servicios             | descripcion          | text
- servicios             | entregables          | text
- servicios             | informe              | text
- servicios             | plan_ia              | jsonb
- servicios             | progreso             | integer
- servicios             | ejecutado_por_ia     | boolean
- solicitudes_servicio  | id                   | uuid
- solicitudes_servicio  | token_publico        | uuid
- solicitudes_servicio  | origen               | text
- solicitudes_servicio  | canal                | text
- solicitudes_servicio  | cliente_id           | uuid
- solicitudes_servicio  | solicitante_nombre   | text
- solicitudes_servicio  | empresa              | text
- solicitudes_servicio  | email                | text
- solicitudes_servicio  | telefono             | text
- solicitudes_servicio  | sitio_web            | text
- solicitudes_servicio  | tipo                 | text
- solicitudes_servicio  | titulo               | text
- solicitudes_servicio  | descripcion          | text
- solicitudes_servicio  | objetivos            | text
- solicitudes_servicio  | presupuesto          | numeric
- solicitudes_servicio  | urgencia             | text
- solicitudes_servicio  | fecha_deseada        | date
- solicitudes_servicio  | estado               | text
- solicitudes_servicio  | plan_ia              | jsonb
- solicitudes_servicio  | informe_ia           | text
- solicitudes_servicio  | propuesta_ia         | text
- solicitudes_servicio  | correo_ia            | text
- solicitudes_servicio  | precio_sugerido      | numeric
- solicitudes_servicio  | servicio_id          | uuid
- solicitudes_servicio  | oportunidad_id       | uuid
- solicitudes_servicio  | empresa_id           | uuid
- solicitudes_servicio  | contacto_id          | uuid
- solicitudes_servicio  | cliente_creado       | boolean
- solicitudes_servicio  | error_ia             | text
- solicitudes_servicio  | ejecutado_en         | timestamp with time zone
- solicitudes_servicio  | created_at           | timestamp with time zone
- solicitudes_servicio  | updated_at           | timestamp with time zone
- talento_candidatos    | id                   | uuid
- talento_candidatos    | nombre               | text
- talento_candidatos    | email                | text
- talento_candidatos    | telefono             | text
- talento_candidatos    | ubicacion            | text
- talento_candidatos    | puesto_objetivo      | text
- talento_candidatos    | seniority            | text
- talento_candidatos    | modalidad            | text
- talento_candidatos    | habilidades          | ARRAY
- talento_candidatos    | experiencia          | text
- talento_candidatos    | educacion            | text
- talento_candidatos    | disponibilidad       | text
- talento_candidatos    | expectativa_salarial | numeric
- talento_candidatos    | cv_path              | text
- talento_candidatos    | cv_url               | text
- talento_candidatos    | cv_nombre            | text
- talento_candidatos    | estado               | text
- talento_candidatos    | visible_empresas     | boolean
- talento_candidatos    | consentimiento       | boolean
- talento_candidatos    | notas                | text
- talento_candidatos    | created_at           | timestamp with time zone
- talento_candidatos    | updated_at           | timestamp with time zone
- talento_candidatos    | token_publico        | uuid
- talento_empresas      | id                   | uuid
- talento_empresas      | nombre               | text
- talento_empresas      | sector               | text
- talento_empresas      | sitio_web            | text
- talento_empresas      | ubicacion            | text
- talento_empresas      | contacto_nombre      | text
- talento_empresas      | contacto_email       | text
- talento_empresas      | contacto_telefono    | text
- talento_empresas      | estado               | text
- talento_empresas      | consentimiento       | boolean
- talento_empresas      | notas                | text
- talento_empresas      | created_at           | timestamp with time zone
- talento_empresas      | updated_at           | timestamp with time zone
- talento_postulaciones | id                   | uuid
- talento_postulaciones | candidato_id         | uuid
- talento_postulaciones | empresa_id           | uuid
- talento_postulaciones | vacante_id           | uuid
- talento_postulaciones | etapa                | text
- talento_postulaciones | origen               | text
- talento_postulaciones | solicitud_tipo       | text
- talento_postulaciones | match_score          | integer
- talento_postulaciones | match_motivo         | text
- talento_postulaciones | notas                | text
- talento_postulaciones | fecha_entrevista     | timestamp with time zone
- talento_postulaciones | entrevista_tipo      | text
- talento_postulaciones | entrevistador        | text
- talento_postulaciones | resultado_entrevista | text
- talento_postulaciones | fecha_inicio         | date
- talento_postulaciones | salario_final        | numeric
- talento_postulaciones | comision             | numeric
- talento_postulaciones | created_at           | timestamp with time zone
- talento_postulaciones | updated_at           | timestamp with time zone
- talento_vacantes      | id                   | uuid
- talento_vacantes      | empresa_id           | uuid
- talento_vacantes      | titulo               | text
- talento_vacantes      | descripcion          | text
- talento_vacantes      | requisitos           | text
- talento_vacantes      | responsabilidades    | text
- talento_vacantes      | ubicacion            | text
- talento_vacantes      | modalidad            | text
- talento_vacantes      | seniority            | text
- talento_vacantes      | tipo_contrato        | text
- talento_vacantes      | salario_min          | numeric
- talento_vacantes      | salario_max          | numeric
- talento_vacantes      | estado               | text
- talento_vacantes      | publica              | boolean
- talento_vacantes      | created_at           | timestamp with time zone
- talento_vacantes      | updated_at           | timestamp with time zone
-(219 rows)
+        table_name        |     column_name      |        data_type         
+--------------------------+----------------------+--------------------------
+ clientes                 | id                   | uuid
+ clientes                 | nombre               | text
+ clientes                 | email                | text
+ clientes                 | telefono             | text
+ clientes                 | notas                | text
+ clientes                 | created_at           | timestamp with time zone
+ clientes                 | empresa              | text
+ clientes                 | estado               | text
+ clientes                 | rnc                  | text
+ crm_actividades          | id                   | uuid
+ crm_actividades          | oportunidad_id       | uuid
+ crm_actividades          | contacto_id          | uuid
+ crm_actividades          | tipo                 | text
+ crm_actividades          | titulo               | text
+ crm_actividades          | detalle              | text
+ crm_actividades          | fecha                | date
+ crm_actividades          | completada           | boolean
+ crm_actividades          | created_at           | timestamp with time zone
+ crm_contactos            | id                   | uuid
+ crm_contactos            | empresa_id           | uuid
+ crm_contactos            | nombre               | text
+ crm_contactos            | cargo                | text
+ crm_contactos            | email                | text
+ crm_contactos            | telefono             | text
+ crm_contactos            | linkedin             | text
+ crm_contactos            | notas                | text
+ crm_contactos            | created_at           | timestamp with time zone
+ crm_empresas             | id                   | uuid
+ crm_empresas             | nombre               | text
+ crm_empresas             | dominio              | text
+ crm_empresas             | industria            | text
+ crm_empresas             | telefono             | text
+ crm_empresas             | sitio_web            | text
+ crm_empresas             | notas                | text
+ crm_empresas             | cliente_id           | uuid
+ crm_empresas             | created_at           | timestamp with time zone
+ crm_oportunidades        | id                   | uuid
+ crm_oportunidades        | empresa_id           | uuid
+ crm_oportunidades        | contacto_id          | uuid
+ crm_oportunidades        | titulo               | text
+ crm_oportunidades        | etapa                | text
+ crm_oportunidades        | monto                | numeric
+ crm_oportunidades        | probabilidad         | integer
+ crm_oportunidades        | fecha_cierre         | date
+ crm_oportunidades        | notas                | text
+ crm_oportunidades        | created_at           | timestamp with time zone
+ crm_oportunidades        | updated_at           | timestamp with time zone
+ factura_items            | id                   | uuid
+ factura_items            | factura_id           | uuid
+ factura_items            | descripcion          | text
+ factura_items            | cantidad             | numeric
+ factura_items            | precio               | numeric
+ factura_items            | created_at           | timestamp with time zone
+ facturas                 | id                   | uuid
+ facturas                 | cliente_id           | uuid
+ facturas                 | cliente_nombre       | text
+ facturas                 | cliente_rnc          | text
+ facturas                 | numero               | text
+ facturas                 | tipo                 | text
+ facturas                 | fecha                | date
+ facturas                 | aplica_itbis         | boolean
+ facturas                 | subtotal             | numeric
+ facturas                 | itbis                | numeric
+ facturas                 | total                | numeric
+ facturas                 | estado               | text
+ facturas                 | notas                | text
+ facturas                 | pago_id              | uuid
+ facturas                 | created_at           | timestamp with time zone
+ gastos                   | id                   | uuid
+ gastos                   | concepto             | text
+ gastos                   | categoria            | text
+ gastos                   | monto                | numeric
+ gastos                   | fecha                | date
+ gastos                   | notas                | text
+ gastos                   | created_at           | timestamp with time zone
+ igualas                  | id                   | uuid
+ igualas                  | cliente_id           | uuid
+ igualas                  | categoria            | text
+ igualas                  | descripcion          | text
+ igualas                  | monto_mensual        | numeric
+ igualas                  | dia_cobro            | integer
+ igualas                  | fecha_inicio         | date
+ igualas                  | estado               | text
+ igualas                  | notas                | text
+ igualas                  | created_at           | timestamp with time zone
+ pagos                    | id                   | uuid
+ pagos                    | cliente_id           | uuid
+ pagos                    | concepto             | text
+ pagos                    | monto                | numeric
+ pagos                    | fecha                | date
+ pagos                    | estado               | text
+ pagos                    | metodo               | text
+ pagos                    | created_at           | timestamp with time zone
+ seo_auditorias           | id                   | uuid
+ seo_auditorias           | url                  | text
+ seo_auditorias           | dominio              | text
+ seo_auditorias           | puntaje              | integer
+ seo_auditorias           | datos                | jsonb
+ seo_auditorias           | created_at           | timestamp with time zone
+ servicios                | id                   | uuid
+ servicios                | cliente_id           | uuid
+ servicios                | titulo               | text
+ servicios                | tipo                 | text
+ servicios                | estado               | text
+ servicios                | monto                | numeric
+ servicios                | fecha_inicio         | date
+ servicios                | fecha_fin            | date
+ servicios                | notas                | text
+ servicios                | created_at           | timestamp with time zone
+ servicios                | solicitud_id         | uuid
+ servicios                | descripcion          | text
+ servicios                | entregables          | text
+ servicios                | informe              | text
+ servicios                | plan_ia              | jsonb
+ servicios                | progreso             | integer
+ servicios                | ejecutado_por_ia     | boolean
+ solicitudes_servicio     | id                   | uuid
+ solicitudes_servicio     | token_publico        | uuid
+ solicitudes_servicio     | origen               | text
+ solicitudes_servicio     | canal                | text
+ solicitudes_servicio     | cliente_id           | uuid
+ solicitudes_servicio     | solicitante_nombre   | text
+ solicitudes_servicio     | empresa              | text
+ solicitudes_servicio     | email                | text
+ solicitudes_servicio     | telefono             | text
+ solicitudes_servicio     | sitio_web            | text
+ solicitudes_servicio     | tipo                 | text
+ solicitudes_servicio     | titulo               | text
+ solicitudes_servicio     | descripcion          | text
+ solicitudes_servicio     | objetivos            | text
+ solicitudes_servicio     | presupuesto          | numeric
+ solicitudes_servicio     | urgencia             | text
+ solicitudes_servicio     | fecha_deseada        | date
+ solicitudes_servicio     | estado               | text
+ solicitudes_servicio     | plan_ia              | jsonb
+ solicitudes_servicio     | informe_ia           | text
+ solicitudes_servicio     | propuesta_ia         | text
+ solicitudes_servicio     | correo_ia            | text
+ solicitudes_servicio     | precio_sugerido      | numeric
+ solicitudes_servicio     | servicio_id          | uuid
+ solicitudes_servicio     | oportunidad_id       | uuid
+ solicitudes_servicio     | empresa_id           | uuid
+ solicitudes_servicio     | contacto_id          | uuid
+ solicitudes_servicio     | cliente_creado       | boolean
+ solicitudes_servicio     | error_ia             | text
+ solicitudes_servicio     | ejecutado_en         | timestamp with time zone
+ solicitudes_servicio     | created_at           | timestamp with time zone
+ solicitudes_servicio     | updated_at           | timestamp with time zone
+ talento_candidatos       | id                   | uuid
+ talento_candidatos       | nombre               | text
+ talento_candidatos       | email                | text
+ talento_candidatos       | telefono             | text
+ talento_candidatos       | ubicacion            | text
+ talento_candidatos       | puesto_objetivo      | text
+ talento_candidatos       | seniority            | text
+ talento_candidatos       | modalidad            | text
+ talento_candidatos       | habilidades          | ARRAY
+ talento_candidatos       | experiencia          | text
+ talento_candidatos       | educacion            | text
+ talento_candidatos       | disponibilidad       | text
+ talento_candidatos       | expectativa_salarial | numeric
+ talento_candidatos       | cv_path              | text
+ talento_candidatos       | cv_url               | text
+ talento_candidatos       | cv_nombre            | text
+ talento_candidatos       | estado               | text
+ talento_candidatos       | visible_empresas     | boolean
+ talento_candidatos       | consentimiento       | boolean
+ talento_candidatos       | notas                | text
+ talento_candidatos       | created_at           | timestamp with time zone
+ talento_candidatos       | updated_at           | timestamp with time zone
+ talento_candidatos       | token_publico        | uuid
+ talento_empresas         | id                   | uuid
+ talento_empresas         | nombre               | text
+ talento_empresas         | sector               | text
+ talento_empresas         | sitio_web            | text
+ talento_empresas         | ubicacion            | text
+ talento_empresas         | contacto_nombre      | text
+ talento_empresas         | contacto_email       | text
+ talento_empresas         | contacto_telefono    | text
+ talento_empresas         | estado               | text
+ talento_empresas         | consentimiento       | boolean
+ talento_empresas         | notas                | text
+ talento_empresas         | created_at           | timestamp with time zone
+ talento_empresas         | updated_at           | timestamp with time zone
+ talento_limites_publicos | clave                | text
+ talento_limites_publicos | contador             | integer
+ talento_limites_publicos | expira               | timestamp with time zone
+ talento_limites_publicos | updated_at           | timestamp with time zone
+ talento_postulaciones    | id                   | uuid
+ talento_postulaciones    | candidato_id         | uuid
+ talento_postulaciones    | empresa_id           | uuid
+ talento_postulaciones    | vacante_id           | uuid
+ talento_postulaciones    | etapa                | text
+ talento_postulaciones    | origen               | text
+ talento_postulaciones    | solicitud_tipo       | text
+ talento_postulaciones    | match_score          | integer
+ talento_postulaciones    | match_motivo         | text
+ talento_postulaciones    | notas                | text
+ talento_postulaciones    | fecha_entrevista     | timestamp with time zone
+ talento_postulaciones    | entrevista_tipo      | text
+ talento_postulaciones    | entrevistador        | text
+ talento_postulaciones    | resultado_entrevista | text
+ talento_postulaciones    | fecha_inicio         | date
+ talento_postulaciones    | salario_final        | numeric
+ talento_postulaciones    | comision             | numeric
+ talento_postulaciones    | created_at           | timestamp with time zone
+ talento_postulaciones    | updated_at           | timestamp with time zone
+ talento_vacantes         | id                   | uuid
+ talento_vacantes         | empresa_id           | uuid
+ talento_vacantes         | titulo               | text
+ talento_vacantes         | descripcion          | text
+ talento_vacantes         | requisitos           | text
+ talento_vacantes         | responsabilidades    | text
+ talento_vacantes         | ubicacion            | text
+ talento_vacantes         | modalidad            | text
+ talento_vacantes         | seniority            | text
+ talento_vacantes         | tipo_contrato        | text
+ talento_vacantes         | salario_min          | numeric
+ talento_vacantes         | salario_max          | numeric
+ talento_vacantes         | estado               | text
+ talento_vacantes         | publica              | boolean
+ talento_vacantes         | created_at           | timestamp with time zone
+ talento_vacantes         | updated_at           | timestamp with time zone
+(223 rows)
 
 ## Conteos
          tabla         | filas 
@@ -297,9 +301,9 @@ SET
 
 ROLLBACK
 ## Permisos directos de Talento para anónimo (debe ser false)
- candidatos | empresas | vacantes | postulaciones 
-------------+----------+----------+---------------
- f          | f        | f        | f
+ candidatos | empresas | vacantes | postulaciones | limites 
+------------+----------+----------+---------------+---------
+ f          | f        | f        | f             | f
 (1 row)
 
 ## RPC de postulación con IA disponibles para anónimo (debe ser true)
@@ -308,25 +312,24 @@ ROLLBACK
  t         | t
 (1 row)
 
+## RPC de seguridad de Talento (true, true, false)
+ guardar | vieja_eliminada | limites_anon 
+---------+-----------------+--------------
+ t       | t               | f
+(1 row)
+
 ## RPC pública como anónimo (crea y cierra con token; se revierte)
 BEGIN
 SET
                                                                                                                                                                        finalizar_solicitud                                                                                                                                                                       
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- {"repetida": false, "cliente_id": "20bfc502-fd81-4873-9b82-621b43a99330", "empresa_id": "bceb45ee-bf7a-483e-936c-973bff59835b", "contacto_id": "aa8dbce2-21f1-4e0e-b3ff-5c7315d4bc14", "servicio_id": "b865c8ea-507e-4a30-9889-bdccffd696da", "solicitud_id": "25a4ee95-8b51-43ae-a8a9-f0a74fc26f47", "oportunidad_id": "62941a27-e878-4db5-8456-0a2009b0419d"}
+ {"repetida": false, "cliente_id": "3a756bf4-2ac1-4b61-82a4-29c5d59228cf", "empresa_id": "3fb5c224-b9ee-421f-9e34-958537b1775a", "contacto_id": "d01142a2-88db-4a15-aff2-45269fad40b9", "servicio_id": "5db91525-b4ee-49e6-9aa5-8579ee70e02e", "solicitud_id": "b896ab49-5701-462f-8605-a589d909705b", "oportunidad_id": "1772e2d7-d042-466e-8072-b3f984840b44"}
 (1 row)
 
 ROLLBACK
 ## RPC pública de Talento como anónimo (se revierte)
 BEGIN
 SET
-ERROR:  function public.crear_postulacion_publica(unknown, unknown, unknown, unknown, unknown, unknown, unknown, text[], unknown, unknown, unknown, unknown, unknown, unknown, unknown, boolean, boolean, unknown) does not exist
-LINE 1: v_cand := public.crear_postulacion_publica(
-                  ^
-HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
-QUERY:  v_cand := public.crear_postulacion_publica(
-    '__prueba_candidato_publico__', 'anonimo@talento.test', null, null,
-    '__prueba_puesto__', 'mid', 'hibrido', array['Excel', 'NIIF'],
-    null, null, null, null, null, null, null, true, true, null
-  )
-CONTEXT:  PL/pgSQL function inline_code_block line 4 at assignment
+NOTICE:  Talento público: candidato 30c4d870-7a05-400e-9b4b-17bc6186f605, empresa 135f3481-fd69-4cd5-a4f4-62cac8a3258a, vacante bc8c09d6-fc5b-4746-b86d-8dc9c59d64fe, IA {"vacantes": [], "aplicadas": 0, "existentes": 0}
+DO
+ROLLBACK
