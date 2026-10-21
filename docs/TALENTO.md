@@ -204,8 +204,16 @@ Debe devolver `ok: true`, nueve pasos y `errores: []`. Capturas en
 
 ## Puesta en marcha
 
-> Las migraciones 010 y 011 y el despliegue ya están hechos en producción. Estos pasos
-> sirven para reproducir el módulo en un entorno nuevo o revisar que todo siga en su sitio.
+> Las migraciones 010 y 011 y el despliegue ya están hechos en producción (cierre del
+> 21-oct-2026, commit funcional `7388be2`). Estos pasos sirven para reproducir el módulo
+> en un entorno nuevo o revisar que todo siga en su sitio.
+>
+> Verificación de producción: `/talento` responde `200`, el service worker
+> `avitech-v2026-10-21-talento-ia` está activo y la tarjeta **Postulación inteligente**
+> aparece (deshabilitada si no hay vacantes). `POST /api/talento/ia-postular` responde
+> `400` con un token inválido. Como aún no hay vacantes públicas, la postulación real con
+> IA no se ejecutó en producción; las RPC se validaron en una transacción revertida y el
+> recorrido completo se probó con datos simulados.
 
 1. Subir `010_talento.sql` y `011_talento_ia.sql` a `main`; el workflow **«Migrar base
    de datos»** los aplica junto con los anteriores y escribe el reporte en

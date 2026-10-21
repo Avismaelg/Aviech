@@ -19,14 +19,16 @@
   tablas separadas del CRM y RPC públicas con consentimiento y límites. Guía:
   **`docs/TALENTO.md`**; prueba: **`docs/pruebas/prueba-talento.js`** (9 pasos,
   0 errores de consola). Sin pagos ni cuentas públicas.
-- **Todo guardado y desplegado:** el módulo Talento está en `main` y en producción desde
-  el 21-oct-2026; la migración 010 se aplicó correctamente y el portal
-  **https://aviech.avismael-eg.workers.dev/talento** responde. Al cierre,
+- **Todo guardado y desplegado:** la **postulación asistida con IA** está en `main`
+  (`7388be2`) y en producción desde el 21-oct-2026. La migración **011** se aplicó y
+  verificó: las RPC `perfil_ia` y `postular_ia` están disponibles para `anon`, los
+  permisos directos de las tablas de Talento siguen en `false` y el reporte quedó en
+  `supabase/verificacion-ultima.txt`. Cloudflare sirve el asset
+  `index-JJNQJXRT.js` y el service worker `avitech-v2026-10-21-talento-ia`;
+  **https://aviech.avismael-eg.workers.dev/talento** responde `200`, la tarjeta de
+  autorización aparece y `POST /api/talento/ia-postular` responde `400` con un token
+  inválido. Sin errores de consola en la revisión de producción. Al cierre,
   `main` = `origin/main`.
-  El **rediseño v4** quedó publicado en `638b2cd` y **Cloudflare ya sirve la
-  compilación nueva**: assets `index-ssOHlRfA.js` / `index-CAPS3oNI.css`, service
-  worker `avitech-v2026-10-20-open-design`, `/solicitud` con `200` y `noindex`,
-  sin errores de consola en escritorio ni móvil.
   (2.ª sesión: Auditor SEO en `438d3e5` y reporte de migración en `3dbbc51`;
   3.ª sesión: **Prospección** en `34a6459`; 4.ª sesión: **PWA sin conexión y
   optimizaciones** en `83860bb`, rediseño v2 en `88d9378` y **rediseño v3 claro**
@@ -305,12 +307,22 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   asistida con IA con token privado**) — **0 errores de consola** y vista móvil sin
   desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
   `capturas-talento` (8 pantallas).
-- **Verificación de producción de Talento** (21-oct): `/talento` responde 200, título
-  «Talento · AviTech Solutions Group», `GET /api/talento/vacantes` y
-  `GET /api/talento/candidatos` devuelven `ok:true`, el honeypot no crea registros y
-  una ruta de CV inválida responde 400. En móvil real (390 px) el documento mide 390 px
-  sin desbordes. Capturas: `capturas-talento/08-produccion-escritorio.png` y
-  `09-produccion-movil.png`.
+- **Verificación de producción de Talento** (21-oct, 8.ª y 9.ª sesión): `/talento`
+  responde 200, título «Talento · AviTech Solutions Group»,
+  `GET /api/talento/vacantes` y `GET /api/talento/candidatos` devuelven `ok:true`
+  (hoy sin registros públicos), el honeypot no crea registros y una ruta de CV inválida
+  responde 400. En móvil real (390 px) el documento mide 390 px sin desbordes. En la
+  9.ª sesión se confirmaron el asset y el service worker nuevos, la tarjeta
+  **Postulación inteligente** visible y deshabilitada porque no hay vacantes
+  publicadas, y `POST /api/talento/ia-postular` con `400` ante un token inválido.
+  No se creó ningún perfil sintético. Capturas:
+  `capturas-talento/08-produccion-escritorio.png`,
+  `09-produccion-movil.png` y `10-produccion-ia.png`.
+- **Límite de la verificación:** no se ejecutó una postulación real con IA en producción
+  porque no hay vacantes públicas abiertas. Las RPC se probaron en una transacción
+  revertida durante la migración y el recorrido completo de la interfaz se probó con
+  Supabase y Worker simulados; la primera vacante publicada debe probarse con un perfil
+  real antes de abrir el portal de forma masiva.
 - **QA del rediseño v4** (20-oct, 7.ª sesión): `npm run build` y `npm run lint` limpios;
   las 5 pruebas de humo repitieron en verde y se revisaron visualmente **Login, Inicio,
   Solicitudes (bandeja y detalle), Asistente IA y `/solicitud`** en escritorio (1440 px)
