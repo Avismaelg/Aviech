@@ -1,6 +1,9 @@
 # Talento — candidatos, empresas, vacantes y procesos
 
 > Última actualización: 21-oct-2026.
+>
+> Estado: migración **010 aplicada** y portal **desplegado en producción** el
+> 21-oct-2026. Página: https://aviech.avismael-eg.workers.dev/talento
 
 ## Qué es
 
@@ -166,6 +169,9 @@ shortlist, solicitud de entrevista, alta con CV y móvil). Debe devolver `ok: tr
 ocho pasos y `errores: []`. Capturas en `C:\Users\User\avitech\capturas-talento`.
 
 ## Puesta en marcha
+
+> La migración 010 y el despliegue ya están hechos en producción. Estos pasos sirven
+> para reproducir el módulo en un entorno nuevo o revisar que todo siga en su sitio.
 
 1. Subir `010_talento.sql` a `main`; el workflow **«Migrar base de datos»** lo aplica
    junto con los anteriores y escribe el reporte en `supabase/verificacion-ultima.txt`.

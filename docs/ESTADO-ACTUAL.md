@@ -12,7 +12,10 @@
   tablas separadas del CRM y RPC públicas con consentimiento y límites. Guía:
   **`docs/TALENTO.md`**; prueba: **`docs/pruebas/prueba-talento.js`** (8 pasos,
   0 errores de consola). Sin pagos ni cuentas públicas.
-- **Todo guardado en GitHub:** `main` = `origin/main` al cierre de la 7.ª sesión.
+- **Todo guardado y desplegado:** el módulo Talento está en `main` y en producción desde
+  el 21-oct-2026; la migración 010 se aplicó correctamente y el portal
+  **https://aviech.avismael-eg.workers.dev/talento** responde. Al cierre,
+  `main` = `origin/main`.
   El **rediseño v4** quedó publicado en `638b2cd` y **Cloudflare ya sirve la
   compilación nueva**: assets `index-ssOHlRfA.js` / `index-CAPS3oNI.css`, service
   worker `avitech-v2026-10-20-open-design`, `/solicitud` con `200` y `noindex`,
@@ -243,12 +246,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   `crear_solicitud_publica`, `finalizar_solicitud` y `marcar_solicitud_error`. Workflow
   «Migrar base de datos» **#10 (en verde)**; RLS anónimo en 0 y prueba anónima de creación +
   cierre con token correcta (revertida). Reporte: `supabase/verificacion-ultima.txt`.
-- **Migración 010 (Talento), 21-oct-2026:** crea las cuatro tablas de Talento, el
-  bucket privado `talento-cv`, las políticas RLS y las RPC públicas. Se aplica con el
-  workflow «Migrar base de datos» en el push de la 8.ª sesión. El reporte incluye
-  columnas, conteos, inserts revertidos, lectura autenticada, comprobación de que `anon`
-  no tiene privilegios directos y prueba pública de las tres RPC. Reporte:
-  `supabase/verificacion-ultima.txt`.
+- **Migración 010 (Talento), 21-oct-2026:** aplicada con éxito por el workflow «Migrar
+  base de datos». Crea las cuatro tablas de Talento, el bucket privado `talento-cv`,
+  las políticas RLS y las RPC públicas. El reporte incluye columnas, conteos, inserts
+  revertidos, lectura autenticada, comprobación de que `anon` no tiene privilegios
+  directos y prueba pública de las tres RPC (candidato, empresa y vacante).
+  Reporte: `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -286,6 +289,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   shortlist, solicitud de entrevista y alta con CV PDF) — **0 errores de consola** y
   vista móvil sin desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
   `capturas-talento` (7 pantallas).
+- **Verificación de producción de Talento** (21-oct): `/talento` responde 200, título
+  «Talento · AviTech Solutions Group», `GET /api/talento/vacantes` y
+  `GET /api/talento/candidatos` devuelven `ok:true`, el honeypot no crea registros y
+  una ruta de CV inválida responde 400. En móvil real (390 px) el documento mide 390 px
+  sin desbordes. Capturas: `capturas-talento/08-produccion-escritorio.png` y
+  `09-produccion-movil.png`.
 - **QA del rediseño v4** (20-oct, 7.ª sesión): `npm run build` y `npm run lint` limpios;
   las 5 pruebas de humo repitieron en verde y se revisaron visualmente **Login, Inicio,
   Solicitudes (bandeja y detalle), Asistente IA y `/solicitud`** en escritorio (1440 px)
