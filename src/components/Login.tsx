@@ -168,6 +168,12 @@ export function Login() {
             <p className="mt-6 border-t border-borde-suave pt-5 text-center text-xs leading-relaxed text-tinta-tenue">
               ¿Necesitas acceso? Pídele al administrador que cree tu usuario.
             </p>
+            <a
+              href="/"
+              className="mt-3 flex items-center justify-center gap-1.5 text-xs font-medium text-tinta-suave transition-colors hover:text-clay"
+            >
+              ← Volver al sitio web
+            </a>
           </div>
         </div>
       </div>

@@ -32,7 +32,7 @@ async (page) => {
 
   const ejecutar = async () => {
     // ---------- Primera visita: acceso visible y service worker registrado ----------
-    await page.goto(BASE, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel`, { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: 'AviTech Panel' }).waitFor({ timeout: 20000 })
     await page.screenshot({ path: `${CAPTURAS}/01-acceso.png` })
     marcar('acceso visible')

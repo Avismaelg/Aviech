@@ -229,7 +229,7 @@ async (page) => {
   const ejecutar = async () => {
     // Los scripts viejos del propio navegador fallan en about:blank (localStorage bloqueado).
     errores.length = 0
-    await page.goto(`${BASE}/#seo`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel#seo`, { waitUntil: 'networkidle' })
     marcar('auditor abierto por enlace profundo')
 
     // ---------- Estado inicial ----------

@@ -1,9 +1,19 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 21-oct-2026 (décima sesión: seguridad del portal de Talento, límites en la base y rendimiento)
+> Última actualización: 21-oct-2026 (11.ª sesión: sitio comercial público, panel en `/panel` y formulario conectado)
 
 ## 📌 Punto de continuación
 
+- **Sitio comercial (11.ª sesión, 21 oct):** nueva portada pública en `/` con la paleta
+  azul del brief (marino, eléctrico y verde), hero, cuatro servicios, seis
+  necesidades, proceso, tres demostraciones funcionales, equipo, cuatro paquetes en
+  RD$ y formulario de contacto. El panel se movió a **`/panel`** (los enlaces
+  `/#seccion` redirigen), la PWA abre en `/panel` y el sitio tiene canonical,
+  JSON-LD, `robots.txt` y `sitemap.xml`. El formulario reutiliza
+  `POST /api/solicitudes` (sin tablas nuevas) y mapea el servicio a los tipos
+  internos. Prueba nueva: `docs/pruebas/prueba-sitio.js` (**8 pasos, 0 errores**).
+  **No se ha publicado a producción:** el brief exige autorización; los cambios
+  están en local.
 - **Seguridad y rendimiento de Talento (10.ª sesión, 21 oct):** perfil **protegido con
   token** (actualizar un correo ya registrado exige el token del navegador;
   `crear_postulacion_publica` se sustituye por `guardar_postulacion_publica` y queda
@@ -320,6 +330,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   plan/informe/precio y vista móvil — **0 errores de consola**. Script:
   `docs/pruebas/prueba-solicitudes.js`; capturas en `capturas-solicitudes` (3 pantallas).
   El formulario público también se validó en escritorio (1440 px) y móvil (390 px).
+- **Prueba del sitio comercial** (21-oct, 11.ª sesión): 8 pasos con el endpoint de
+  solicitudes interceptado — portada y secciones, preselección por necesidad,
+  validación del formulario incompleto, envío con mapeo (`tipo`, `urgencia`,
+  presupuesto y consentimiento), confirmación con folio, reinicio, menú móvil sin
+  desbordes, `/panel` y redirección `/#crm` → `/panel#crm` — **0 errores de consola**.
+  Script: `docs/pruebas/prueba-sitio.js`; capturas en `capturas-sitio`.
 - **Prueba de Talento** (20–21 oct, 8.ª a 10.ª sesión): 12 pasos con Supabase, Storage y
   Worker simulados — panel interno (métricas, candidato, empresa, matching con IA,
   kanban, entrevista, contratación y **mantenimiento de CV**) y portal público (perfil
@@ -446,3 +462,9 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
     permitir que la empresa dé seguimiento a su propia solicitud sin crear cuentas.
     Ideas para superar al mercado: ver la lista de ventajas competitivas en
     **`docs/TALENTO.md`** (sección «Ideas para diferenciarse»).
+13. **Sitio comercial (hecho en local, 11.ª sesión):** portada en `/`, panel en
+    `/panel`, formulario conectado al flujo de solicitudes, SEO técnico y prueba en
+    verde. Pendiente antes de publicar: cargar **teléfono, correo y WhatsApp reales**
+    (`VITE_*`), definir el **dominio** (canonical, `robots.txt`, `sitemap.xml`),
+    revisar los rangos de precios y dar el **visto bueno** para desplegar. Ver
+    **`docs/SITIO-COMERCIAL.md`**.

@@ -1,11 +1,13 @@
-# Diseño del panel — guía maestra (DESIGN.md)
+# Diseño — guía maestra del panel y del sitio (DESIGN.md)
 
 > **Para qué sirve:** que cualquier persona (o IA) que toque la interfaz mantenga
 > la misma línea visual sin leer todo el código. Si algo cambia aquí, debe cambiar
 > también en `src/index.css` — y al revés.
 >
-> **Regla de oro:** la app es **cálida y clara** (lienzo crema, tinta y naranja);
-> las **facturas, reportes y la impresión** conservan aspecto de papel blanco.
+> **Dos sistemas deliberados:** el **panel interno** es cálido y claro (lienzo crema,
+> tinta y naranja, v4 «Open Design · Mastercard»); el **sitio comercial** en `/` usa la
+> paleta azul del brief (marino, eléctrico y verde) y vive dentro de `.sitio-comercial`.
+> Las **facturas, reportes y la impresión** conservan aspecto de papel blanco.
 
 ---
 
@@ -138,6 +140,7 @@ usan como acento de marca ni para botones primarios.
 
 | Componente | Notas |
 |---|---|
+| `Sitio comercial` | Portada pública en `/` con su propia paleta. Cabecera sticky con nav de anclas, CTA y menú móvil; hero de dos columnas con composición CSS de navegador/panel (sin imágenes pesadas); tarjetas de servicio con entregables; sección oscura de necesidades; proceso en cuatro pasos; tres demostraciones con miniaturas CSS y etiqueta «Demostración»; equipo en tarjetas; cuatro paquetes (el destacado en marino) y formulario de contacto con consentimiento y detalles de privacidad. Los textos pequeños en azul usan `electrico-texto` (`#005FCC`) para contraste AA. No reutiliza los tokens cálidos del panel. |
 | `Asistente IA` | En escritorio se abre desde el botón **Asistente IA** de la barra de contexto; en móvil, desde el icono de destellos de la cabecera fija (junto al avatar y el menú). Panel de 400 px en escritorio y hoja inferior en móvil. Cabecera con estado, nueva conversación y cerrar; sugerencias iniciales, indicador de escritura y compositor con `Enter` para enviar y `Shift+Enter` para salto de línea. No guarda historial ni ve la base de datos. |
 | `Login` | Dos columnas: panel de marca en tinta con órbita naranja + tarjeta de superficie con acceso. Píldora «Acceso privado», ver/ocultar contraseña y error legible. En móvil se apila. |
 | `Inicio` | Hero editorial con saludo capitalizado, acciones rápidas, KPIs, gráfica de ingresos (barras de tinta + mes actual naranja), tarjeta de ingreso recurrente y anillo de cobro. |
@@ -152,12 +155,19 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-21-talento-seguridad`.
-- **Rendimiento (10.ª sesión):** `src/main.tsx` carga con `lazy` solo la página que
-  toca (`/solicitud`, `/talento` o el panel) y `App.tsx` carga cada sección bajo
-  `Suspense`; React y Supabase viajan en chunks de vendor separados (`vite.config.ts`)
-  y las listas públicas responden con caché de navegador de 60 s. Al añadir una
-  sección nueva, importarla con `lazy` y declarar su `<Suspense>` dentro del armazón.
+  Versión actual: `avitech-v2026-10-21-sitio-comercial`.
+- **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
+  que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
+  bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
+  (`vite.config.ts`) y las listas públicas responden con caché de navegador de 60 s.
+  Al añadir una sección nueva, importarla con `lazy` y declarar su `<Suspense>` dentro
+  del armazón.
+- **Sitio comercial (11.ª sesión):** tokens propios en `@theme` (`marino`,
+  `electrico`, `electrico-texto`, `electrico-suave`, `verde`, `verde-suave`,
+  `grafito`, `acero`, `niebla`, `borde-azul`). El foco del sitio se pinta azul dentro de
+  `.sitio-comercial`; la cuadrícula del hero es `.cuadricula-sitio`; el desplazamiento
+  suave solo se activa con `html:has(.sitio-comercial)` y respeta
+  `prefers-reduced-motion`. El manifest de la PWA abre en `/panel`.
 
 ## 7. Regla de oro: factura e impresión en claro
 
@@ -186,8 +196,8 @@ usan como acento de marca ni para botones primarios.
 
 ## 9. Don'ts (anti-patrones)
 
-- ❌ Volver a la barra superior fija en escritorio o a la nav azul de la v3.
-- ❌ Usar azul/índigo como acento de marca o reintroducir degradados violeta.
+- ❌ Volver a la barra superior fija en escritorio o a la nav azul de la v3 **en el panel**.
+- ❌ Usar azul/índigo como acento de marca **en el panel** o reintroducir degradados violeta. (El sitio comercial es la excepción deliberada: su paleta azul está aislada en `.sitio-comercial`.)
 - ❌ Poner botones primarios naranjas: el naranja es señal, no acción.
 - ❌ Hex crudos de Tailwind para superficies/texto (usar tokens).
 - ❌ Mezclar botones cuadrados con píldoras o radios arbitrarios.
@@ -204,6 +214,8 @@ usan como acento de marca ni para botones primarios.
 - [ ] Focus visible en botones, campos y enlaces
 - [ ] Responsive 375 / 768 / 1024 / 1440 sin recortes (menú móvil incluido)
 - [ ] Formulario público `/solicitud` sin recortes a 390 px y con consentimiento visible
+- [ ] Sitio comercial `/` sin recortes a 390 / 768 / 1024 / 1440, menú móvil accesible y formulario con validación y consentimiento
+- [ ] Contraste AA en textos azules pequeños del sitio (usar `electrico-texto`, no `electrico` brillante)
 - [ ] Portal `/talento` sin recortes a 390 px, perfiles sin datos de contacto y shortlist usable
 - [ ] Postulación con IA: autorización explícita, máximo 3, resultado legible y sin exponer correo/CV
 - [ ] Modales abiertos desde cualquier sección sin recortes (portal al `body`)

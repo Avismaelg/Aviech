@@ -181,7 +181,7 @@ async (page) => {
   const ejecutar = async () => {
     // Los scripts viejos del propio navegador fallan en about:blank (localStorage bloqueado).
     errores.length = 0
-    await page.goto(`${BASE}/#crm`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel#crm`, { waitUntil: 'networkidle' })
     marcar('pipeline cargado')
 
     // ---------- Pipeline ----------

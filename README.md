@@ -6,13 +6,14 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, CRM, talento, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
+Plataforma de AviTech Solutions Group: **sitio comercial público** en `/` para vender servicios de digitalización y **panel interno** en `/panel` con clientes, CRM, talento, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA. Pensado para **República Dominicana**: montos en **RD$**
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
-Interfaz **v4 «Open Design · Mastercard»**: lienzo crema, tinta casi negra y naranja de señal; tipografía **Sofia Sans** autoalojada, **barra lateral flotante** con grupos en escritorio y cabecera tipo píldora con menú desplegable en móvil. Las facturas y la impresión siguen en claro.
+Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **sitio comercial** usa la paleta azul del brief (marino `#003B72`, eléctrico `#007BFF`, verde `#21C063`) y el **panel** conserva la v4 «Open Design · Mastercard» (lienzo crema, tinta y naranja de señal), con barra lateral flotante y cabecera tipo píldora en móvil. Las facturas y la impresión siguen en claro.
 
-- Dirección pública: **https://aviech.avismael-eg.workers.dev**
+- Sitio comercial: **https://aviech.avismael-eg.workers.dev/**
+- Panel interno: **https://aviech.avismael-eg.workers.dev/panel**
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
 - Portal público de talento: **https://aviech.avismael-eg.workers.dev/talento**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
@@ -21,6 +22,7 @@ Interfaz **v4 «Open Design · Mastercard»**: lienzo crema, tinta casi negra y 
 
 | Módulo | Qué hace |
 |---|---|
+| **Sitio comercial** (`/`) | Portada pública con hero, cuatro servicios (web, portales, automatización y soporte), seis necesidades, proceso de trabajo, tres demostraciones funcionales, equipo, paquetes en RD$ y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA. Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
@@ -54,7 +56,7 @@ npm run lint       # revisión de código (oxlint)
 
 ### Base de datos y migraciones
 
-- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001, 002, 003, 004, …).
+- El esquema vive en **`supabase/sql/`** como archivos numerados e idempotentes (001…012).
 - Se aplican solos con el workflow **«Migrar base de datos»** cada vez que cambia
   `supabase/sql/` (o a mano: GitHub → Actions → Run workflow).
 - Cada ejecución deja un reporte en `supabase/verificacion-ultima.txt`
@@ -88,8 +90,14 @@ Copia semanal automática de la base (lunes ~1:00 PM, hora de República Dominic
 
 ```
 src/
+  main.tsx                # enrutado: / sitio, /panel panel, /solicitud y /talento
   App.tsx                 # sesión de Supabase → Login o panel
   components/
+    sitio/
+      SitioPublico.tsx    # portada comercial, cabecera, navegación móvil y pie
+      Secciones.tsx       # hero, servicios, necesidades, proceso, portafolio, equipo y paquetes
+      Contacto.tsx        # formulario comercial → /api/solicitudes
+      estilos.ts          # clases compartidas del sitio
     Layout.tsx            # barra lateral flotante + cabecera móvil y navegación
     AsistenteIA.tsx       # chat interno del asistente (Workers AI)
     Inicio.tsx            # tablero: contadores, gráfica, anillo de cobro y balance
@@ -122,6 +130,7 @@ src/
     Login.tsx             # acceso del personal
     ui.tsx / toast.tsx    # piezas de interfaz compartidas
   lib/
+    sitio.ts              # contenido del sitio: servicios, paquetes, proceso, plazos y contacto
     supabase.ts           # cliente compartido de Supabase
     useTabla.ts           # carga/guardado genérico por tabla
     crm.ts                # convierte una empresa del CRM en cliente
@@ -141,7 +150,9 @@ worker/
   index.js                # API del panel en Cloudflare (SEO, prospección, asistente, solicitudes y talento)
 public/
   sw.js                   # service worker: abre sin conexión y repite visitas al instante
-  manifest.webmanifest    # datos de la app instalable (PWA)
+  manifest.webmanifest    # datos de la app instalable (PWA; abre en /panel)
+  robots.txt              # permite el sitio y bloquea /panel
+  sitemap.xml             # portada y portal de talento
 supabase/sql/             # migraciones (001…012)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
@@ -150,12 +161,13 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
+- `docs/SITIO-COMERCIAL.md` — portada pública, contenido, paquetes, formulario y configuración
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
 - `docs/TALENTO.md` — candidatos, empresas empleadoras, vacantes, portal público, CV privado, matching y postulación asistida con IA
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)
 - `docs/PROSPECCION.md` — guía de Prospección (contactos de una web → CRM; gratis)
 - `docs/SOLICITUDES.md` — formulario público, bandeja interna y cierre automático con IA
-- `docs/pruebas/README.md` — pruebas de humo del CRM, Talento, Auditor SEO, Prospección, PWA y Solicitudes con datos simulados
+- `docs/pruebas/README.md` — pruebas de humo del Sitio comercial, CRM, Talento, Auditor SEO, Prospección, PWA y Solicitudes con datos simulados
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

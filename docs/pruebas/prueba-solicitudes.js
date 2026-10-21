@@ -230,7 +230,7 @@ async (page) => {
 
   const ejecutar = async () => {
     errores.length = 0
-    await page.goto(`${BASE}/#solicitudes`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel#solicitudes`, { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: 'Solicitudes', exact: true }).waitFor({ timeout: 20000 })
     marcar('bandeja cargada')
 

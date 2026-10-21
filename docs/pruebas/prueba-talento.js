@@ -687,7 +687,7 @@ async (page) => {
 
   const ejecutar = async () => {
     errores.length = 0
-    await page.goto(`${BASE}/#talento`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel#talento`, { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: 'Talento', exact: true }).waitFor({ timeout: 20000 })
     marcar('panel de talento cargado')
 
@@ -883,7 +883,7 @@ async (page) => {
     marcar('perfil existente protegido sin token')
 
     // Mantenimiento: el panel detecta y borra CV que ya no tienen candidato.
-    await page.goto(`${BASE}/#talento`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel#talento`, { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: 'Talento', exact: true }).waitFor({ timeout: 20000 })
     await page.getByText('Solicitudes de empresas', { exact: true }).waitFor()
     await page.getByRole('button', { name: 'Buscar CV sin dueño', exact: true }).click()

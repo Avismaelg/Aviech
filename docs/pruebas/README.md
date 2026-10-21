@@ -1,7 +1,24 @@
 # Pruebas de navegador
 
-> Seis pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Siete pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
+
+## Sitio comercial (`prueba-sitio.js`)
+
+Prueba de humo de la portada pública con **datos simulados**: intercepta
+`**/api/solicitudes` para no escribir en la base real. No necesita sesión ni secretos.
+
+**Qué comprueba:** portada y secciones (4 servicios, 6 necesidades, 4 paquetes y 3
+demostraciones), preselección del servicio al pulsar una necesidad, validación del
+formulario incompleto, envío con el mapeo interno (`tipo`, `urgencia`, presupuesto,
+consentimiento y honeypot), confirmación con folio real, reinicio del formulario, menú
+móvil sin desbordes a 390 px, panel en `/panel` y redirección de `/#crm` a
+`/panel#crm`. Devuelve JSON con `ok`, 8 pasos y los errores de consola (debe ser `[]`).
+
+**Cómo ejecutarla:** compila, levanta la vista previa en el puerto 5181 y pide en OpenCode
+`docs/pruebas/prueba-sitio.js` con la herramienta de Playwright
+(`browser_run_code_unsafe`, parámetro `filename`). Capturas en
+`C:\Users\User\avitech\capturas-sitio`.
 
 ## CRM (`prueba-crm.js`)
 
@@ -30,8 +47,8 @@ los errores de consola (debe ser `[]`).
 3. Las capturas se guardan en `C:\Users\User\avitech\capturas-crm` (5 imágenes). Si usas
    otra ruta, ajusta la constante `CAPTURAS` al inicio del script.
 
-**Nota:** el script asume que el panel se sirve en `http://localhost:5181`. Si usas otro
-puerto, cambia la constante `BASE`.
+**Nota:** el script asume que la app se sirve en `http://localhost:5181` (sitio en `/`,
+panel en `/panel`). Si usas otro puerto, cambia la constante `BASE`.
 
 ## Auditor SEO (`prueba-seo.js`)
 
@@ -41,8 +58,8 @@ medición de velocidad de Google).
 
 **Qué comprueba:** estado vacío, auditoría con informe completo (puntaje, comprobaciones y
 sitemap), medición de PageSpeed y su guardado, segunda auditoría con hallazgos, eliminación
-con confirmación, validación de direcciones inválidas, recarga con enlace profundo (`#seo`) y
-vista móvil. Devuelve JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
+con confirmación, validación de direcciones inválidas, recarga con enlace profundo
+(`/panel#seo`) y vista móvil. Devuelve JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
 
 **Cómo ejecutarla:** igual que la del CRM (arriba): compila, levanta la vista previa en el
 puerto 5181 y pide en OpenCode `docs/pruebas/prueba-seo.js` con la herramienta de Playwright
@@ -58,7 +75,7 @@ intercepta `**/rest/v1/**`, `**/auth/v1/**` y `**/api/scraper/contactos**` (la A
 páginas de origen), guardado en el CRM como **empresa nueva** (verifica el payload enviado a
 Supabase), salto al CRM con «Ver en el CRM», guardado cuando la **empresa ya existe** (no
 duplica la empresa y avisa con «Ya tienes …»), validación de direcciones inválidas sin llamar
-a la API, recarga con enlace profundo (`#prospeccion`) y vista móvil. Devuelve JSON con `ok`,
+a la API, recarga con enlace profundo (`/panel#prospeccion`) y vista móvil. Devuelve JSON con `ok`,
 los pasos y los errores de consola (debe ser `[]`).
 
 **Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el puerto

@@ -163,7 +163,7 @@ async (page) => {
 
   const ejecutar = async () => {
     errores.length = 0
-    await page.goto(`${BASE}/#prospeccion`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/panel#prospeccion`, { waitUntil: 'networkidle' })
     marcar('prospección abierta por enlace profundo')
 
     // ---------- Estado inicial ----------

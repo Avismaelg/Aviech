@@ -40,6 +40,20 @@
   --color-info-suave: #edf2fb;
   --color-info-borde: #ccd8ef;
 
+  /* Paleta del sitio comercial (brief azul, 21-oct-2026). Se usa solo dentro
+     de .sitio-comercial; el panel conserva su tema cálido. */
+  --color-marino: #003b72;
+  --color-marino-oscuro: #00264a;
+  --color-electrico: #007bff;
+  --color-electrico-texto: #005fcc;
+  --color-electrico-suave: #e8f2ff;
+  --color-verde: #21c063;
+  --color-verde-suave: #e9f9f0;
+  --color-grafito: #1a1a1a;
+  --color-acero: #5b6b7f;
+  --color-niebla: #f4f7fb;
+  --color-borde-azul: #dbe6f2;
+
   /* Una sola familia: Sofia Sans como sustituto abierto de MarkForMC. */
   --font-sans: 'Sofia Sans Variable', 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'Sofia Sans Variable', 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -80,6 +94,46 @@ h4 {
 :where(a, button, [role='button'], summary, input, select, textarea):focus-visible {
   outline: 2px solid rgb(207 69 0 / 0.9);
   outline-offset: 3px;
+}
+
+/* ---------- Sitio comercial (paleta azul) ---------- */
+
+.sitio-comercial {
+  background-color: #ffffff;
+}
+
+.sitio-comercial ::selection {
+  background: rgb(0 123 255 / 0.16);
+}
+
+/* El foco del sitio usa el azul eléctrico, no el naranja del panel. */
+.sitio-comercial :where(a, button, [role='button'], summary, input, select, textarea):focus-visible {
+  outline-color: rgb(0 123 255 / 0.9);
+}
+
+.sitio-comercial section[id] {
+  scroll-margin-top: 80px;
+}
+
+/* Desplazamiento suave solo mientras el sitio está montado. */
+html:has(.sitio-comercial) {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.sitio-comercial) {
+    scroll-behavior: auto;
+  }
+}
+
+/* Cuadrícula técnica del hero, desvanecida en los bordes. */
+.cuadricula-sitio {
+  background-image:
+    linear-gradient(to right, rgb(0 59 114 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(0 59 114 / 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse at 50% 35%, #000 25%, transparent 78%);
 }
 
 /* Documento de factura: siempre con aspecto de papel (claro) */

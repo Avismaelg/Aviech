@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, BriefcaseBusiness, FileText, Handshake, Inbox, LayoutDashboard, LogOut, Menu, Radar, Receipt, ReceiptText, SearchCheck, Sparkles, Target, Users, Wallet, X } from 'lucide-react'
+import { Briefcase, BriefcaseBusiness, FileText, Globe, Handshake, Inbox, LayoutDashboard, LogOut, Menu, Radar, Receipt, ReceiptText, SearchCheck, Sparkles, Target, Users, Wallet, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { cx } from '../lib/estilos'
@@ -182,6 +182,13 @@ export function Layout({
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-exito" />
             Sistema privado
           </p>
+          <a
+            href="/"
+            className="mt-2 flex items-center gap-1.5 px-1 text-[10px] font-semibold tracking-[0.1em] text-tinta-tenue uppercase transition-colors hover:text-clay"
+          >
+            <Globe size={12} aria-hidden />
+            Ver sitio web
+          </a>
         </div>
       </aside>
 
@@ -279,13 +286,23 @@ export function Layout({
                   {correo}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={salir}
-                className="flex shrink-0 items-center gap-1.5 rounded-full border border-borde bg-superficie px-3 py-1.5 text-xs font-medium text-tinta-suave transition-colors hover:bg-arena hover:text-clay"
-              >
-                <LogOut size={14} /> Salir
-              </button>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <a
+                  href="/"
+                  aria-label="Ver sitio web"
+                  title="Ver sitio web"
+                  className="flex items-center gap-1.5 rounded-full border border-borde bg-superficie px-3 py-1.5 text-xs font-medium text-tinta-suave transition-colors hover:bg-arena hover:text-clay"
+                >
+                  <Globe size={14} aria-hidden /> Sitio
+                </a>
+                <button
+                  type="button"
+                  onClick={salir}
+                  className="flex shrink-0 items-center gap-1.5 rounded-full border border-borde bg-superficie px-3 py-1.5 text-xs font-medium text-tinta-suave transition-colors hover:bg-arena hover:text-clay"
+                >
+                  <LogOut size={14} /> Salir
+                </button>
+              </div>
             </div>
           </div>
         </div>

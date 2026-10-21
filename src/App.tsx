@@ -127,6 +127,19 @@ function App() {
     return () => data.subscription.unsubscribe()
   }, [])
 
+  useEffect(() => {
+    document.title = 'Panel · AviTech Solutions Group'
+    const tema = document.querySelector('meta[name="theme-color"]')
+    tema?.setAttribute('content', '#f3f0ee')
+    const robots = document.createElement('meta')
+    robots.name = 'robots'
+    robots.content = 'noindex'
+    document.head.appendChild(robots)
+    return () => {
+      robots.remove()
+    }
+  }, [])
+
   if (!isSupabaseConfigured) return <SinConfigurar />
   if (comprobando) return <Comprobando />
 
