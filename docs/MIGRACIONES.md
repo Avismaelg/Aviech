@@ -42,3 +42,4 @@ El orden importa: primero 001, luego 002, etc.
 | `009_solicitudes.sql` | Bandeja `solicitudes_servicio`, campos de ejecución en `servicios`, RPC públicas con token y RLS |
 | `010_talento.sql` | Tablas `talento_candidatos`, `talento_empresas`, `talento_vacantes` y `talento_postulaciones`, bucket privado `talento-cv`, RPC públicas y RLS |
 | `011_talento_ia.sql` | Token privado del candidato, RPC `perfil_para_ia_publico` y `postular_con_ia_publica` para la postulación asistida con IA |
+| `012_talento_seguridad.sql` | Token obligatorio para editar un perfil (`guardar_postulacion_publica` reemplaza a `crear_postulacion_publica`), límites en base con `talento_limites_publicos`, índices parciales de las listas públicas |

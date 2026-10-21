@@ -73,17 +73,20 @@ Prueba de humo del módulo **Talento** con datos simulados: intercepta `**/rest/
 Workers AI y no contiene secretos.
 
 **Qué comprueba:** panel interno (métricas, alta de candidato, alta de empresa, matching
-con IA y alta al pipeline, cambio de etapa a entrevista y cierre como contratado), portal
-público (perfiles anónimos sin correo ni teléfono, shortlist, solicitud de entrevista de una
-empresa, alta de candidato con CV PDF y consentimiento, **postulación asistida con IA con
-token privado y máximo de 3**) y vista móvil a 390 px. Al final devuelve un JSON con `ok`,
-los pasos y los errores de consola (debe ser `[]`).
+con IA y alta al pipeline, cambio de etapa a entrevista, cierre como contratado y
+**mantenimiento de CV huérfanos**), portal público (perfiles anónimos sin correo ni teléfono,
+shortlist, solicitud de entrevista de una empresa, alta de candidato con CV PDF y
+consentimiento, **postulación asistida con IA con token privado y máximo de 3**,
+**actualización del propio perfil con el token del navegador** y **rechazo del perfil ajeno
+sin token** con el aviso «Ese correo ya tiene un perfil») y vista móvil a 390 px. Al final
+devuelve un JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
 
 **Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el puerto
 5181 y pide en OpenCode `docs/pruebas/prueba-talento.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
-`C:\Users\User\avitech\capturas-talento` (8 imágenes; `08-portal-ia.png` muestra el
-resultado de la IA).
+`C:\Users\User\avitech\capturas-talento` (10 imágenes; `08-portal-ia.png` muestra el
+resultado de la IA, `09-perfil-protegido.png` el aviso del token y `10-mantenimiento-cv.png`
+la limpieza de CV).
 
 ## PWA sin conexión (`prueba-pwa.js`)
 

@@ -67,7 +67,7 @@ jobs:
             echo "## Tablas de public"
             psql "$DB" -c '\dt public.*'
             echo "## Columnas de todas las tablas"
-            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades','seo_auditorias','solicitudes_servicio','talento_candidatos','talento_empresas','talento_vacantes','talento_postulaciones') order by table_name, ordinal_position;"
+            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades','seo_auditorias','solicitudes_servicio','talento_candidatos','talento_empresas','talento_vacantes','talento_postulaciones','talento_limites_publicos') order by table_name, ordinal_position;"
             echo "## Conteos"
             psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas union all select 'crm_empresas', count(*) from public.crm_empresas union all select 'crm_contactos', count(*) from public.crm_contactos union all select 'crm_oportunidades', count(*) from public.crm_oportunidades union all select 'crm_actividades', count(*) from public.crm_actividades union all select 'seo_auditorias', count(*) from public.seo_auditorias union all select 'solicitudes_servicio', count(*) from public.solicitudes_servicio union all select 'talento_candidatos', count(*) from public.talento_candidatos union all select 'talento_empresas', count(*) from public.talento_empresas union all select 'talento_vacantes', count(*) from public.talento_vacantes union all select 'talento_postulaciones', count(*) from public.talento_postulaciones;"
             echo "## Prueba de inserciones (se revierte al final)"
@@ -76,6 +76,7 @@ jobs:
           do $$
           declare c uuid; f uuid; e uuid; ct uuid; o uuid; s uuid; v_sol jsonb; tc uuid; te uuid; tv uuid;
             tv_ia uuid; v_token uuid; v_perfil jsonb; v_aplic jsonb;
+            v_cand jsonb; v_bloqueado boolean := false;
           begin
             insert into public.clientes (nombre, empresa, estado) values ('__prueba_migracion__', 'Prueba', 'prospecto') returning id into c;
             insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
@@ -116,6 +117,43 @@ jobs:
             if coalesce((v_aplic ->> 'aplicadas')::integer, 0) <> 1 then
               raise exception 'postular_con_ia_publica no creó la postulación: %', v_aplic;
             end if;
+            -- Alta nueva con token: guardar_postulacion_publica devuelve token.
+            v_cand := public.guardar_postulacion_publica(
+              '__prueba_publico__', 'prueba2@talento.test', null, null,
+              '__prueba_puesto__', 'mid', 'hibrido', array['Excel'],
+              null, null, null, null, null, null, null, true, true, null, null
+            );
+            if (v_cand ->> 'token_publico') is null then
+              raise exception 'guardar_postulacion_publica no devolvió token.';
+            end if;
+            -- La misma persona actualiza con su token.
+            v_cand := public.guardar_postulacion_publica(
+              '__prueba_publico__', 'prueba2@talento.test', null, null,
+              '__prueba_puesto_actualizado__', 'mid', 'hibrido', array['Excel'],
+              null, null, null, null, null, null, null, true, true, null,
+              (v_cand ->> 'token_publico')::uuid
+            );
+            if coalesce((v_cand ->> 'perfil_existente')::boolean, false) is not true then
+              raise exception 'La actualización con token no marcó perfil_existente.';
+            end if;
+            -- Sin token, la base rechaza la edición de un perfil existente.
+            begin
+              perform public.guardar_postulacion_publica(
+                '__prueba_intruso__', 'prueba2@talento.test', null, null,
+                '__prueba_puesto__', 'mid', 'hibrido', array['Excel'],
+                null, null, null, null, null, null, null, true, true, null, null
+              );
+            exception when others then
+              if sqlstate <> 'PT409' then
+                raise exception 'Se esperaba PT409 al editar sin token y llegó %', sqlstate;
+              end if;
+              v_bloqueado := true;
+            end;
+            if not v_bloqueado then
+              raise exception 'La base permitió editar un perfil existente sin token.';
+            end if;
+            -- El límite público existe y responde.
+            perform public.talento_limitar_publico('prueba:migracion', 5, 60);
             v_sol := public.crear_solicitud_publica(
               '__prueba_publica__', 'Prueba', 'prueba@ejemplo.com', '8095550101',
               'https://ejemplo.com', 'seo', 'Auditoría de prueba',
@@ -175,9 +213,11 @@ jobs:
           rollback;
           SQL
             echo "## Permisos directos de Talento para anónimo (debe ser false)"
-            psql "$DB" -c "select has_table_privilege('anon','public.talento_candidatos','select') as candidatos, has_table_privilege('anon','public.talento_empresas','select') as empresas, has_table_privilege('anon','public.talento_vacantes','select') as vacantes, has_table_privilege('anon','public.talento_postulaciones','select') as postulaciones;"
+            psql "$DB" -c "select has_table_privilege('anon','public.talento_candidatos','select') as candidatos, has_table_privilege('anon','public.talento_empresas','select') as empresas, has_table_privilege('anon','public.talento_vacantes','select') as vacantes, has_table_privilege('anon','public.talento_postulaciones','select') as postulaciones, has_table_privilege('anon','public.talento_limites_publicos','select') as limites;"
             echo "## RPC de postulación con IA disponibles para anónimo (debe ser true)"
             psql "$DB" -c "select has_function_privilege('anon','public.perfil_para_ia_publico(uuid,uuid)','execute') as perfil_ia, has_function_privilege('anon','public.postular_con_ia_publica(uuid,uuid,uuid[],integer[],text[])','execute') as postular_ia;"
+            echo "## RPC de seguridad de Talento (true, true, false)"
+            psql "$DB" -c "select has_function_privilege('anon','public.guardar_postulacion_publica(text,text,text,text,text,text,text,text[],text,text,text,numeric,text,text,text,boolean,boolean,uuid,uuid)','execute') as guardar, to_regprocedure('public.crear_postulacion_publica(text,text,text,text,text,text,text,text[],text,text,text,numeric,text,text,text,boolean,boolean,uuid)') is null as vieja_eliminada, has_function_privilege('anon','public.talento_limitar_publico(text,integer,integer)','execute') as limites_anon;"
             echo "## RPC pública como anónimo (crea y cierra con token; se revierte)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
@@ -203,10 +243,10 @@ jobs:
           do $$
           declare v_cand jsonb; v_emp jsonb; v_vac jsonb; v_perfil jsonb; v_aplic jsonb;
           begin
-            v_cand := public.crear_postulacion_publica(
+            v_cand := public.guardar_postulacion_publica(
               '__prueba_candidato_publico__', 'anonimo@talento.test', null, null,
               '__prueba_puesto__', 'mid', 'hibrido', array['Excel', 'NIIF'],
-              null, null, null, null, null, null, null, true, true, null
+              null, null, null, null, null, null, null, true, true, null, null
             );
             v_emp := public.crear_empresa_y_solicitud(
               '__prueba_empresa_publica__', 'Prueba', null, null,

@@ -1,9 +1,18 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 21-oct-2026 (novena sesión: postulación asistida con IA en Talento)
+> Última actualización: 21-oct-2026 (décima sesión: seguridad del portal de Talento, límites en la base y rendimiento)
 
 ## 📌 Punto de continuación
 
+- **Seguridad y rendimiento de Talento (10.ª sesión, 21 oct):** perfil **protegido con
+  token** (actualizar un correo ya registrado exige el token del navegador;
+  `crear_postulacion_publica` se sustituye por `guardar_postulacion_publica` y queda
+  eliminada), **límites en la propia base** (`talento_limites_publicos` +
+  `talento_limitar_publico`, con SQLSTATE `PT429`/`PT409`), índices parciales de las
+  listas públicas, caché de navegador de 60 s en `GET /api/talento/*`, **aviso de
+  solicitudes de empresa** y **limpieza de CV sin candidato** en el Resumen, y
+  **code-splitting** del panel y las páginas públicas. Migración **012**. La prueba de
+  Talento pasa a **12 pasos** y 0 errores de consola.
 - **Postulación asistida con IA (9.ª sesión, 21 oct):** en `/talento` → «Busco
   empleo», el candidato puede autorizar que la IA revise hasta 20 vacantes públicas
   abiertas y postule su perfil a un máximo de 3. El alta devuelve un **token privado**
@@ -239,11 +248,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   `gastos`, `facturas`, `factura_items` (líneas de factura), las cuatro del CRM
   (`crm_empresas`, `crm_contactos`, `crm_oportunidades`, `crm_actividades`),
   `seo_auditorias` (informes del Auditor SEO), `solicitudes_servicio` (bandeja y
-  automatización) y las cuatro de **Talento** (`talento_candidatos`,
-  `talento_empresas`, `talento_vacantes`, `talento_postulaciones`). Todas con RLS:
-  solo usuarios autenticados; un visitante anónimo no ve nada. Bucket privado
+  automatización), las cuatro de **Talento** (`talento_candidatos`,
+  `talento_empresas`, `talento_vacantes`, `talento_postulaciones`) y
+  `talento_limites_publicos` (contadores antiabuso, sin acceso para `anon`). Todas con
+  RLS: solo usuarios autenticados; un visitante anónimo no ve nada. Bucket privado
   `talento-cv`.
-- Las migraciones viven en **`supabase/sql/`** (001…011) y se aplican solas con el
+- Las migraciones viven en **`supabase/sql/`** (001…012) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -270,6 +280,13 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   `perfil_para_ia_publico` y `postular_con_ia_publica`. El workflow verifica la
   postulación asistida con una vacante de prueba, el token privado y los permisos de
   `anon`. Reporte: `supabase/verificacion-ultima.txt`.
+- **Migración 012 (seguridad de Talento), 21-oct-2026:** `guardar_postulacion_publica`
+  exige el token del navegador para actualizar un perfil existente (sin token:
+  `PT409`), elimina `crear_postulacion_publica`, añade `talento_limites_publicos` +
+  `talento_limitar_publico` con topes en la base (`PT429`), y crea los índices
+  parciales de las listas públicas. El workflow verifica la RPC nueva, la ausencia de
+  la vieja, la tabla de límites y el comportamiento del token en una transacción
+  revertida. Reporte: `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -301,13 +318,14 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   plan/informe/precio y vista móvil — **0 errores de consola**. Script:
   `docs/pruebas/prueba-solicitudes.js`; capturas en `capturas-solicitudes` (3 pantallas).
   El formulario público también se validó en escritorio (1440 px) y móvil (390 px).
-- **Prueba de Talento** (20–21 oct, 8.ª y 9.ª sesión): 9 pasos con Supabase, Storage y
+- **Prueba de Talento** (20–21 oct, 8.ª a 10.ª sesión): 12 pasos con Supabase, Storage y
   Worker simulados — panel interno (métricas, candidato, empresa, matching con IA,
-  kanban, entrevista y contratación) y portal público (perfil anónimo sin
-  correo/teléfono, shortlist, solicitud de entrevista, alta con CV PDF y **postulación
-  asistida con IA con token privado**) — **0 errores de consola** y vista móvil sin
-  desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
-  `capturas-talento` (8 pantallas).
+  kanban, entrevista, contratación y **mantenimiento de CV**) y portal público (perfil
+  anónimo sin correo/teléfono, shortlist, solicitud de entrevista, alta con CV PDF,
+  **postulación asistida con IA con token privado**, **actualización con el token del
+  navegador** y **rechazo del perfil ajeno sin token**) — **0 errores de consola** y
+  vista móvil sin desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
+  `capturas-talento` (10 pantallas).
 - **Verificación de producción de Talento** (21-oct, 8.ª y 9.ª sesión): `/talento`
   responde 200, título «Talento · AviTech Solutions Group»,
   `GET /api/talento/vacantes` y `GET /api/talento/candidatos` devuelven `ok:true`
@@ -417,9 +435,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
 11. **Asistente IA fase 2 (opcional):** contexto automático de la sección o del cliente con
     permiso explícito, historial por usuario con RLS, respuestas en streaming y voz. Evaluar
     privacidad y consumo antes de activar.
-12. **Talento fase 2:** añadir **Turnstile** o un secreto de servidor a los formularios
-    públicos y a la subida de CV (hoy el límite por IP vive en el Worker), verificar el
-    correo antes de permitir la edición de perfiles existentes (el token privado ya
-    protege la postulación con IA, pero se obtiene al actualizar el perfil), limpiar CV
-    huérfanos, notificar al equipo cuando una empresa solicite una entrevista y permitir
-    que la empresa dé seguimiento a su propia solicitud sin crear cuentas.
+12. **Talento fase 2:** lo hecho en la 10.ª sesión (token obligatorio para editar,
+    límites en base, limpieza de CV huérfanos y aviso de solicitudes de empresa en el
+    Resumen) cubre buena parte de esta lista. Sigue pendiente: añadir **Turnstile** o
+    un secreto de servidor a los formularios públicos y a la subida de CV (requiere
+    claves de Cloudflare), verificar el correo con un código de un solo uso antes de
+    permitir la edición desde otro dispositivo (requiere proveedor de correo) y
+    permitir que la empresa dé seguimiento a su propia solicitud sin crear cuentas.
+    Ideas para superar al mercado: ver la lista de ventajas competitivas en
+    **`docs/TALENTO.md`** (sección «Ideas para diferenciarse»).

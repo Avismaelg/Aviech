@@ -1,22 +1,37 @@
 import type { Session } from '@supabase/supabase-js'
-import { useEffect, useState } from 'react'
-import { Clientes } from './components/Clientes'
-import { Crm } from './components/crm/Crm'
-import { Facturacion } from './components/Facturacion'
-import { Gastos } from './components/Gastos'
-import { Igualas } from './components/Igualas'
-import { Inicio } from './components/Inicio'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { Layout, type Seccion } from './components/Layout'
 import { Login } from './components/Login'
-import { Pagos } from './components/Pagos'
-import { Prospeccion } from './components/prospeccion/Prospeccion'
-import { Reportes } from './components/Reportes'
-import { Seo } from './components/seo/Seo'
-import { Servicios } from './components/Servicios'
-import { Solicitudes } from './components/Solicitudes'
-import { Talento } from './components/talento/Talento'
 import { ProveedorAvisos } from './components/toast'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
+
+// Cada sección viaja en su propio paquete: al entrar al panel solo se
+// descarga lo que se va a mostrar y el resto se pide al abrir cada pestaña.
+const Inicio = lazy(() => import('./components/Inicio').then((modulo) => ({ default: modulo.Inicio })))
+const Clientes = lazy(() => import('./components/Clientes').then((modulo) => ({ default: modulo.Clientes })))
+const Crm = lazy(() => import('./components/crm/Crm').then((modulo) => ({ default: modulo.Crm })))
+const Talento = lazy(() =>
+  import('./components/talento/Talento').then((modulo) => ({ default: modulo.Talento })),
+)
+const Seo = lazy(() => import('./components/seo/Seo').then((modulo) => ({ default: modulo.Seo })))
+const Prospeccion = lazy(() =>
+  import('./components/prospeccion/Prospeccion').then((modulo) => ({ default: modulo.Prospeccion })),
+)
+const Solicitudes = lazy(() =>
+  import('./components/Solicitudes').then((modulo) => ({ default: modulo.Solicitudes })),
+)
+const Servicios = lazy(() =>
+  import('./components/Servicios').then((modulo) => ({ default: modulo.Servicios })),
+)
+const Igualas = lazy(() => import('./components/Igualas').then((modulo) => ({ default: modulo.Igualas })))
+const Pagos = lazy(() => import('./components/Pagos').then((modulo) => ({ default: modulo.Pagos })))
+const Facturacion = lazy(() =>
+  import('./components/Facturacion').then((modulo) => ({ default: modulo.Facturacion })),
+)
+const Gastos = lazy(() => import('./components/Gastos').then((modulo) => ({ default: modulo.Gastos })))
+const Reportes = lazy(() =>
+  import('./components/Reportes').then((modulo) => ({ default: modulo.Reportes })),
+)
 
 function SinConfigurar() {
   return (
@@ -52,6 +67,16 @@ function Comprobando() {
         <span className="h-4 w-4 animate-spin rounded-full border-2 border-borde border-t-blue-600" />
         Cargando…
       </div>
+    </div>
+  )
+}
+
+function CargandoSeccion() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center">
+      <p role="status" className="text-sm text-tinta-suave">
+        Cargando…
+      </p>
     </div>
   )
 }
@@ -110,19 +135,21 @@ function App() {
       {sesion ? (
         <Layout sesion={sesion} seccion={seccion} onSeccion={setSeccion}>
           <div key={seccion} className="animar-entrada">
-            {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
-            {seccion === 'clientes' && <Clientes />}
-            {seccion === 'crm' && <Crm />}
-            {seccion === 'talento' && <Talento />}
-            {seccion === 'seo' && <Seo />}
-            {seccion === 'prospeccion' && <Prospeccion onIrAlCrm={() => setSeccion('crm')} />}
-            {seccion === 'solicitudes' && <Solicitudes onIrAServicios={() => setSeccion('servicios')} />}
-            {seccion === 'servicios' && <Servicios />}
-            {seccion === 'igualas' && <Igualas />}
-            {seccion === 'pagos' && <Pagos />}
-            {seccion === 'facturacion' && <Facturacion />}
-            {seccion === 'gastos' && <Gastos />}
-            {seccion === 'reportes' && <Reportes />}
+            <Suspense fallback={<CargandoSeccion />}>
+              {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
+              {seccion === 'clientes' && <Clientes />}
+              {seccion === 'crm' && <Crm />}
+              {seccion === 'talento' && <Talento />}
+              {seccion === 'seo' && <Seo />}
+              {seccion === 'prospeccion' && <Prospeccion onIrAlCrm={() => setSeccion('crm')} />}
+              {seccion === 'solicitudes' && <Solicitudes onIrAServicios={() => setSeccion('servicios')} />}
+              {seccion === 'servicios' && <Servicios />}
+              {seccion === 'igualas' && <Igualas />}
+              {seccion === 'pagos' && <Pagos />}
+              {seccion === 'facturacion' && <Facturacion />}
+              {seccion === 'gastos' && <Gastos />}
+              {seccion === 'reportes' && <Reportes />}
+            </Suspense>
           </div>
         </Layout>
       ) : (

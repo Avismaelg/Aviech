@@ -74,6 +74,64 @@ export async function tokenSesion(): Promise<string | null> {
   return data.session?.access_token ?? null
 }
 
+// El portal guarda el token privado del perfil en el navegador de quien lo
+// crea. Sirve para dos cosas: actualizar su propio perfil sin que nadie más
+// pueda hacerlo desde otro dispositivo, y pedir la postulación con IA.
+const PREFIJO_TOKEN_TALENTO = 'avitech:talento:perfil:'
+
+function claveTokenPerfil(email: string): string {
+  return `${PREFIJO_TOKEN_TALENTO}${email.trim().toLowerCase()}`
+}
+
+/** Token guardado en este navegador para ese correo, si existe. */
+export function tokenPerfilGuardado(email: string): string | null {
+  if (!email.trim()) return null
+  try {
+    return window.localStorage.getItem(claveTokenPerfil(email))
+  } catch {
+    return null
+  }
+}
+
+/** Guarda el token del perfil en este navegador para futuras actualizaciones. */
+export function guardarTokenPerfil(email: string, token: string | null | undefined): void {
+  if (!email.trim() || !token) return
+  try {
+    window.localStorage.setItem(claveTokenPerfil(email), token)
+  } catch {
+    // Si el navegador bloquea el almacenamiento, el perfil igual quedó creado.
+  }
+}
+
+/** CV guardados en el bucket que ya no pertenecen a ningún candidato. */
+export async function listarCVHuerfanos(
+  referenciados: Array<string | null | undefined>,
+): Promise<{ rutas: string[]; truncado: boolean } | { error: string }> {
+  if (!supabase) return { error: 'El panel no está conectado con Supabase.' }
+  const { data, error } = await supabase.storage
+    .from(NOMBRE_BUCKET_CV)
+    .list('publico', { limit: 1000, sortBy: { column: 'name', order: 'asc' } })
+  if (error) return { error: 'No se pudo revisar la carpeta de CV. Inténtalo otra vez.' }
+
+  const usados = new Set(referenciados.filter((ruta): ruta is string => Boolean(ruta)))
+  const archivos = (Array.isArray(data) ? data : []).filter(
+    (item) => item && typeof item.name === 'string' && item.name.toLowerCase().endsWith('.pdf'),
+  )
+  const rutas = archivos
+    .map((item) => `publico/${item.name}`)
+    .filter((ruta) => !usados.has(ruta))
+  return { rutas, truncado: archivos.length >= 1000 }
+}
+
+/** Borra CV del bucket privado (solo personal con sesión). */
+export async function borrarCVs(rutas: string[]): Promise<{ borrados: number } | { error: string }> {
+  if (!supabase) return { error: 'El panel no está conectado con Supabase.' }
+  if (rutas.length === 0) return { borrados: 0 }
+  const { error } = await supabase.storage.from(NOMBRE_BUCKET_CV).remove(rutas)
+  if (error) return { error: 'No se pudieron borrar los CV. Inténtalo otra vez.' }
+  return { borrados: rutas.length }
+}
+
 /** "RD$25,000 – RD$35,000" o "Salario a convenir". */
 export function rangoSalario(
   minimo: number | null | undefined,

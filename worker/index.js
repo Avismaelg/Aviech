@@ -254,11 +254,16 @@ export default {
         }
       }
       const resultado = await ruta.ejecutar(request, url, env, usuario, contexto)
-      return json(resultado, 200, origen)
+      const cache =
+        ruta.publico && ruta.metodo === 'GET'
+          ? { 'cache-control': 'public, max-age=60, stale-while-revalidate=300' }
+          : undefined
+      return json(resultado, 200, origen, cache)
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'Ocurrió un error inesperado.'
       const estado = error && typeof error === 'object' && 'estado' in error ? Number(error.estado) : 500
-      return json({ error: mensaje }, estado, origen)
+      const codigo = error && typeof error === 'object' && 'codigo' in error ? String(error.codigo) : ''
+      return json(codigo ? { error: mensaje, codigo } : { error: mensaje }, estado, origen)
     }
   },
 }
@@ -326,10 +331,14 @@ function cabecerasCors(origen) {
   return cabeceras
 }
 
-function json(datos, estado, origen) {
+function json(datos, estado, origen, extras) {
   return new Response(JSON.stringify(datos), {
     status: estado,
-    headers: { 'content-type': 'application/json; charset=utf-8', ...cabecerasCors(origen) },
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      ...cabecerasCors(origen),
+      ...(extras || {}),
+    },
   })
 }
 
@@ -1076,26 +1085,42 @@ async function crearPostulacionTalento(request, env) {
     }
   }
 
-  const creada = await rpcSupabase(env, 'crear_postulacion_publica', {
-    p_nombre: datos.nombre,
-    p_email: datos.email,
-    p_telefono: datos.telefono,
-    p_ubicacion: datos.ubicacion,
-    p_puesto_objetivo: datos.puesto_objetivo,
-    p_seniority: datos.seniority,
-    p_modalidad: datos.modalidad,
-    p_habilidades: datos.habilidades,
-    p_experiencia: datos.experiencia,
-    p_educacion: datos.educacion,
-    p_disponibilidad: datos.disponibilidad,
-    p_expectativa_salarial: datos.expectativa_salarial,
-    p_cv_path: datos.cv_path,
-    p_cv_url: datos.cv_url,
-    p_cv_nombre: datos.cv_nombre,
-    p_consentimiento: true,
-    p_visible_empresas: datos.visible_empresas,
-    p_vacante_id: datos.vacante_id,
-  })
+  let creada
+  try {
+    creada = await rpcSupabase(env, 'guardar_postulacion_publica', {
+      p_nombre: datos.nombre,
+      p_email: datos.email,
+      p_telefono: datos.telefono,
+      p_ubicacion: datos.ubicacion,
+      p_puesto_objetivo: datos.puesto_objetivo,
+      p_seniority: datos.seniority,
+      p_modalidad: datos.modalidad,
+      p_habilidades: datos.habilidades,
+      p_experiencia: datos.experiencia,
+      p_educacion: datos.educacion,
+      p_disponibilidad: datos.disponibilidad,
+      p_expectativa_salarial: datos.expectativa_salarial,
+      p_cv_path: datos.cv_path,
+      p_cv_url: datos.cv_url,
+      p_cv_nombre: datos.cv_nombre,
+      p_consentimiento: true,
+      p_visible_empresas: datos.visible_empresas,
+      p_vacante_id: datos.vacante_id,
+      p_token_publico: datos.token_publico,
+    })
+  } catch (error) {
+    const mensaje = error instanceof Error ? error.message : ''
+    const codigo = error && typeof error === 'object' && 'codigo' in error ? String(error.codigo) : ''
+    if (codigo === 'PT409' || /perfil_existente/i.test(mensaje)) {
+      const fallo = conEstado(
+        'Ese correo ya tiene un perfil creado desde otro navegador. Para cuidar tus datos, solo el navegador donde lo creaste puede actualizarlo. Si eres tú, usa ese dispositivo o crea tu perfil con otro correo.',
+        409,
+      )
+      fallo.codigo = 'perfil_existente'
+      throw fallo
+    }
+    throw error
+  }
   const resultado = Array.isArray(creada) ? creada[0] : creada
   if (!resultado || !resultado.candidato_id) {
     throw conEstado('No se pudo registrar tu perfil. Inténtalo otra vez.', 502)
@@ -1106,6 +1131,7 @@ async function crearPostulacionTalento(request, env) {
     token_publico: resultado.token_publico || null,
     postulacion_id: resultado.postulacion_id || null,
     existente: Boolean(resultado.existente),
+    perfil_existente: Boolean(resultado.perfil_existente),
     mensaje: resultado.postulacion_id
       ? 'Recibimos tu perfil y tu postulación.'
       : 'Recibimos tu perfil. Las empresas pueden encontrarte.',
@@ -1293,6 +1319,8 @@ async function leerPostulacionTalento(request) {
   const cvPath = limitarTexto(datos.cv_path, 500)
   const cvUrl = limitarTexto(datos.cv_url, 500)
   const vacanteId = typeof datos.vacante_id === 'string' && UUID.test(datos.vacante_id) ? datos.vacante_id : null
+  const tokenPublico =
+    typeof datos.token_publico === 'string' && UUID.test(datos.token_publico) ? datos.token_publico : null
   const seniority = SENIORITIES_TALENTO.includes(datos.seniority) ? datos.seniority : 'mid'
   const modalidad = MODALIDADES_TALENTO.includes(datos.modalidad) ? datos.modalidad : 'hibrido'
   const disponibilidad = DISPONIBILIDADES_TALENTO.includes(datos.disponibilidad) ? datos.disponibilidad : null
@@ -1331,6 +1359,7 @@ async function leerPostulacionTalento(request) {
     cv_nombre: limitarTexto(datos.cv_nombre, 180) || null,
     visible_empresas: datos.visible_empresas !== false,
     vacante_id: vacanteId,
+    token_publico: tokenPublico,
   }
 }
 
@@ -1858,11 +1887,25 @@ async function rpcSupabase(env, funcion, cuerpo, token) {
     datos = texto
   }
   if (!respuesta.ok) {
+    const codigo = datos && typeof datos === 'object' && datos.code ? String(datos.code) : ''
     const detalle = datos && typeof datos === 'object'
       ? datos.message || datos.error || datos.hint || ''
       : ''
-    if (respuesta.status === 400) {
-      throw conEstado(detalle || 'Los datos de la solicitud no son válidos.', 400)
+    if (codigo === 'PT429') {
+      const fallo = conEstado(
+        detalle || 'Estamos recibiendo muchas solicitudes. Espera unos minutos e inténtalo otra vez.',
+        429,
+      )
+      fallo.codigo = 'limite_publico'
+      throw fallo
+    }
+    if (respuesta.status === 400 || codigo.startsWith('PT')) {
+      const fallo = conEstado(
+        detalle || 'Los datos de la solicitud no son válidos.',
+        respuesta.status === 400 ? 400 : 502,
+      )
+      if (codigo) fallo.codigo = codigo
+      throw fallo
     }
     throw conEstado('No se pudo guardar la solicitud en la base de datos. Inténtalo de nuevo.', 502)
   }

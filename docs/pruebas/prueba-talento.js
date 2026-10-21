@@ -244,6 +244,18 @@ async (page) => {
     ],
   }
 
+  // El portal guarda un token por correo. La prueba simula la misma regla
+  // que la base: sin token válido no se actualiza un perfil existente.
+  const tokensPorCorreo = new Map()
+  for (const candidato of store.talento_candidatos) {
+    if (candidato.email) {
+      tokensPorCorreo.set(
+        String(candidato.email).toLowerCase(),
+        candidato.token_publico || '00000000-0000-4000-8000-000000000001',
+      )
+    }
+  }
+
   const buscar = (tabla, id) => store[tabla]?.find((fila) => fila.id === id) ?? null
   const empresa = (id) => {
     const fila = buscar('talento_empresas', id)
@@ -397,6 +409,25 @@ async (page) => {
         body: JSON.stringify({ signedURL: '/storage/v1/object/sign/talento-cv/prueba.pdf?token=prueba' }),
       })
     }
+    if (peticion.method() === 'POST' && peticion.url().includes('/object/list/')) {
+      return ruta.fulfill({
+        status: 200,
+        headers: cabecerasJson,
+        body: JSON.stringify([
+          {
+            name: 'prueba.pdf',
+            id: 'archivo-1',
+            updated_at: ahoraISO(),
+            created_at: ahoraISO(),
+            last_accessed_at: ahoraISO(),
+            metadata: null,
+          },
+        ]),
+      })
+    }
+    if (peticion.method() === 'DELETE') {
+      return ruta.fulfill({ status: 200, headers: cabecerasJson, body: JSON.stringify([]) })
+    }
     return ruta.fulfill({ status: 200, headers: cabecerasJson, body: JSON.stringify({ Key: 'publico/prueba.pdf' }) })
   })
 
@@ -459,7 +490,54 @@ async (page) => {
     if (peticion.method() === 'POST' && camino === '/api/talento/postulaciones') {
       const cuerpo = JSON.parse(peticion.postData() || '{}')
       peticionesPublicas.push({ tipo: 'postulacion', cuerpo })
+      const email = String(cuerpo.email || '').toLowerCase()
+      const existente = store.talento_candidatos.find(
+        (fila) => String(fila.email || '').toLowerCase() === email,
+      )
+
+      if (existente) {
+        const tokenGuardado = tokensPorCorreo.get(email)
+        if (!cuerpo.token_publico || cuerpo.token_publico !== tokenGuardado) {
+          return ruta.fulfill({
+            status: 409,
+            headers: cabecerasJson,
+            body: JSON.stringify({
+              error: 'Ese correo ya tiene un perfil creado desde otro navegador.',
+              codigo: 'perfil_existente',
+            }),
+          })
+        }
+        Object.assign(existente, {
+          nombre: cuerpo.nombre,
+          telefono: cuerpo.telefono || existente.telefono,
+          ubicacion: cuerpo.ubicacion || existente.ubicacion,
+          puesto_objetivo: cuerpo.puesto_objetivo,
+          habilidades:
+            Array.isArray(cuerpo.habilidades) && cuerpo.habilidades.length > 0
+              ? cuerpo.habilidades
+              : existente.habilidades,
+          cv_path: cuerpo.cv_path || existente.cv_path,
+          cv_nombre: cuerpo.cv_nombre || existente.cv_nombre,
+          updated_at: ahoraISO(),
+        })
+        return ruta.fulfill({
+          status: 200,
+          headers: cabecerasJson,
+          body: JSON.stringify({
+            ok: true,
+            candidato_id: existente.id,
+            token_publico: tokenGuardado,
+            postulacion_id: null,
+            existente: false,
+            perfil_existente: true,
+            mensaje: 'Recibimos tu perfil.',
+          }),
+        })
+      }
+
       const id = nuevoId('talento_candidatos')
+      const token = '00000000-0000-4000-8000-000000000011'
+      tokensPorCorreo.set(email, token)
       store.talento_candidatos.push({
         id,
         nombre: cuerpo.nombre,
@@ -490,9 +568,10 @@ async (page) => {
         body: JSON.stringify({
           ok: true,
           candidato_id: id,
-          token_publico: '00000000-0000-4000-8000-000000000011',
+          token_publico: token,
           postulacion_id: null,
           existente: false,
+          perfil_existente: false,
           mensaje: 'Recibimos tu perfil.',
         }),
       })
@@ -555,8 +634,18 @@ async (page) => {
   })
 
   const errores = []
+  // El rechazo intencional del perfil ajeno sin token responde 409 y el navegador
+  // lo anota como error de consola. Se descuenta una sola vez, justo cuando se
+  // provoca, para que la regla de «0 errores» siga siendo estricta con lo demás.
+  let conflictosEsperados = 0
   page.on('console', (mensaje) => {
-    if (mensaje.type() === 'error') errores.push(`console: ${mensaje.text()}`)
+    if (mensaje.type() !== 'error') return
+    const texto = mensaje.text()
+    if (conflictosEsperados > 0 && texto.includes('409')) {
+      conflictosEsperados -= 1
+      return
+    }
+    errores.push(`console: ${texto}`)
   })
   page.on('pageerror', (error) => errores.push(`pageerror: ${String(error)}`))
 
@@ -754,6 +843,55 @@ async (page) => {
     )
     await page.screenshot({ path: `${CAPTURAS}/08-portal-ia.png`, fullPage: true })
     marcar('IA buscó vacantes y postuló por el candidato')
+
+    // Actualizar el perfil de Pedro desde este navegador: el token quedó guardado.
+    await page.getByRole('button', { name: 'Crear otro perfil', exact: true }).click()
+    await page.getByLabel('Nombre completo *').fill('Pedro Núñez')
+    await page.getByLabel('Correo *').fill('pedro@correo.com')
+    await page.getByLabel('Puesto que buscas *').fill('Analista de datos senior')
+    await page.getByLabel(/Autorizo a AviTech Solutions Group/).check()
+    await page.getByRole('button', { name: 'Crear mi perfil', exact: true }).click()
+    await page.getByText('Perfil actualizado', { exact: true }).waitFor()
+    const actualizacion = peticionesPublicas.filter((fila) => fila.tipo === 'postulacion').at(-1)
+    afirmar(
+      actualizacion.cuerpo.token_publico === '00000000-0000-4000-8000-000000000011',
+      'el navegador envió el token guardado al actualizar',
+    )
+    marcar('perfil actualizado con el token del navegador')
+
+    // Otro navegador no puede tocar el perfil de Ana: sin token, la base lo rechaza.
+    await page.evaluate(() => {
+      try {
+        window.localStorage.removeItem('avitech:talento:perfil:ana@correo.com')
+      } catch {
+        // sin almacenamiento, igual se prueba el rechazo
+      }
+    })
+    await page.getByRole('button', { name: 'Crear otro perfil', exact: true }).click()
+    await page.getByLabel('Nombre completo *').fill('Ana Pérez')
+    await page.getByLabel('Correo *').fill('ana@correo.com')
+    await page.getByLabel('Puesto que buscas *').fill('Contadora senior')
+    await page.getByLabel(/Autorizo a AviTech Solutions Group/).check()
+    conflictosEsperados += 1
+    await page.getByRole('button', { name: 'Crear mi perfil', exact: true }).click()
+    await page.getByText('Ese correo ya tiene un perfil', { exact: true }).waitFor()
+    afirmar(
+      store.talento_candidatos.filter((fila) => fila.email === 'ana@correo.com').length === 1,
+      'no se duplicó el perfil de Ana sin token',
+    )
+    await page.screenshot({ path: `${CAPTURAS}/09-perfil-protegido.png`, fullPage: true })
+    marcar('perfil existente protegido sin token')
+
+    // Mantenimiento: el panel detecta y borra CV que ya no tienen candidato.
+    await page.goto(`${BASE}/#talento`, { waitUntil: 'networkidle' })
+    await page.getByRole('heading', { name: 'Talento', exact: true }).waitFor({ timeout: 20000 })
+    await page.getByText('Solicitudes de empresas', { exact: true }).waitFor()
+    await page.getByRole('button', { name: 'Buscar CV sin dueño', exact: true }).click()
+    await page.getByText('1 CV sin candidato', { exact: true }).waitFor()
+    await page.getByRole('button', { name: 'Borrar 1', exact: true }).click()
+    await page.getByText('Se borraron 1 CV que ya no pertenecían a ningún perfil.', { exact: true }).waitFor()
+    await page.screenshot({ path: `${CAPTURAS}/10-mantenimiento-cv.png`, fullPage: true })
+    marcar('CV huérfano detectado y borrado desde el panel')
 
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(`${BASE}/talento`, { waitUntil: 'networkidle' })

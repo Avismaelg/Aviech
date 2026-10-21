@@ -8,6 +8,7 @@ import {
   ExternalLink,
   FileText,
   Gauge,
+  Inbox,
   Sparkles,
   UserRound,
   Users,
@@ -26,6 +27,7 @@ import type { CandidatoTalento, EmpresaTalento, PostulacionTalento, VacanteTalen
 import { Boton, CabeceraSeccion, Insignia, Tarjeta } from '../ui'
 import { Candidatos } from './Candidatos'
 import { EmpresasTalento } from './Empresas'
+import { MantenimientoCV } from './Mantenimiento'
 import { Procesos } from './Procesos'
 import type { PestanaTalento, TablaTalento } from './tipos'
 import { Vacantes } from './Vacantes'
@@ -371,10 +373,54 @@ function Resumen({
 }) {
   const total = procesos.filter((proceso) => proceso.etapa !== 'rechazada').length
   const maximo = Math.max(1, ...ETAPAS_TALENTO.map((etapa) => procesos.filter((p) => p.etapa === etapa).length))
+  const solicitudesEmpresa = procesos
+    .filter((proceso) => proceso.origen === 'empresa' && proceso.etapa === 'recibida')
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 5)
 
   return (
     <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
       <div className="space-y-4">
+        <Tarjeta className="p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="flex items-center gap-1.5 text-sm font-semibold text-tinta">
+              <Inbox size={16} className="text-clay" /> Solicitudes de empresas
+            </p>
+            <Boton variante="secundario" onClick={() => onIr('procesos')}>
+              Ver procesos
+            </Boton>
+          </div>
+          {solicitudesEmpresa.length === 0 ? (
+            <p className="mt-4 rounded-[18px] border border-borde bg-superficie-2/50 p-4 text-sm text-tinta-suave">
+              No hay solicitudes nuevas del portal. Cuando una empresa pida entrevistar o contratar un perfil, aparece
+              aquí para que el equipo la atienda.
+            </p>
+          ) : (
+            <ul className="mt-3 divide-y divide-borde-suave">
+              {solicitudesEmpresa.map((solicitud) => (
+                <li key={solicitud.id} className="py-2.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="min-w-0 flex-1 truncate text-sm font-medium text-tinta">
+                      {solicitud.talento_candidatos?.nombre ?? 'Candidato'}
+                    </p>
+                    <Insignia color={solicitud.solicitud_tipo === 'contratacion' ? 'emerald' : 'sky'}>
+                      {solicitud.solicitud_tipo === 'contratacion' ? 'Contratación' : 'Entrevista'}
+                    </Insignia>
+                  </div>
+                  <p className="truncate text-xs text-tinta-suave">
+                    {solicitud.talento_empresas?.nombre ?? 'Empresa'} · {formatoFechaHora(solicitud.created_at)}
+                  </p>
+                  {solicitud.notas && (
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-tinta-tenue">
+                      «{solicitud.notas}»
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Tarjeta>
+
         <Tarjeta className="p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
@@ -536,6 +582,8 @@ function Resumen({
             </div>
           </div>
         </Tarjeta>
+
+        <MantenimientoCV candidatos={candidatos} />
       </div>
       <span className="sr-only">
         {candidatos.length} candidatos, {vacantes.length} vacantes y {procesos.length} procesos.

@@ -142,8 +142,8 @@ usan como acento de marca ni para botones primarios.
 | `Login` | Dos columnas: panel de marca en tinta con órbita naranja + tarjeta de superficie con acceso. Píldora «Acceso privado», ver/ocultar contraseña y error legible. En móvil se apila. |
 | `Inicio` | Hero editorial con saludo capitalizado, acciones rápidas, KPIs, gráfica de ingresos (barras de tinta + mes actual naranja), tarjeta de ingreso recurrente y anillo de cobro. |
 | `CRM` | Pestañas accesibles (flechas ←/→), kanban horizontal, arrastre nativo y edición en modal. |
-| `Talento` | Contenedor con 5 pestañas (Resumen, Candidatos, Empresas, Vacantes y Procesos), tarjetas de métricas y kanban de 6 etapas en rejilla de 3 columnas en escritorio (1 en móvil, 2 en tablet), con arrastre nativo y detalle en modal. Reutiliza `Boton`, `Insignia`, `Tarjeta`, `Campo` y `Modal`. |
-| `Talento público` | Página `/talento` sin sesión con dos modos tipo pestaña («Busco empleo» y «Busco talento»). Perfiles anónimos en tarjetas, shortlist flotante y solicitud en modal; formulario de CV con carga directa al bucket privado. Incluye la tarjeta **Postulación inteligente** (destellos, casilla de autorización, máximo 3) y el resultado de la IA con puntaje y motivo. En móvil apila columnas y mantiene la barra de shortlist sobre el área segura. |
+| `Talento` | Contenedor con 5 pestañas (Resumen, Candidatos, Empresas, Vacantes y Procesos), tarjetas de métricas y kanban de 6 etapas en rejilla de 3 columnas en escritorio (1 en móvil, 2 en tablet), con arrastre nativo y detalle en modal. El **Resumen** incluye la tarjeta **Solicitudes de empresas** (candidato, empresa, tipo entrevista/contratación y mensaje; botón a Procesos) y la tarjeta **Mantenimiento de CV** (busca PDF sin candidato en el bucket privado y los borra con confirmación). Reutiliza `Boton`, `Insignia`, `Tarjeta`, `Campo` y `Modal`. |
+| `Talento público` | Página `/talento` sin sesión con dos modos tipo pestaña («Busco empleo» y «Busco talento»). Perfiles anónimos en tarjetas, shortlist flotante y solicitud en modal; formulario de CV con carga directa al bucket privado. Incluye la tarjeta **Postulación inteligente** (destellos, casilla de autorización, máximo 3) y el resultado de la IA con puntaje y motivo. Si el navegador ya guardó el token del perfil, bajo el correo aparece la nota verde «En este navegador ya guardamos tu perfil…» y el éxito se titula **Perfil actualizado**. Si el correo existe en otro dispositivo, se muestra el aviso informativo **Ese correo ya tiene un perfil** con el botón «Usar otro correo» (nunca se revelan datos del perfil). En móvil apila columnas y mantiene la barra de shortlist sobre el área segura. |
 | `Auditor SEO` | Puntaje 0–100 (verde ≥ 80, ámbar ≥ 50, rojo < 50), comprobaciones agrupadas y columna de PageSpeed + ficha técnica. |
 | `Prospección` | Validación en línea, hallazgos de correo/teléfono/redes y guardado en el CRM con aviso si la empresa ya existe. |
 | `Solicitudes` | Bandeja con 4 tarjetas (2×2 en móvil), búsqueda, filtro por estado y filas con origen, urgencia, estado y acciones. El detalle muestra plan, confianza, datos pendientes, propuesta, correo, informe descargable y enlace a Servicios. |
@@ -152,7 +152,12 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-21-talento-ia`.
+  Versión actual: `avitech-v2026-10-21-talento-seguridad`.
+- **Rendimiento (10.ª sesión):** `src/main.tsx` carga con `lazy` solo la página que
+  toca (`/solicitud`, `/talento` o el panel) y `App.tsx` carga cada sección bajo
+  `Suspense`; React y Supabase viajan en chunks de vendor separados (`vite.config.ts`)
+  y las listas públicas responden con caché de navegador de 60 s. Al añadir una
+  sección nueva, importarla con `lazy` y declarar su `<Suspense>` dentro del armazón.
 
 ## 7. Regla de oro: factura e impresión en claro
 

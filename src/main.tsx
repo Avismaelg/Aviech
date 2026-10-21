@@ -1,16 +1,35 @@
-import { StrictMode } from 'react'
+import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import { SolicitudPublica } from './components/SolicitudPublica.tsx'
-import { TalentoPublico } from './components/TalentoPublico.tsx'
 
 const esSolicitudPublica = /^\/solicitud\/?$/i.test(window.location.pathname)
 const esTalentoPublico = /^\/talento\/?$/i.test(window.location.pathname)
 
+// Cada página carga solo su código: el portal público no descarga el panel
+// interno y viceversa. El paquete inicial queda en lo mínimo.
+const Pagina = esSolicitudPublica
+  ? lazy(() =>
+      import('./components/SolicitudPublica.tsx').then((modulo) => ({ default: modulo.SolicitudPublica })),
+    )
+  : esTalentoPublico
+    ? lazy(() =>
+        import('./components/TalentoPublico.tsx').then((modulo) => ({ default: modulo.TalentoPublico })),
+      )
+    : lazy(() => import('./App.tsx'))
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {esSolicitudPublica ? <SolicitudPublica /> : esTalentoPublico ? <TalentoPublico /> : <App />}
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <p role="status" className="text-sm text-tinta-suave">
+            Cargando…
+          </p>
+        </div>
+      }
+    >
+      <Pagina />
+    </Suspense>
   </StrictMode>,
 )
 

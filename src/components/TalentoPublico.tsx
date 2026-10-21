@@ -33,7 +33,7 @@ import {
   etiquetaTipoContrato,
 } from '../lib/etiquetas'
 import { formatoFecha } from '../lib/formato'
-import { habilidadesDesdeTexto, LIMITE_CV_BYTES, postularConIA, rangoSalario, subirCV } from '../lib/talento'
+import { habilidadesDesdeTexto, guardarTokenPerfil, LIMITE_CV_BYTES, postularConIA, rangoSalario, subirCV, tokenPerfilGuardado } from '../lib/talento'
 import type { CandidatoPublico, ResultadoPostulacionIA, VacantePublica } from '../types/talento'
 import { AreaTexto, Boton, Campo, Entrada, Insignia, Modal, Selector, Tarjeta } from './ui'
 
@@ -123,8 +123,10 @@ const FORMULARIO_VACANTE_VACIO: FormularioVacante = {
 interface RespuestaPublica {
   ok?: boolean
   error?: string
+  codigo?: string
   mensaje?: string
   existente?: boolean
+  perfil_existente?: boolean
   candidato_id?: string | null
   token_publico?: string | null
   postulacion_id?: string | null
@@ -136,6 +138,7 @@ interface ExitoCandidato {
   nombre: string
   vacante: VacantePublica | null
   existente: boolean
+  perfilExistente: boolean
   ia: ResultadoPostulacionIA | null
   iaError: string | null
 }
@@ -360,6 +363,7 @@ function PanelCandidato({
   const [website, setWebsite] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [perfilBloqueado, setPerfilBloqueado] = useState(false)
   const [exito, setExito] = useState<ExitoCandidato | null>(null)
 
   const vacanteSeleccionada = vacantes.find((vacante) => vacante.id === formulario.vacante_id) ?? null
@@ -375,6 +379,7 @@ function PanelCandidato({
     evento.preventDefault()
     if (enviando) return
     setError(null)
+    setPerfilBloqueado(false)
     if (!formulario.nombre.trim() || !formulario.email.trim() || !formulario.puesto_objetivo.trim()) {
       setError('Completa tu nombre, correo y el puesto que buscas.')
       return
@@ -403,6 +408,7 @@ function PanelCandidato({
     }
 
     const expectativa = formulario.expectativa_salarial === '' ? null : Number(formulario.expectativa_salarial)
+    const tokenPerfil = tokenPerfilGuardado(formulario.email)
     try {
       const respuesta = await fetch('/api/talento/postulaciones', {
         method: 'POST',
@@ -415,11 +421,17 @@ function PanelCandidato({
           cv_nombre: cvNombre,
           consentimiento: true,
           visible_empresas: visible,
+          token_publico: tokenPerfil,
           website,
         }),
       })
       const datos = (await respuesta.json().catch(() => null)) as RespuestaPublica | null
-      if (!respuesta.ok || !datos?.ok) throw new Error(datos?.error || 'No se pudo crear tu perfil. Inténtalo otra vez.')
+      if (!respuesta.ok || !datos?.ok) {
+        if (datos?.codigo === 'perfil_existente') setPerfilBloqueado(true)
+        throw new Error(datos?.error || 'No se pudo crear tu perfil. Inténtalo otra vez.')
+      }
+
+      guardarTokenPerfil(formulario.email, datos.token_publico)
 
       let resultadoIA: ResultadoPostulacionIA | null = null
       let errorIA: string | null = null
@@ -439,6 +451,7 @@ function PanelCandidato({
         nombre: formulario.nombre.split(' ')[0] || 'candidato',
         vacante: vacanteSeleccionada,
         existente: Boolean(datos.existente),
+        perfilExistente: Boolean(datos.perfil_existente),
         ia: resultadoIA,
         iaError: errorIA,
       })
@@ -457,6 +470,7 @@ function PanelCandidato({
     setVisible(true)
     setIaPostular(false)
     setError(null)
+    setPerfilBloqueado(false)
     setExito(null)
     window.setTimeout(() => document.getElementById('perfil-candidato')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40)
   }
@@ -471,7 +485,8 @@ function PanelCandidato({
               <CircleCheck size={30} />
             </span>
             <p className="mt-5 flex items-center justify-center gap-2 text-[10px] font-bold tracking-[0.18em] text-exito uppercase">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-exito" /> Perfil creado
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-exito" />
+              {exito.perfilExistente ? 'Perfil actualizado' : 'Perfil creado'}
             </p>
             <h2 className="mt-2 text-[30px] leading-tight font-medium tracking-[-0.03em] text-tinta">
               Gracias, {exito.nombre}.
@@ -482,8 +497,10 @@ function PanelCandidato({
                   ? 'Ya tenías una postulación para esta vacante. Actualizamos tu perfil con la información nueva.'
                   : `Tu postulación a «${exito.vacante.titulo}» en ${exito.vacante.empresa_nombre} quedó registrada.`
                 : exito.ia
-                  ? 'Tu perfil quedó creado. La IA revisó las vacantes abiertas y el resultado está abajo.'
-                  : 'Tu perfil quedó disponible para que las empresas lo descubran. Si aparece una vacante que encaja, te contactamos.'}
+                  ? 'Tu perfil quedó listo. La IA revisó las vacantes abiertas y el resultado está abajo.'
+                  : exito.perfilExistente
+                    ? 'Actualizamos tu perfil con la información nueva. Las empresas pueden seguir encontrándote.'
+                    : 'Tu perfil quedó disponible para que las empresas lo descubran. Si aparece una vacante que encaja, te contactamos.'}
             </p>
 
             {exito.ia && (
@@ -596,6 +613,7 @@ function PanelCandidato({
               </Campo>
               <Campo etiqueta="Correo *">
                 <Entrada
+                  id="perfil-email"
                   required
                   type="email"
                   autoComplete="email"
@@ -604,6 +622,11 @@ function PanelCandidato({
                   onChange={(evento) => setFormulario({ ...formulario, email: evento.target.value })}
                   placeholder="ana@correo.com"
                 />
+                {tokenPerfilGuardado(formulario.email) && (
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-exito">
+                    En este navegador ya guardamos tu perfil: al enviar actualizaremos tus datos.
+                  </p>
+                )}
               </Campo>
               <Campo etiqueta="Puesto que buscas *">
                 <Entrada
@@ -854,10 +877,34 @@ function PanelCandidato({
                 </label>
               </div>
 
-              {error && (
-                <p role="alert" className="rounded-[18px] border border-peligro-borde bg-peligro-suave px-4 py-3 text-sm text-peligro sm:col-span-2">
-                  {error}
-                </p>
+              {perfilBloqueado ? (
+                <div className="rounded-[18px] border border-info-borde bg-info-suave px-4 py-3 text-sm text-info sm:col-span-2">
+                  <p className="font-semibold">Ese correo ya tiene un perfil</p>
+                  <p className="mt-1 text-xs leading-relaxed text-info/80">
+                    Para proteger tus datos, solo el navegador donde creaste el perfil puede actualizarlo. Si eres tú
+                    y cambiaste de dispositivo, crea tu perfil con otro correo o escribe al equipo para ayudarte a
+                    recuperarlo.
+                  </p>
+                  <Boton
+                    type="button"
+                    variante="secundario"
+                    className="mt-3"
+                    onClick={() => {
+                      setFormulario((previo) => ({ ...previo, email: '' }))
+                      setError(null)
+                      setPerfilBloqueado(false)
+                      window.setTimeout(() => document.getElementById('perfil-email')?.focus(), 60)
+                    }}
+                  >
+                    Usar otro correo
+                  </Boton>
+                </div>
+              ) : (
+                error && (
+                  <p role="alert" className="rounded-[18px] border border-peligro-borde bg-peligro-suave px-4 py-3 text-sm text-peligro sm:col-span-2">
+                    {error}
+                  </p>
+                )
               )}
 
               <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
