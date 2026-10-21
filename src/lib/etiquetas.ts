@@ -354,7 +354,7 @@ export const etiquetaOrigenTalento: Record<string, string> = {
   publico: 'Portal · candidato',
   empresa: 'Portal · empresa',
   interno: 'Interno',
-  ia: 'Matching IA',
+  ia: 'Postulación IA',
   referido: 'Referido',
 }
 

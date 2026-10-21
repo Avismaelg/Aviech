@@ -1,16 +1,23 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 21-oct-2026 (cierre de la octava sesión: módulo Talento)
+> Última actualización: 21-oct-2026 (novena sesión: postulación asistida con IA en Talento)
 
 ## 📌 Punto de continuación
 
+- **Postulación asistida con IA (9.ª sesión, 21 oct):** en `/talento` → «Busco
+  empleo», el candidato puede autorizar que la IA revise hasta 20 vacantes públicas
+  abiertas y postule su perfil a un máximo de 3. El alta devuelve un **token privado**
+  que autoriza la operación; la IA no recibe correo, teléfono ni CV. Las postulaciones
+  se guardan con `origen = 'ia'`, puntaje y motivo. Migración **011** con
+  `perfil_para_ia_publico` y `postular_con_ia_publica`. La prueba de Talento pasa a
+  **9 pasos** y 0 errores de consola.
 - **Módulo Talento (8.ª sesión, 20–21 oct):** panel interno `#talento` con cinco
   pestañas (Resumen, Candidatos, Empresas, Vacantes y Procesos), portal público
   `/talento` con «Busco empleo» y «Busco talento», perfiles anónimos, shortlist,
   solicitud de entrevista/contratación, CV privado en PDF (≤ 5 MB), matching con
   Workers AI y kanban de seis etapas con cierre de colocación. Migración **010**,
   tablas separadas del CRM y RPC públicas con consentimiento y límites. Guía:
-  **`docs/TALENTO.md`**; prueba: **`docs/pruebas/prueba-talento.js`** (8 pasos,
+  **`docs/TALENTO.md`**; prueba: **`docs/pruebas/prueba-talento.js`** (9 pasos,
   0 errores de consola). Sin pagos ni cuentas públicas.
 - **Todo guardado y desplegado:** el módulo Talento está en `main` y en producción desde
   el 21-oct-2026; la migración 010 se aplicó correctamente y el portal
@@ -132,8 +139,10 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   Todas exigen la sesión de Supabase (`Authorization: Bearer …`) y sin ella responden
   `401`. Los formularios públicos usan `POST /api/solicitudes` y las rutas públicas de
   Talento (`GET /api/talento/vacantes`, `GET /api/talento/candidatos`,
-  `POST /api/talento/postulaciones`, `POST /api/talento/solicitudes` y
-  `POST /api/talento/vacantes/publicar`), que solo crean registros y devuelven un folio.
+  `POST /api/talento/postulaciones`, `POST /api/talento/ia-postular`,
+  `POST /api/talento/solicitudes` y `POST /api/talento/vacantes/publicar`), que solo
+  crean registros y devuelven un folio; la postulación con IA exige el token privado
+  que devolvió el alta del perfil.
   Declarado en `wrangler.jsonc` (`main`, `assets.run_worker_first` y binding `ai`). ✅
 - ⚠️ Cuidado con direcciones parecidas: `avitech.workers.dev` **no** es de este proyecto
   (es de otra empresa; da `error code: 1042`). La nuestra termina en `avismael-eg.workers.dev`.
@@ -179,11 +188,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   métricas de pipeline abierto / ponderado / ganado, alertas de actividades atrasadas,
   arrastre de tarjetas y conversión de una empresa en cliente con un clic. Guía:
   **`docs/CRM.md`**.
-- **Talento** (nuevo, 8.ª sesión): módulo independiente del CRM para conectar
+- **Talento** (8.ª y 9.ª sesión): módulo independiente del CRM para conectar
   candidatos y empresas empleadoras. Panel interno con candidatos, empresas, vacantes,
   postulaciones y kanban de seis etapas; portal público `/talento` con perfiles
   anónimos, shortlist, solicitud de entrevista/contratación sin pago, CV privado en PDF
-  (≤ 5 MB) y matching con Workers AI bajo demanda. Sin cuentas públicas; tablas solo
+  (≤ 5 MB), matching con Workers AI bajo demanda y **postulación asistida con IA**
+  autorizada por el candidato (máximo 3 vacantes). Sin cuentas públicas; tablas solo
   para personal autenticado. Guía: **`docs/TALENTO.md`**.
 - **Auditor SEO** (nuevo, 2ª sesión): escribe una dirección y devuelve un informe con
   **puntaje 0–100**: contenido (título, meta descripción, H1, imágenes con `alt`, enlaces
@@ -230,7 +240,7 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   `talento_empresas`, `talento_vacantes`, `talento_postulaciones`). Todas con RLS:
   solo usuarios autenticados; un visitante anónimo no ve nada. Bucket privado
   `talento-cv`.
-- Las migraciones viven en **`supabase/sql/`** (001…010) y se aplican solas con el
+- Las migraciones viven en **`supabase/sql/`** (001…011) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -252,6 +262,11 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   revertidos, lectura autenticada, comprobación de que `anon` no tiene privilegios
   directos y prueba pública de las tres RPC (candidato, empresa y vacante).
   Reporte: `supabase/verificacion-ultima.txt`.
+- **Migración 011 (Talento IA), 21-oct-2026:** agrega `token_publico` a
+  `talento_candidatos` (único y fuera del listado público) y las RPC
+  `perfil_para_ia_publico` y `postular_con_ia_publica`. El workflow verifica la
+  postulación asistida con una vacante de prueba, el token privado y los permisos de
+  `anon`. Reporte: `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -283,12 +298,13 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   plan/informe/precio y vista móvil — **0 errores de consola**. Script:
   `docs/pruebas/prueba-solicitudes.js`; capturas en `capturas-solicitudes` (3 pantallas).
   El formulario público también se validó en escritorio (1440 px) y móvil (390 px).
-- **Prueba de Talento** (20–21 oct, 8.ª sesión): 8 pasos con Supabase, Storage y Worker
-  simulados — panel interno (métricas, candidato, empresa, matching con IA, kanban,
-  entrevista y contratación) y portal público (perfil anónimo sin correo/teléfono,
-  shortlist, solicitud de entrevista y alta con CV PDF) — **0 errores de consola** y
-  vista móvil sin desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
-  `capturas-talento` (7 pantallas).
+- **Prueba de Talento** (20–21 oct, 8.ª y 9.ª sesión): 9 pasos con Supabase, Storage y
+  Worker simulados — panel interno (métricas, candidato, empresa, matching con IA,
+  kanban, entrevista y contratación) y portal público (perfil anónimo sin
+  correo/teléfono, shortlist, solicitud de entrevista, alta con CV PDF y **postulación
+  asistida con IA con token privado**) — **0 errores de consola** y vista móvil sin
+  desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
+  `capturas-talento` (8 pantallas).
 - **Verificación de producción de Talento** (21-oct): `/talento` responde 200, título
   «Talento · AviTech Solutions Group», `GET /api/talento/vacantes` y
   `GET /api/talento/candidatos` devuelven `ok:true`, el honeypot no crea registros y
@@ -386,6 +402,8 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
     permiso explícito, historial por usuario con RLS, respuestas en streaming y voz. Evaluar
     privacidad y consumo antes de activar.
 12. **Talento fase 2:** añadir **Turnstile** o un secreto de servidor a los formularios
-    públicos y a la subida de CV (hoy el límite por IP vive en el Worker), limpiar CV
+    públicos y a la subida de CV (hoy el límite por IP vive en el Worker), verificar el
+    correo antes de permitir la edición de perfiles existentes (el token privado ya
+    protege la postulación con IA, pero se obtiene al actualizar el perfil), limpiar CV
     huérfanos, notificar al equipo cuando una empresa solicite una entrevista y permitir
     que la empresa dé seguimiento a su propia solicitud sin crear cuentas.

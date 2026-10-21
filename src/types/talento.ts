@@ -142,3 +142,19 @@ export interface SugerenciaTalento {
   puntaje: number
   motivo: string
 }
+
+export interface PostulacionIA {
+  vacante_id: string
+  titulo: string
+  empresa_nombre: string
+  puntaje: number
+  motivo: string
+}
+
+export interface ResultadoPostulacionIA {
+  ok: boolean
+  aplicadas: PostulacionIA[]
+  existentes: number
+  analizadas: number
+  mensaje?: string
+}

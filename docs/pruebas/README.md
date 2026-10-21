@@ -75,13 +75,15 @@ Workers AI y no contiene secretos.
 **Qué comprueba:** panel interno (métricas, alta de candidato, alta de empresa, matching
 con IA y alta al pipeline, cambio de etapa a entrevista y cierre como contratado), portal
 público (perfiles anónimos sin correo ni teléfono, shortlist, solicitud de entrevista de una
-empresa, alta de candidato con CV PDF y consentimiento) y vista móvil a 390 px. Al final
-devuelve un JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
+empresa, alta de candidato con CV PDF y consentimiento, **postulación asistida con IA con
+token privado y máximo de 3**) y vista móvil a 390 px. Al final devuelve un JSON con `ok`,
+los pasos y los errores de consola (debe ser `[]`).
 
 **Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el puerto
 5181 y pide en OpenCode `docs/pruebas/prueba-talento.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
-`C:\Users\User\avitech\capturas-talento` (7 imágenes).
+`C:\Users\User\avitech\capturas-talento` (8 imágenes; `08-portal-ia.png` muestra el
+resultado de la IA).
 
 ## PWA sin conexión (`prueba-pwa.js`)
 

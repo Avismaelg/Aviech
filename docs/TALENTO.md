@@ -27,9 +27,13 @@ datos, pantallas y permisos independientes.
 1. Completa nombre, correo, puesto buscado, ubicación, modalidad, habilidades,
    disponibilidad y expectativa salarial (RD$).
 2. Opcionalmente elige una vacante abierta para postularse en el mismo envío.
-3. Adjunta el CV en **PDF de hasta 5 MB** o pega un enlace externo.
-4. Autoriza el uso de sus datos y decide si su perfil se muestra a las empresas.
-5. Si el correo ya existe, el perfil se **actualiza** en vez de duplicarse.
+3. Opcionalmente activa **«Quiero que la IA busque y postule por mí»**. La IA
+   revisa las vacantes públicas abiertas, elige hasta **3** donde el encaje sea
+   real y crea las postulaciones. El portal muestra el resultado con puntaje y
+   motivo. La autorización es explícita y se puede desactivar antes de enviar.
+4. Adjunta el CV en **PDF de hasta 5 MB** o pega un enlace externo.
+5. Autoriza el uso de sus datos y decide si su perfil se muestra a las empresas.
+6. Si el correo ya existe, el perfil se **actualiza** en vez de duplicarse.
 
 El portal muestra a las empresas un perfil **anonimizado**: nombre + inicial del
 apellido, puesto, ubicación, habilidades, experiencia resumida y rango salarial.
@@ -79,7 +83,12 @@ Al mover un proceso a **Contratada**, el candidato pasa automáticamente a
   firmada de 1 hora**.
 - El portal público solo indica `cv_disponible: true/false`; nunca devuelve la ruta.
 
-## Matching con IA
+## IA en Talento
+
+Hay dos usos distintos. Ninguno se ejecuta solo: siempre requieren una acción
+explícita de una persona.
+
+### Matching interno (personal)
 
 - Se ejecuta **solo cuando el personal pulsa «Buscar candidatos»** dentro de una
   vacante. No crea postulaciones automáticamente.
@@ -91,13 +100,28 @@ Al mover un proceso a **Contratada**, el candidato pasa automáticamente a
   al pipeline; al hacerlo se crea la postulación con `origen = 'ia'`.
 - Límite: 10 análisis cada 10 minutos por usuario y 1,400 tokens de salida.
 
+### Postulación asistida (candidato)
+
+- El candidato la activa con una casilla propia en `/talento` → «Busco empleo».
+  No hay postulación automática sin esa autorización.
+- El alta del perfil devuelve un **token privado** (UUID). El portal lo usa
+  para pedir la búsqueda; la IA no recibe nombre, correo, teléfono ni CV.
+- El Worker toma un resumen del perfil, hasta **20 vacantes públicas abiertas** a
+  las que el candidato aún no se haya postulado y pide a la IA hasta **3**
+  coincidencias con puntaje mínimo **65**.
+- Solo postula a vacantes con `estado = 'abierta'` y `publica = true`. Las
+  postulaciones se guardan con `origen = 'ia'`, `match_score`, `match_motivo` y una
+  nota que deja constancia de la autorización.
+- No es recurrente: si el candidato quiere otra búsqueda, debe volver a solicitarla.
+- Límite: 4 búsquedas por IP cada hora y 900 tokens de salida.
+
 ## Modelo de datos
 
-Migración: **`supabase/sql/010_talento.sql`**.
+Migraciones: **`supabase/sql/010_talento.sql`** y **`supabase/sql/011_talento_ia.sql`**.
 
 | Tabla | Contenido |
 |---|---|
-| `talento_candidatos` | Perfil, habilidades (`text[]`), expectativa, estado, visibilidad, consentimiento y CV |
+| `talento_candidatos` | Perfil, habilidades (`text[]`), expectativa, estado, visibilidad, consentimiento, CV y `token_publico` |
 | `talento_empresas` | Empresa empleadora, sector, contacto, estado y consentimiento |
 | `talento_vacantes` | Puesto, descripción, requisitos, salario, modalidad y `publica` |
 | `talento_postulaciones` | Candidato ↔ empresa ↔ vacante, etapa, origen, entrevista y cierre |
@@ -105,10 +129,14 @@ Migración: **`supabase/sql/010_talento.sql`**.
 Reglas principales:
 
 - `talento_candidatos.email` es único sin distinguir mayúsculas.
+- `talento_candidatos.token_publico` es único y **no** se devuelve en las RPC de
+  listado público; solo se entrega al crear o actualizar el perfil.
 - `talento_empresas.nombre` es único sin distinguir mayúsculas.
 - Un candidato no puede tener dos postulaciones a la **misma vacante**.
 - `vacante_id` puede ser `null` para solicitudes directas de una empresa.
 - Si se elimina una vacante, sus procesos se conservan **sin vacante**.
+- La postulación asistida acepta entre 1 y 3 vacantes por llamada y vuelve a validar
+  el token, el consentimiento, la vacante abierta y los duplicados en la base.
 - Todas las tablas tienen **RLS**: solo `authenticated`. `anon` no tiene privilegios
   directos de tabla.
 
@@ -121,12 +149,15 @@ Ejecutables por `anon` y `authenticated`, con `security definer` y
 |---|---|
 | `listar_vacantes_publicas()` | Hasta 60 vacantes abiertas y públicas, con empresa y sector |
 | `listar_candidatos_publicos()` | Hasta 100 perfiles visibles, consentidos y no cerrados, ya anonimizados |
-| `crear_postulacion_publica(...)` | Crea/actualiza candidato y, si se indica, su postulación |
+| `crear_postulacion_publica(...)` | Crea/actualiza candidato, devuelve su `token_publico` y, si se indica, su postulación |
+| `perfil_para_ia_publico(candidato_id, token)` | Devuelve un resumen sin datos de contacto y las vacantes ya postuladas |
+| `postular_con_ia_publica(candidato_id, token, ids, puntajes, motivos)` | Valida el token y crea hasta 3 postulaciones `origen = 'ia'` sin duplicar |
 | `crear_empresa_y_solicitud(...)` | Crea/actualiza empresa y una postulación por candidato (máx. 12) |
 | `crear_vacante_publica(...)` | Crea/actualiza empresa y una vacante **no publicada** para revisión |
 
 Validaciones del servidor: nombre, correo, puesto, consentimiento, longitudes,
-enumeraciones, salario coherente, URL `http(s)` y ruta de CV `publico/*.pdf`.
+enumeraciones, salario coherente, URL `http(s)`, ruta de CV `publico/*.pdf`, token
+del candidato, vacante abierta/pública y máximo de 3 postulaciones por búsqueda.
 
 ## API del Worker
 
@@ -135,6 +166,7 @@ enumeraciones, salario coherente, URL `http(s)` y ruta de CV `publico/*.pdf`.
 | `/api/talento/vacantes` | `GET` | Público, límite por IP |
 | `/api/talento/candidatos` | `GET` | Público, límite por IP |
 | `/api/talento/postulaciones` | `POST` | Público, límite por IP |
+| `/api/talento/ia-postular` | `POST` | Público, token del candidato y límite por IP |
 | `/api/talento/solicitudes` | `POST` | Público, límite por IP |
 | `/api/talento/vacantes/publicar` | `POST` | Público, límite por IP |
 | `/api/talento/match` | `POST` | **Solo personal** con sesión de Supabase |
@@ -142,9 +174,10 @@ enumeraciones, salario coherente, URL `http(s)` y ruta de CV `publico/*.pdf`.
 Límites en memoria del Worker:
 
 - 8 envíos públicos por IP cada hora.
+- 4 búsquedas de postulación con IA por IP cada hora.
 - 80 lecturas públicas por IP cada 10 minutos.
 - 10 análisis de matching por usuario cada 10 minutos.
-- Cuerpos máximos de 40–60 KB.
+- Cuerpos máximos de 40–60 KB; la petición de postulación con IA, 4 KB.
 
 Los formularios públicos incluyen **consentimiento explícito** y un **honeypot**
 (`website`) invisible. Si se rellena, el Worker responde como si hubiera funcionado
@@ -165,21 +198,24 @@ pero no guarda nada.
 
 La prueba simula Supabase y el Worker, recorre el panel interno (métricas, candidato,
 empresa, matching, kanban y colocación) y el portal público (perfil anónimo,
-shortlist, solicitud de entrevista, alta con CV y móvil). Debe devolver `ok: true`,
-ocho pasos y `errores: []`. Capturas en `C:\Users\User\avitech\capturas-talento`.
+shortlist, solicitud de entrevista, alta con CV, postulación asistida con IA y móvil).
+Debe devolver `ok: true`, nueve pasos y `errores: []`. Capturas en
+`C:\Users\User\avitech\capturas-talento`.
 
 ## Puesta en marcha
 
-> La migración 010 y el despliegue ya están hechos en producción. Estos pasos sirven
-> para reproducir el módulo en un entorno nuevo o revisar que todo siga en su sitio.
+> Las migraciones 010 y 011 y el despliegue ya están hechos en producción. Estos pasos
+> sirven para reproducir el módulo en un entorno nuevo o revisar que todo siga en su sitio.
 
-1. Subir `010_talento.sql` a `main`; el workflow **«Migrar base de datos»** lo aplica
-   junto con los anteriores y escribe el reporte en `supabase/verificacion-ultima.txt`.
+1. Subir `010_talento.sql` y `011_talento_ia.sql` a `main`; el workflow **«Migrar base
+   de datos»** los aplica junto con los anteriores y escribe el reporte en
+   `supabase/verificacion-ultima.txt`.
 2. Verificar que el bucket `talento-cv` existe y es **privado**.
 3. Publicar el Worker (lo hace Cloudflare con el push) y confirmar que el binding `AI`
    sigue declarado en `wrangler.jsonc`.
 4. Abrir `/talento` en producción y hacer un envío de prueba; revisar que el registro
-   aparezca en `#talento` y que el CV se abra con URL firmada.
+   aparezca en `#talento`, que la IA devuelva una postulación si hay una vacante
+   compatible y que el CV se abra con URL firmada.
 
 ## Pendientes y límites conocidos
 
@@ -192,8 +228,10 @@ ocho pasos y `errores: []`. Capturas en `C:\Users\User\avitech\capturas-talento`
 - Las solicitudes de empresa no verifican el dominio del correo. El equipo debe
   confirmar al contacto antes de compartir datos.
 - Un correo de candidato ya registrado actualiza su perfil sin verificación adicional;
-  cualquier persona que conozca ese correo podría cambiar los datos públicos. Para una
-  apertura masiva conviene verificar el correo antes de permitir la edición.
+  cualquier persona que conozca ese correo podría cambiar los datos públicos y obtener
+  el token para pedir postulaciones con IA. El token reduce el abuso casual, pero no
+  sustituye la verificación del correo. Para una apertura masiva conviene añadir un
+  código de un solo uso antes de permitir la edición.
 - El nombre de una empresa existente se puede actualizar desde el formulario público
   (con el mismo riesgo de suplantación). El equipo debe validar el contacto antes de
   activar sus vacantes.

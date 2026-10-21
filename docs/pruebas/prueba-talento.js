@@ -490,9 +490,55 @@ async (page) => {
         body: JSON.stringify({
           ok: true,
           candidato_id: id,
+          token_publico: '00000000-0000-4000-8000-000000000011',
           postulacion_id: null,
           existente: false,
           mensaje: 'Recibimos tu perfil.',
+        }),
+      })
+    }
+    if (peticion.method() === 'POST' && camino === '/api/talento/ia-postular') {
+      const cuerpo = JSON.parse(peticion.postData() || '{}')
+      peticionesPublicas.push({ tipo: 'ia', cuerpo })
+      const vacante = buscar('talento_vacantes', 'vac-1')
+      store.talento_postulaciones.push({
+        id: nuevoId('talento_postulaciones'),
+        candidato_id: cuerpo.candidato_id,
+        empresa_id: vacante.empresa_id,
+        vacante_id: vacante.id,
+        etapa: 'recibida',
+        origen: 'ia',
+        solicitud_tipo: null,
+        match_score: 91,
+        match_motivo: 'Su experiencia contable y su expectativa salarial encajan con la vacante.',
+        notas: 'Postulación asistida por IA a petición del candidato.',
+        fecha_entrevista: null,
+        entrevista_tipo: null,
+        entrevistador: null,
+        resultado_entrevista: null,
+        fecha_inicio: null,
+        salario_final: null,
+        comision: null,
+        created_at: ahoraISO(),
+        updated_at: ahoraISO(),
+      })
+      return ruta.fulfill({
+        status: 200,
+        headers: cabecerasJson,
+        body: JSON.stringify({
+          ok: true,
+          analizadas: 1,
+          existentes: 0,
+          aplicadas: [
+            {
+              vacante_id: 'vac-1',
+              titulo: vacante.titulo,
+              empresa_nombre: 'Grupo del Norte SRL',
+              puntaje: 91,
+              motivo: 'Su experiencia contable y su expectativa salarial encajan con la vacante.',
+            },
+          ],
+          mensaje: 'La IA postuló tu perfil a 1 vacante.',
         }),
       })
     }
@@ -531,6 +577,23 @@ async (page) => {
     { clave: CLAVE, valor: sesion },
   )
   await page.setViewportSize({ width: 1600, height: 1000 })
+  // La versión del service worker puede cambiar entre ejecuciones y recargar la
+  // página en medio de la prueba. Se retira antes de empezar para que el recorrido
+  // mida la interfaz, no la actualización de la PWA.
+  await page.goto(`${BASE}/talento`, { waitUntil: 'domcontentloaded' }).catch(() => {})
+  await page.waitForLoadState('networkidle').catch(() => {})
+  await page
+    .evaluate(async () => {
+      if ('serviceWorker' in navigator) {
+        const registros = await navigator.serviceWorker.getRegistrations()
+        await Promise.all(registros.map((registro) => registro.unregister()))
+      }
+      if ('caches' in window) {
+        const claves = await caches.keys()
+        await Promise.all(claves.map((clave) => caches.delete(clave)))
+      }
+    })
+    .catch(() => {})
   await page.goto('about:blank')
 
   const ejecutar = async () => {
@@ -668,6 +731,29 @@ async (page) => {
     afirmar(postulacion.cuerpo.consentimiento === true, 'consentimiento del candidato')
     await page.screenshot({ path: `${CAPTURAS}/06-portal-candidato.png`, fullPage: true })
     marcar('candidato creado con CV desde el portal')
+
+    await page.getByRole('button', { name: 'Crear otro perfil', exact: true }).click()
+    await page.getByLabel('Nombre completo *').fill('Lucía Santos')
+    await page.getByLabel('Correo *').fill('lucia@correo.com')
+    await page.getByLabel('Puesto que buscas *').fill('Analista contable senior')
+    await page.getByRole('checkbox', { name: /Quiero que la IA busque y postule por mí/ }).check()
+    await page.getByLabel(/Autorizo a AviTech Solutions Group/).check()
+    await page.getByRole('button', { name: 'Crear perfil y postular con IA', exact: true }).click()
+    await page.getByText('Postulación asistida completada', { exact: true }).waitFor()
+    afirmar(
+      (await page.getByText('Analista contable senior', { exact: true }).count()) >= 1,
+      'vacante aplicada visible en el resultado',
+    )
+    const postulacionIA = peticionesPublicas.find((fila) => fila.tipo === 'ia')
+    afirmar(Boolean(postulacionIA), 'postulación con IA enviada')
+    afirmar(Boolean(postulacionIA.cuerpo.candidato_id), 'candidato identificado para la IA')
+    afirmar(postulacionIA.cuerpo.token_publico === '00000000-0000-4000-8000-000000000011', 'token privado enviado')
+    afirmar(
+      store.talento_postulaciones.some((fila) => fila.origen === 'ia' && fila.match_score === 91),
+      'postulación creada con origen y puntaje de IA',
+    )
+    await page.screenshot({ path: `${CAPTURAS}/08-portal-ia.png`, fullPage: true })
+    marcar('IA buscó vacantes y postuló por el candidato')
 
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(`${BASE}/talento`, { waitUntil: 'networkidle' })

@@ -1,3 +1,4 @@
+import type { ResultadoPostulacionIA } from '../types/talento'
 import { supabase } from './supabase'
 
 export const LIMITE_CV_BYTES = 5 * 1024 * 1024
@@ -118,6 +119,29 @@ export function formatoFechaHora(valor: string | null | undefined): string {
     hour: '2-digit',
     minute: '2-digit',
   }).format(fecha)
+}
+
+/**
+ * Pide a la IA que revise las vacantes abiertas y postule el perfil del
+ * candidato. La autorización viaja con el token privado que devolvió el alta
+ * del perfil; el Worker nunca recibe el correo ni el CV.
+ */
+export async function postularConIA(
+  candidatoId: string,
+  tokenPublico: string,
+): Promise<ResultadoPostulacionIA> {
+  const respuesta = await fetch('/api/talento/ia-postular', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ candidato_id: candidatoId, token_publico: tokenPublico }),
+  })
+  const datos = (await respuesta.json().catch(() => null)) as
+    | (ResultadoPostulacionIA & { error?: string })
+    | null
+  if (!respuesta.ok || !datos?.ok) {
+    throw new Error(datos?.error || 'La IA no pudo revisar las vacantes. Inténtalo otra vez.')
+  }
+  return datos
 }
 
 /** URL pública del portal de talento. */

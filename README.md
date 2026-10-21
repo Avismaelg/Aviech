@@ -24,7 +24,7 @@ Interfaz **v4 «Open Design · Mastercard»**: lienzo crema, tinta casi negra y 
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
-| **Talento** | Módulo separado del CRM: candidatos, empresas empleadoras, vacantes, postulaciones y entrevistas. Portal público `/talento` con perfiles anónimos, shortlist, CV privado (PDF ≤ 5 MB) y matching con IA. Sin cuentas públicas ni pagos. Ver **`docs/TALENTO.md`** |
+| **Talento** | Módulo separado del CRM: candidatos, empresas empleadoras, vacantes, postulaciones y entrevistas. Portal público `/talento` con perfiles anónimos, shortlist, CV privado (PDF ≤ 5 MB), matching con IA y **postulación asistida con IA** autorizada por el candidato (máximo 3 vacantes). Sin cuentas públicas ni pagos. Ver **`docs/TALENTO.md`** |
 | **Auditor SEO** | Analiza cualquier página como la ve Google (título, meta, encabezados, imágenes, enlaces, HTTPS, canonical, Open Graph, `robots.txt` y `sitemap.xml`) con puntaje 0–100 e historial; **velocidad** gratis con PageSpeed Insights. Sin claves ni costo |
 | **Prospección** | Busca los **correos, teléfonos y redes sociales** de una web (página principal + contacto) y con un clic los guarda como empresa/contacto en el **CRM**; avisa si la empresa ya existe. Sin claves ni costo |
 | **Solicitudes** | Bandeja de pedidos con **formulario público** (`/solicitud`) y alta interna. La IA prepara plan, propuesta, correo e informe; crea cliente/CRM/servicio y lo cierra. El equipo revisa. Sin correos automáticos. Ver **`docs/SOLICITUDES.md`** |
@@ -66,7 +66,7 @@ npm run lint       # revisión de código (oxlint)
 - La clave «publishable» es pública por diseño; la seguridad real vive en **RLS** en cada tabla.
 - RLS activado en `clientes`, `servicios`, `pagos`, CRM, SEO, `solicitudes_servicio` y las cuatro tablas de **Talento**: solo usuarios autenticados del panel.
 - El **formulario público** no crea cuentas ni lee la tabla: crea y cierra solicitudes con funciones SQL y un token aleatorio por solicitud.
-- El **portal de talento** tampoco crea cuentas: los candidatos y las empresas entran por RPC públicas con consentimiento y límites; los perfiles se muestran anónimos y los CV viven en un bucket privado. Ver **`docs/TALENTO.md`**.
+- El **portal de talento** tampoco crea cuentas: los candidatos y las empresas entran por RPC públicas con consentimiento y límites; los perfiles se muestran anónimos, los CV viven en un bucket privado y la postulación con IA exige un token privado que solo se entrega al crear o actualizar el perfil. Ver **`docs/TALENTO.md`**.
 - El registro público está cerrado; los usuarios se crean desde Supabase → Authentication → Users.
 - La clave `service_role` **nunca** va en el frontend ni en Git.
 - `.env` está excluido de Git; el repositorio solo contiene `.env.production` con valores públicos.
@@ -141,7 +141,7 @@ worker/
 public/
   sw.js                   # service worker: abre sin conexión y repite visitas al instante
   manifest.webmanifest    # datos de la app instalable (PWA)
-supabase/sql/             # migraciones (001…010)
+supabase/sql/             # migraciones (001…011)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 
@@ -150,7 +150,7 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
-- `docs/TALENTO.md` — candidatos, empresas empleadoras, vacantes, portal público, CV privado y matching con IA
+- `docs/TALENTO.md` — candidatos, empresas empleadoras, vacantes, portal público, CV privado, matching y postulación asistida con IA
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)
 - `docs/PROSPECCION.md` — guía de Prospección (contactos de una web → CRM; gratis)
 - `docs/SOLICITUDES.md` — formulario público, bandeja interna y cierre automático con IA

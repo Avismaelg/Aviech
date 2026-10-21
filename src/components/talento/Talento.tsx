@@ -514,7 +514,7 @@ function Resumen({
               <p className="mb-1 flex items-center gap-1.5 font-semibold text-tinta">
                 <UserRound size={14} className="text-clay" /> Busco empleo
               </p>
-              El candidato crea su perfil, sube su CV en PDF y se postula a una vacante.
+              El candidato crea su perfil, sube su CV en PDF y se postula a una vacante o deja que la IA lo haga por él.
             </div>
             <div>
               <p className="mb-1 flex items-center gap-1.5 font-semibold text-tinta">
@@ -530,9 +530,9 @@ function Resumen({
             </div>
             <div>
               <p className="mb-1 flex items-center gap-1.5 font-semibold text-tinta">
-                <Sparkles size={14} className="text-clay" /> Matching con IA
+                <Sparkles size={14} className="text-clay" /> IA en Talento
               </p>
-              El equipo pide sugerencias desde una vacante; la IA nunca crea procesos sola.
+              El equipo pide sugerencias desde una vacante; el candidato puede autorizar que la IA postule por él.
             </div>
           </div>
         </Tarjeta>

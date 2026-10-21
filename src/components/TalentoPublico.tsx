@@ -33,8 +33,8 @@ import {
   etiquetaTipoContrato,
 } from '../lib/etiquetas'
 import { formatoFecha } from '../lib/formato'
-import { habilidadesDesdeTexto, LIMITE_CV_BYTES, rangoSalario, subirCV } from '../lib/talento'
-import type { CandidatoPublico, VacantePublica } from '../types/talento'
+import { habilidadesDesdeTexto, LIMITE_CV_BYTES, postularConIA, rangoSalario, subirCV } from '../lib/talento'
+import type { CandidatoPublico, ResultadoPostulacionIA, VacantePublica } from '../types/talento'
 import { AreaTexto, Boton, Campo, Entrada, Insignia, Modal, Selector, Tarjeta } from './ui'
 
 type ModoTalento = 'empleo' | 'talento'
@@ -125,6 +125,8 @@ interface RespuestaPublica {
   error?: string
   mensaje?: string
   existente?: boolean
+  candidato_id?: string | null
+  token_publico?: string | null
   postulacion_id?: string | null
   solicitudes?: number
   existentes?: number
@@ -134,6 +136,8 @@ interface ExitoCandidato {
   nombre: string
   vacante: VacantePublica | null
   existente: boolean
+  ia: ResultadoPostulacionIA | null
+  iaError: string | null
 }
 
 interface ExitoSolicitud {
@@ -352,6 +356,7 @@ function PanelCandidato({
   const [archivo, setArchivo] = useState<File | null>(null)
   const [consentimiento, setConsentimiento] = useState(false)
   const [visible, setVisible] = useState(true)
+  const [iaPostular, setIaPostular] = useState(false)
   const [website, setWebsite] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -361,6 +366,7 @@ function PanelCandidato({
 
   function seleccionarVacante(vacante: VacantePublica) {
     setFormulario((previo) => ({ ...previo, vacante_id: vacante.id, puesto_objetivo: previo.puesto_objetivo || vacante.titulo }))
+    setIaPostular(false)
     setExito(null)
     window.setTimeout(() => document.getElementById('perfil-candidato')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40)
   }
@@ -414,10 +420,27 @@ function PanelCandidato({
       })
       const datos = (await respuesta.json().catch(() => null)) as RespuestaPublica | null
       if (!respuesta.ok || !datos?.ok) throw new Error(datos?.error || 'No se pudo crear tu perfil. Inténtalo otra vez.')
+
+      let resultadoIA: ResultadoPostulacionIA | null = null
+      let errorIA: string | null = null
+      if (iaPostular) {
+        if (!datos.candidato_id || !datos.token_publico) {
+          errorIA = 'Tu perfil se creó, pero la IA no pudo iniciar la búsqueda. Inténtalo de nuevo más tarde.'
+        } else {
+          try {
+            resultadoIA = await postularConIA(datos.candidato_id, datos.token_publico)
+          } catch (fallo) {
+            errorIA = fallo instanceof Error ? fallo.message : 'La IA no pudo revisar las vacantes esta vez.'
+          }
+        }
+      }
+
       setExito({
         nombre: formulario.nombre.split(' ')[0] || 'candidato',
         vacante: vacanteSeleccionada,
         existente: Boolean(datos.existente),
+        ia: resultadoIA,
+        iaError: errorIA,
       })
       onRefrescarCandidatos()
     } catch (fallo) {
@@ -432,6 +455,7 @@ function PanelCandidato({
     setArchivo(null)
     setConsentimiento(false)
     setVisible(true)
+    setIaPostular(false)
     setError(null)
     setExito(null)
     window.setTimeout(() => document.getElementById('perfil-candidato')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40)
@@ -457,8 +481,62 @@ function PanelCandidato({
                 ? exito.existente
                   ? 'Ya tenías una postulación para esta vacante. Actualizamos tu perfil con la información nueva.'
                   : `Tu postulación a «${exito.vacante.titulo}» en ${exito.vacante.empresa_nombre} quedó registrada.`
-                : 'Tu perfil quedó disponible para que las empresas lo descubran. Si aparece una vacante que encaja, te contactamos.'}
+                : exito.ia
+                  ? 'Tu perfil quedó creado. La IA revisó las vacantes abiertas y el resultado está abajo.'
+                  : 'Tu perfil quedó disponible para que las empresas lo descubran. Si aparece una vacante que encaja, te contactamos.'}
             </p>
+
+            {exito.ia && (
+              <div className="mx-auto mt-5 max-w-md rounded-[22px] border border-arena-borde bg-arena/55 p-4 text-left">
+                <p className="flex items-center gap-2 text-sm font-semibold text-tinta">
+                  <Sparkles size={16} className="text-clay" />
+                  {exito.ia.aplicadas.length > 0 ? 'Postulación asistida completada' : 'Búsqueda con IA completada'}
+                </p>
+                {exito.ia.aplicadas.length > 0 ? (
+                  <>
+                    <p className="mt-1 text-xs leading-relaxed text-tinta-suave">
+                      La IA revisó {exito.ia.analizadas} vacante{exito.ia.analizadas === 1 ? '' : 's'} y postuló tu
+                      perfil a {exito.ia.aplicadas.length}:
+                    </p>
+                    <ul className="mt-3 space-y-2">
+                      {exito.ia.aplicadas.map((aplicada) => (
+                        <li key={aplicada.vacante_id} className="rounded-[16px] border border-borde bg-superficie p-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-semibold text-tinta">{aplicada.titulo}</p>
+                              <p className="truncate text-[11px] text-tinta-tenue">{aplicada.empresa_nombre}</p>
+                            </div>
+                            <Insignia color="emerald">{aplicada.puntaje}%</Insignia>
+                          </div>
+                          <p className="mt-1.5 text-xs leading-relaxed text-tinta-suave">{aplicada.motivo}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    {exito.ia.existentes > 0 && (
+                      <p className="mt-2 text-[11px] leading-relaxed text-tinta-tenue">
+                        {exito.ia.existentes === 1
+                          ? 'Una de las coincidencias ya tenía una postulación previa.'
+                          : `${exito.ia.existentes} coincidencias ya tenían una postulación previa.`}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="mt-1 text-xs leading-relaxed text-tinta-suave">
+                    {exito.ia.mensaje || 'No encontramos vacantes compatibles esta vez. Tu perfil sigue activo.'}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {exito.iaError && (
+              <p
+                role="status"
+                className="mx-auto mt-4 max-w-md rounded-[18px] border border-aviso-borde bg-aviso-suave px-4 py-3 text-left text-xs leading-relaxed text-aviso"
+              >
+                Tu perfil se creó, pero la IA no pudo completar la postulación: {exito.iaError}
+              </p>
+            )}
+
             <div className="mx-auto mt-5 max-w-md rounded-[22px] border border-info-borde bg-info-suave p-4 text-left text-sm text-info">
               <p className="flex items-center gap-2 font-semibold">
                 <LockKeyhole size={16} /> Tu privacidad
@@ -596,7 +674,10 @@ function PanelCandidato({
               <Campo etiqueta="¿Te interesa una vacante?" className="sm:col-span-2">
                 <Selector
                   value={formulario.vacante_id}
-                  onChange={(evento) => setFormulario({ ...formulario, vacante_id: evento.target.value })}
+                  onChange={(evento) => {
+                    setFormulario({ ...formulario, vacante_id: evento.target.value })
+                    if (evento.target.value) setIaPostular(false)
+                  }}
                 >
                   <option value="">Solo crear mi perfil</option>
                   {vacantes.map((vacante) => (
@@ -611,6 +692,48 @@ function PanelCandidato({
                   </span>
                 )}
               </Campo>
+
+              <div className="rounded-[22px] border border-arena-borde bg-arena/55 p-4 sm:col-span-2">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accion text-superficie">
+                    <Sparkles size={17} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-semibold text-tinta">Postulación inteligente</p>
+                      <Insignia color="blue">IA</Insignia>
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed text-tinta-suave">
+                      La IA revisa las vacantes abiertas y postula tu perfil a las que mejor encajan. Postula a un
+                      máximo de 3 y te muestra el resultado.
+                    </p>
+                    <label className="mt-3 flex cursor-pointer items-start gap-2.5 rounded-[16px] border border-borde bg-superficie p-3 text-xs leading-relaxed text-tinta-suave">
+                      <input
+                        type="checkbox"
+                        checked={iaPostular}
+                        disabled={cargandoVacantes || vacantes.length === 0}
+                        onChange={(evento) => {
+                          setIaPostular(evento.target.checked)
+                          if (evento.target.checked) {
+                            setFormulario((previo) => ({ ...previo, vacante_id: '' }))
+                          }
+                        }}
+                        className="mt-0.5 h-4 w-4 rounded border-borde accent-acento disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                      <span>
+                        Quiero que la IA busque y postule por mí según mi perfil.
+                        <span className="mt-0.5 block text-[11px] text-tinta-tenue">
+                          {cargandoVacantes
+                            ? 'Cargando vacantes abiertas…'
+                            : vacantes.length === 0
+                              ? 'No hay vacantes abiertas ahora; crea tu perfil y vuelve cuando haya una.'
+                              : 'Autorizas el envío de tu perfil solo a vacantes públicas y abiertas. No compartimos tu correo ni tu CV con la IA.'}
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
               <details className="group rounded-[20px] border border-borde bg-superficie-2/35 p-4 sm:col-span-2">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-semibold text-tinta">
@@ -738,12 +861,27 @@ function PanelCandidato({
               )}
 
               <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="max-w-md text-[11px] leading-relaxed text-tinta-tenue">
-                  Sin costo para candidatos. Tu CV es privado y se comparte solo cuando autorizas una entrevista.
-                </p>
+                <div className="max-w-md">
+                  <p className="text-[11px] leading-relaxed text-tinta-tenue">
+                    Sin costo para candidatos. Tu CV es privado y se comparte solo cuando autorizas una entrevista.
+                  </p>
+                  {enviando && iaPostular && (
+                    <p role="status" className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-clay">
+                      <Loader2 size={12} className="animate-spin" /> La IA está revisando las vacantes abiertas…
+                    </p>
+                  )}
+                </div>
                 <Boton type="submit" disabled={enviando} className="shrink-0">
                   {enviando ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-                  {enviando ? 'Creando perfil…' : formulario.vacante_id ? 'Crear perfil y postularme' : 'Crear mi perfil'}
+                  {enviando
+                    ? iaPostular
+                      ? 'Creando perfil y postulando…'
+                      : 'Creando perfil…'
+                    : iaPostular
+                      ? 'Crear perfil y postular con IA'
+                      : formulario.vacante_id
+                        ? 'Crear perfil y postularme'
+                        : 'Crear mi perfil'}
                 </Boton>
               </div>
             </form>
