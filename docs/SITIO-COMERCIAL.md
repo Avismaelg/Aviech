@@ -171,6 +171,5 @@ redirección `/#crm` → `/panel#crm`. Resultado esperado: `ok: true`, 8 pasos,
    (con autorización del cliente).
 4. Imagen Open Graph (1200×630) para compartir en redes.
 5. Revisar los rangos de precios con el equipo antes de publicarlos.
-6. **No se ha publicado a producción**: el brief pide autorización antes de desplegar.
-   Al aprobarlo, `git push` a `main` compila y publica; alternativa manual:
-   `npm run build` + `npx wrangler deploy`.
+6. **Publicado el 21-oct-2026 (commit `353e4da`)**: `git push` a `main` compila y
+   publica; alternativa manual: `npm run build` + `npx wrangler deploy`.
