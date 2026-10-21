@@ -11,8 +11,10 @@
   `talento_limitar_publico`, con SQLSTATE `PT429`/`PT409`), índices parciales de las
   listas públicas, caché de navegador de 60 s en `GET /api/talento/*`, **aviso de
   solicitudes de empresa** y **limpieza de CV sin candidato** en el Resumen, y
-  **code-splitting** del panel y las páginas públicas. Migración **012**. La prueba de
-  Talento pasa a **12 pasos** y 0 errores de consola.
+  **code-splitting** del panel y las páginas públicas. Migración **012 aplicada y
+  verificada en producción** el 21-oct (reporte en verde: `guardar = t`,
+  `vieja_eliminada = t`, `limites_anon = f`; Worker y frontend desplegados, caché de
+  60 s activa). La prueba de Talento pasa a **12 pasos** y 0 errores de consola.
 - **Postulación asistida con IA (9.ª sesión, 21 oct):** en `/talento` → «Busco
   empleo», el candidato puede autorizar que la IA revise hasta 20 vacantes públicas
   abiertas y postule su perfil a un máximo de 3. El alta devuelve un **token privado**
