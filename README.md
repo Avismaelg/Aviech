@@ -16,13 +16,14 @@ Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **
 - Panel interno: **https://aviech.avismael-eg.workers.dev/panel**
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
 - Portal público de talento: **https://aviech.avismael-eg.workers.dev/talento**
+- Privacidad y términos: **https://aviech.avismael-eg.workers.dev/privacidad** · **/terminos**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
 
 ### Módulos
 
 | Módulo | Qué hace |
 |---|---|
-| **Sitio comercial** (`/`) | Portada pública con hero, cuatro servicios (web, portales, automatización y soporte), seis necesidades, proceso de trabajo, tres demostraciones funcionales, equipo, paquetes en RD$ y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA. Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
+| **Sitio comercial** (`/`) | Portada pública con hero, cuatro servicios (web, portales, automatización y soporte), seis necesidades, proceso de trabajo, tres demostraciones funcionales, equipo, paquetes en RD$, preguntas frecuentes, privacidad/términos y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA y puede avisar al equipo por Telegram (opcional). Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
@@ -95,8 +96,9 @@ src/
   components/
     sitio/
       SitioPublico.tsx    # portada comercial, cabecera, navegación móvil y pie
-      Secciones.tsx       # hero, servicios, necesidades, proceso, portafolio, equipo y paquetes
+      Secciones.tsx       # hero, servicios, necesidades, proceso, portafolio, equipo, paquetes y FAQ
       Contacto.tsx        # formulario comercial → /api/solicitudes
+      Legales.tsx         # privacidad y términos
       estilos.ts          # clases compartidas del sitio
     Layout.tsx            # barra lateral flotante + cabecera móvil y navegación
     AsistenteIA.tsx       # chat interno del asistente (Workers AI)
@@ -162,6 +164,8 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
 - `docs/SITIO-COMERCIAL.md` — portada pública, contenido, paquetes, formulario y configuración
+- `docs/LANZAMIENTO.md` — qué falta para operar: dominio, correo, WhatsApp, Telegram y primeros clientes
+- `docs/COMERCIAL.md` — propuesta, contrato, mensajes y objeciones
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
 - `docs/TALENTO.md` — candidatos, empresas empleadoras, vacantes, portal público, CV privado, matching y postulación asistida con IA
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)

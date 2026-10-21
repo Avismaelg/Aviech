@@ -10,6 +10,8 @@ digitalización empresarial. Vive en la **raíz `/`**; el panel interno se movi�
 | `/panel` | Panel interno con login |
 | `/solicitud` | Formulario público detallado de solicitudes |
 | `/talento` | Portal público de talento |
+| `/privacidad` | Política de privacidad |
+| `/terminos` | Términos del servicio |
 
 ## Estructura
 
@@ -28,10 +30,15 @@ digitalización empresarial. Vive en la **raíz `/`**; el panel interno se movi�
 7. **Paquetes:** Presencia Digital, Empresa Digital, Automatización Empresarial y
    Mantenimiento, con rangos en RD$, entregables y nota de que no son cotizaciones
    vinculantes. Hosting, dominio, licencias y APIs se cotizan aparte.
-8. **Contacto:** formulario con nombre, empresa, correo, teléfono, servicio,
+8. **Preguntas frecuentes:** ocho respuestas sobre precios, plazos, pagos, trabajo
+   remoto, datos y soporte.
+9. **Contacto:** formulario con nombre, empresa, correo, teléfono, servicio,
    descripción, plazo, presupuesto orientativo y consentimiento. El botón de WhatsApp
-   solo aparece si hay número configurado.
-9. **Pie:** enlaces, accesos al panel/portal y nota de precios de referencia.
+   solo aparece si hay número configurado. Incluye enlace a la política de privacidad.
+10. **Pie:** enlaces, accesos al panel/portal, aviso de precios de referencia y enlaces
+    a privacidad y términos.
+11. **Páginas legales:** `/privacidad` y `/terminos`, con el detalle del tratamiento de
+    datos y las condiciones generales del servicio.
 
 ## Contenido editable
 
@@ -78,6 +85,19 @@ nota del equipo); **Propuesta enviada / Aceptada / Cerrada** → `completada`;
 **Rechazada** → `rechazada`. No se agregaron estados nuevos para no modificar la base
 en esta fase.
 
+### Aviso interno por Telegram (opcional y gratis)
+
+Para que el equipo se entere de una solicitud sin tener que revisar el panel, el
+Worker puede enviar un resumen a un chat privado de Telegram. Solo se activa si existen
+los secretos `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID`; si faltan, no pasa nada y el
+formulario funciona igual. La alerta incluye folio, nombre, empresa, servicio,
+presupuesto, contacto, un resumen del problema y el enlace directo a
+`/panel#solicitudes`. Se envía en segundo plano (`waitUntil`), así que no retrasa la
+respuesta al visitante ni bloquea el guardado.
+
+Los pasos para crear el bot y configurar los secretos están en
+**`docs/LANZAMIENTO.md`**. El token **nunca** se guarda en el repositorio.
+
 ## Canales de contacto configurables
 
 Los datos reales no están en el repositorio. Se configuran con variables públicas
@@ -88,6 +108,7 @@ Los datos reales no están en el repositorio. Se configuran con variables públi
 | `VITE_WHATSAPP` | Número con código de país y solo dígitos (`18095551234`). Muestra el botón flotante y el enlace del formulario |
 | `VITE_CONTACTO_CORREO` | Correo comercial |
 | `VITE_CONTACTO_TELEFONO` | Teléfono comercial |
+| `VITE_SITIO_URL` | Dominio público para canonical/JSON-LD (sin barra final) |
 | `VITE_SUPABASE_URL` | Proyecto Supabase |
 | `VITE_SUPABASE_ANON_KEY` | Clave publicable (pública por diseño) |
 
@@ -113,12 +134,13 @@ sirven como respaldo. No inventar números ni correos.
 
 - `index.html`: título, descripción, `og:title`, `og:description`, `og:locale` y
   `theme-color`.
-- La portada agrega canonical y datos estructurados `Organization` al montar.
+- La portada agrega canonical y datos estructurados `Organization` al montar. La URL
+  sale de `VITE_SITIO_URL` (con el dominio de `workers.dev` como respaldo).
 - `public/robots.txt` permite el sitio y bloquea `/panel`.
-- `public/sitemap.xml` declara `/` y `/talento`.
+- `public/sitemap.xml` declara `/`, `/talento`, `/privacidad` y `/terminos`.
 - El panel agrega `noindex` y el formulario `/solicitud` ya lo hace.
-- Pendiente: dominio propio (actualizar `SITIO.url`, `robots.txt`, `sitemap.xml` y la
-  canonical), imagen Open Graph y prerender/SSR si se quiere SEO de contenido a gran
+- Pendiente: dominio propio (actualizar `VITE_SITIO_URL`, `robots.txt`, `sitemap.xml` y
+  la canonical), imagen Open Graph y prerender/SSR si se quiere SEO de contenido a gran
   escala.
 
 ## PWA y rutas del panel
@@ -158,18 +180,23 @@ API no existe.
 paquetes, comprueba que una necesidad preselecciona el servicio, valida el formulario
 incompleto, envía una solicitud con el endpoint interceptado, verifica el mapeo
 (`tipo`, `urgencia`, `presupuesto`, consentimiento y honeypot), comprueba la
-confirmación con folio, el reinicio, el menú móvil sin desbordes, `/panel` y la
-redirección `/#crm` → `/panel#crm`. Resultado esperado: `ok: true`, 8 pasos,
-`errores: []`.
+confirmación con folio, el reinicio, el menú móvil sin desbordes, las páginas legales,
+`/panel` y la redirección `/#crm` → `/panel#crm`. Resultado esperado: `ok: true`,
+9 pasos, `errores: []`.
 
 ## Pendientes
 
 1. Cargar teléfono, correo y WhatsApp reales (hoy los canales están ocultos).
-2. Definir el dominio definitivo y actualizar canonical, `robots.txt`, `sitemap.xml` y
-   `SITIO.url`.
-3. Sustituir o ampliar las demostraciones cuando existan casos comerciales reales
+2. Definir el dominio definitivo y actualizar `VITE_SITIO_URL`, `robots.txt` y
+   `sitemap.xml`.
+3. Revisar la política de privacidad y los términos con un abogado antes de usarlos con
+   clientes reales; son un borrador operativo, no asesoría legal.
+4. Sustituir o ampliar las demostraciones cuando existan casos comerciales reales
    (con autorización del cliente).
-4. Imagen Open Graph (1200×630) para compartir en redes.
-5. Revisar los rangos de precios con el equipo antes de publicarlos.
-6. **Publicado el 21-oct-2026 (commit `353e4da`)**: `git push` a `main` compila y
+5. Imagen Open Graph (1200×630) para compartir en redes.
+6. Revisar los rangos de precios y las condiciones de pago (50/50, garantía de 30 días)
+   con el equipo antes de publicarlos.
+7. **Publicado el 21-oct-2026 (commit `353e4da`)**: `git push` a `main` compila y
    publica; alternativa manual: `npm run build` + `npx wrangler deploy`.
+8. Activar el aviso por Telegram si se quiere respuesta inmediata a cada solicitud
+   (ver `docs/LANZAMIENTO.md`).

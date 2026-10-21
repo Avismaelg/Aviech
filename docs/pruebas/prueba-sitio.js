@@ -51,9 +51,20 @@ async (page) => {
     afirmar((await page.locator('#soluciones article').count()) === 4, 'hay 4 servicios')
     afirmar((await page.locator('#necesidades button').count()) === 6, 'hay 6 necesidades')
     afirmar((await page.locator('#paquetes article').count()) === 4, 'hay 4 paquetes')
+    afirmar((await page.locator('#preguntas details').count()) === 8, 'hay 8 preguntas frecuentes')
     afirmar((await page.getByText('Demostración', { exact: true }).count()) >= 3, 'las 3 demostraciones están marcadas')
     await page.screenshot({ path: `${CAPTURAS}/07-sitio-completo.png`, fullPage: true })
-    marcar('portada, servicios, necesidades, paquetes y demostraciones')
+    marcar('portada, servicios, necesidades, paquetes, FAQ y demostraciones')
+
+    // ---------- Páginas legales ----------
+    await page.goto(`${BASE}/privacidad`, { waitUntil: 'networkidle' })
+    await page.getByRole('heading', { name: 'Política de privacidad' }).waitFor()
+    afirmar((await page.getByText('Última actualización').count()) >= 1, 'la privacidad muestra su fecha')
+    await page.goto(`${BASE}/terminos`, { waitUntil: 'networkidle' })
+    await page.getByRole('heading', { name: 'Términos del servicio' }).waitFor()
+    await page.goto(BASE, { waitUntil: 'networkidle' })
+    await page.getByRole('heading', { name: /Digitalizamos tu empresa/ }).waitFor()
+    marcar('páginas legales')
 
     // ---------- Una necesidad preselecciona el servicio ----------
     await page.getByRole('button', { name: 'Necesito una página web', exact: true }).click()

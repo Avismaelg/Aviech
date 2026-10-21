@@ -10,6 +10,7 @@ import {
   Nosotros,
   Paquetes,
   Portafolio,
+  Preguntas,
   Proceso,
   Servicios,
   TiraValor,
@@ -18,7 +19,7 @@ import { BOTON_PRIMARIO, CONTENEDOR } from './estilos'
 
 const MENSAJE_WHATSAPP = encodeURIComponent('Hola, quiero información sobre los servicios de AviTech Solutions Group.')
 const BOTON_CABECERA =
-  'inline-flex items-center gap-1.5 rounded-xl bg-marino px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-marino-oscuro'
+  'inline-flex items-center gap-1.5 rounded-xl bg-marino px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-white transition-colors hover:bg-marino-oscuro'
 
 export function SitioPublico() {
   const [menuAbierto, setMenuAbierto] = useState(false)
@@ -97,16 +98,20 @@ export function SitioPublico() {
             href="#portada"
             aria-label="AviTech Solutions Group, volver al inicio"
             onClick={() => setMenuAbierto(false)}
+            className="shrink-0"
           >
             <MarcaSitio />
           </a>
 
-          <nav aria-label="Navegación principal" className="hidden items-center gap-6 lg:flex">
+          <nav aria-label="Navegación principal" className="hidden items-center gap-4 lg:flex xl:gap-6">
             {ENLACES_NAV.map((enlace) => (
               <a
                 key={enlace.href}
                 href={enlace.href}
-                className="text-sm font-medium text-acero transition-colors hover:text-marino"
+                className={cx(
+                  'text-sm font-medium text-acero transition-colors hover:text-marino',
+                  enlace.href === '#preguntas' && 'hidden xl:inline',
+                )}
               >
                 {enlace.etiqueta}
               </a>
@@ -114,7 +119,10 @@ export function SitioPublico() {
           </nav>
 
           <div className="hidden items-center gap-4 lg:flex">
-            <a href="/panel" className="text-sm font-medium text-acero transition-colors hover:text-marino">
+            <a
+              href="/panel"
+              className="hidden text-sm font-medium text-acero transition-colors hover:text-marino xl:inline"
+            >
               Acceso
             </a>
             <a href="#contacto" className={BOTON_CABECERA}>
@@ -179,6 +187,7 @@ export function SitioPublico() {
         <Portafolio />
         <Nosotros />
         <Paquetes onPaquete={irAContacto} />
+        <Preguntas />
         <SeccionContacto solicitud={solicitud} />
       </main>
 
@@ -214,6 +223,7 @@ export function SitioPublico() {
                 ['#portafolio', 'Portafolio'],
                 ['#nosotros', 'Sobre AviTech'],
                 ['#paquetes', 'Paquetes'],
+                ['#preguntas', 'Preguntas'],
               ].map(([href, etiqueta]) => (
                 <li key={href}>
                   <a href={href} className="text-white/70 transition-colors hover:text-verde">
@@ -252,7 +262,15 @@ export function SitioPublico() {
           <p>
             © {SITIO.anio} {SITIO.nombre}. República Dominicana.
           </p>
-          <p>Precios de referencia en RD$.</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <p>Precios de referencia en RD$.</p>
+            <a href="/privacidad" className="transition-colors hover:text-white/80">
+              Privacidad
+            </a>
+            <a href="/terminos" className="transition-colors hover:text-white/80">
+              Términos
+            </a>
+          </div>
         </div>
       </footer>
 

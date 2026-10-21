@@ -124,6 +124,54 @@ export const NECESIDADES: NecesidadSitio[] = [
   { etiqueta: 'Quiero mejorar un sistema existente', servicio: 'soporte' },
 ]
 
+export interface PreguntaSitio {
+  pregunta: string
+  respuesta: string
+}
+
+export const PREGUNTAS: PreguntaSitio[] = [
+  {
+    pregunta: '¿Cuánto cuesta un proyecto?',
+    respuesta:
+      'Depende del alcance. Los paquetes de esta página son rangos de referencia: después de un diagnóstico breve te damos una propuesta con entregables, cronograma y precio final. Hosting, dominio, licencias y APIs se cotizan aparte.',
+  },
+  {
+    pregunta: '¿Cuánto tiempo toma?',
+    respuesta:
+      'Una landing o un sitio corporativo suele tomar semanas, no meses; un portal o una automatización depende de las integraciones. En la propuesta queda un cronograma por etapas y sabes qué falta en cada una.',
+  },
+  {
+    pregunta: '¿Cómo se paga?',
+    respuesta:
+      'Con transferencia bancaria en pesos dominicanos. El esquema habitual es 50% al iniciar y 50% contra la entrega, acordado en la propuesta. Los proyectos de mantenimiento se facturan mensuales.',
+  },
+  {
+    pregunta: '¿Trabajan fuera de Santo Domingo?',
+    respuesta:
+      'Sí. Coordinamos reuniones y avances de forma remota; la entrega y la capacitación también pueden ser virtuales. Si el proyecto requiere presencia física, se acuerda en la propuesta.',
+  },
+  {
+    pregunta: '¿Qué necesita mi empresa para empezar?',
+    respuesta:
+      'Una persona responsable de aprobar, la información del negocio y los accesos a las herramientas que haya que integrar. Nosotros nos encargamos del resto: alcance, diseño, desarrollo, pruebas y puesta en marcha.',
+  },
+  {
+    pregunta: '¿Qué pasa después de la entrega?',
+    respuesta:
+      'Documentamos, capacitamos a tu equipo y cubrimos durante 30 días los defectos del alcance entregado. Después puedes contratar un plan de mantenimiento para correcciones, mejoras, actualizaciones y respaldos.',
+  },
+  {
+    pregunta: '¿Cómo protegen mis datos?',
+    respuesta:
+      'Los formularios piden consentimiento, los datos viajan por HTTPS y el acceso al panel es privado. No vendemos datos ni los usamos para publicidad. Puedes leer la política de privacidad completa en /privacidad.',
+  },
+  {
+    pregunta: '¿Puedo pagar en otra moneda?',
+    respuesta:
+      'Los precios se cotizan en RD$. Si necesitas otra moneda, se acuerda por escrito en la propuesta, con la tasa y la fecha de referencia.',
+  },
+]
+
 export interface PasoSitio {
   titulo: string
   descripcion: string
@@ -316,6 +364,7 @@ export const ENLACES_NAV: EnlaceNav[] = [
   { href: '#proceso', etiqueta: 'Proceso' },
   { href: '#portafolio', etiqueta: 'Portafolio' },
   { href: '#paquetes', etiqueta: 'Paquetes' },
+  { href: '#preguntas', etiqueta: 'Preguntas' },
   { href: '#nosotros', etiqueta: 'Nosotros' },
 ]
 
@@ -335,6 +384,7 @@ export const SITIO = {
   eslogan: 'Digitalización empresarial',
   descripcion:
     'Diseñamos páginas web, portales empresariales y automatizaciones para que las empresas organicen sus procesos, atiendan mejor a sus clientes y trabajen con mayor eficiencia.',
-  url: 'https://aviech.avismael-eg.workers.dev',
+  // Cambiar con VITE_SITIO_URL cuando se conecte el dominio propio.
+  url: (entorno.VITE_SITIO_URL || 'https://aviech.avismael-eg.workers.dev').replace(/\/+$/, ''),
   anio: new Date().getFullYear(),
 }

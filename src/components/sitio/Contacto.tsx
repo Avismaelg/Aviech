@@ -497,7 +497,14 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
                   a esta solicitud y preparar una propuesta. La solicitud puede procesarse con asistencia de IA
                   para un diagnóstico inicial; la revisión final la hace el equipo. No publicamos tus datos ni
                   los compartimos con terceros ajenos al servicio. Puedes pedir su corrección o eliminación
-                  escribiendo al equipo.
+                  escribiendo al equipo.{' '}
+                  <a
+                    href="/privacidad"
+                    className="font-semibold text-marino underline decoration-electrico/40 underline-offset-4 hover:text-electrico-texto"
+                  >
+                    Leer la política completa
+                  </a>
+                  .
                 </p>
               </details>
 

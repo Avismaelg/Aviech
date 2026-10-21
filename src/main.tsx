@@ -7,6 +7,8 @@ import './index.css'
 //   /panel            Panel interno (login + secciones por hash)
 //   /solicitud        Formulario público detallado
 //   /talento          Portal público de talento
+//   /privacidad       Política de privacidad
+//   /terminos         Términos del servicio
 // Los enlaces antiguos del panel (/#crm, /#talento…) se redirigen a /panel.
 const SECCIONES_PANEL = [
   'inicio',
@@ -29,6 +31,8 @@ const seccionAntigua = window.location.hash.replace(/^#\/?/, '')
 const esSolicitudPublica = /^\/solicitud$/i.test(ruta)
 const esTalentoPublico = /^\/talento$/i.test(ruta)
 const esPanel = /^\/panel$/i.test(ruta)
+const esPrivacidad = /^\/privacidad$/i.test(ruta)
+const esTerminos = /^\/terminos$/i.test(ruta)
 
 const redirigirAlPanel =
   ruta === '/' &&
@@ -47,9 +51,17 @@ const Pagina = esSolicitudPublica
       )
     : esPanel
       ? lazy(() => import('./App.tsx'))
-      : lazy(() =>
-          import('./components/sitio/SitioPublico.tsx').then((modulo) => ({ default: modulo.SitioPublico })),
-        )
+      : esPrivacidad
+        ? lazy(() =>
+            import('./components/sitio/Legales.tsx').then((modulo) => ({ default: modulo.PaginaPrivacidad })),
+          )
+        : esTerminos
+          ? lazy(() =>
+              import('./components/sitio/Legales.tsx').then((modulo) => ({ default: modulo.PaginaTerminos })),
+            )
+          : lazy(() =>
+              import('./components/sitio/SitioPublico.tsx').then((modulo) => ({ default: modulo.SitioPublico })),
+            )
 
 function arrancar() {
   createRoot(document.getElementById('root')!).render(

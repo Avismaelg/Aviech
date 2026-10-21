@@ -15,7 +15,9 @@
     // Valores publicos (los mismos que van en .env.production): el Worker los usa
     // para comprobar la sesion del usuario contra Supabase.
     "SUPABASE_URL": "https://ktvyhtbmokmrzeuibznv.supabase.co",
-    "SUPABASE_ANON_KEY": "sb_publishable_UFmcdmDc2j75X8vBcYhWww_G6DGneAl"
+    "SUPABASE_ANON_KEY": "sb_publishable_UFmcdmDc2j75X8vBcYhWww_G6DGneAl",
+    // Dominio público del sitio: se usa en los avisos internos de solicitudes.
+    "SITIO_URL": "https://aviech.avismael-eg.workers.dev"
   },
   // Asistente de IA: Workers AI incluido en el plan gratis (10,000 neuronas/dia).
   // No usa claves externas ni modelos de pago.

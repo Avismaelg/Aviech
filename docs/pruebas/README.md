@@ -8,12 +8,13 @@
 Prueba de humo de la portada pública con **datos simulados**: intercepta
 `**/api/solicitudes` para no escribir en la base real. No necesita sesión ni secretos.
 
-**Qué comprueba:** portada y secciones (4 servicios, 6 necesidades, 4 paquetes y 3
-demostraciones), preselección del servicio al pulsar una necesidad, validación del
+**Qué comprueba:** portada y secciones (4 servicios, 6 necesidades, 4 paquetes, 8
+preguntas frecuentes y 3 demostraciones), páginas legales (`/privacidad` y
+`/terminos`), preselección del servicio al pulsar una necesidad, validación del
 formulario incompleto, envío con el mapeo interno (`tipo`, `urgencia`, presupuesto,
 consentimiento y honeypot), confirmación con folio real, reinicio del formulario, menú
 móvil sin desbordes a 390 px, panel en `/panel` y redirección de `/#crm` a
-`/panel#crm`. Devuelve JSON con `ok`, 8 pasos y los errores de consola (debe ser `[]`).
+`/panel#crm`. Devuelve JSON con `ok`, 9 pasos y los errores de consola (debe ser `[]`).
 
 **Cómo ejecutarla:** compila, levanta la vista previa en el puerto 5181 y pide en OpenCode
 `docs/pruebas/prueba-sitio.js` con la herramienta de Playwright

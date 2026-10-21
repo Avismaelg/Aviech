@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   Check,
+  ChevronDown,
   CircleCheck,
   Code2,
   Compass,
@@ -19,6 +20,7 @@ import {
   DEMOS,
   NECESIDADES,
   PAQUETES,
+  PREGUNTAS,
   PROCESO,
   ROLES,
   SERVICIOS,
@@ -76,7 +78,7 @@ export function MarcaSitio({ claro = false }: { claro?: boolean }) {
           )}
         />
       </span>
-      <span className="leading-tight">
+      <span className="leading-tight whitespace-nowrap">
         <span className={cx('block text-sm font-semibold tracking-tight', claro ? 'text-white' : 'text-marino')}>
           AviTech
         </span>
@@ -662,6 +664,36 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
           <span className="font-semibold text-marino">Nota:</span> los rangos son referencias comerciales
           iniciales, no una cotización vinculante. El precio final depende del alcance, las integraciones, el
           contenido y los requisitos técnicos. Hosting, dominio, licencias y APIs se cotizan por separado.
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function Preguntas() {
+  return (
+    <section id="preguntas" className="bg-white py-20 sm:py-28">
+      <div className={CONTENEDOR}>
+        <p className={ETIQUETA}>Preguntas frecuentes</p>
+        <h2 className={TITULO_SECCION}>Lo que suele preguntar una empresa antes de empezar.</h2>
+        <p className={TEXTO_SECCION}>
+          Si tu duda no está aquí, escríbenos por el formulario y la respondemos junto con la propuesta.
+        </p>
+
+        <div className="mt-8 divide-y divide-borde-azul overflow-hidden rounded-2xl border border-borde-azul bg-white">
+          {PREGUNTAS.map((item) => (
+            <details key={item.pregunta} className="group px-5 py-4 sm:px-6">
+              <summary className="flex list-none cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-marino">
+                {item.pregunta}
+                <ChevronDown
+                  size={18}
+                  className="shrink-0 text-electrico transition-transform duration-200 group-open:rotate-180"
+                  aria-hidden
+                />
+              </summary>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-acero">{item.respuesta}</p>
+            </details>
+          ))}
         </div>
       </div>
     </section>

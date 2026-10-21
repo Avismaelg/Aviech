@@ -949,9 +949,10 @@ function extraerTextoIA(salida) {
 // ---------------------------------------------------------------- solicitudes
 
 /**
- * Formulario público. Guarda la solicitud, lanza el trabajo de la IA en segundo
- * plano y responde solo con un folio. La tabla no está expuesta a anon: la
- * creación y el cierre pasan por funciones SQL con un token por solicitud.
+ * Formulario público. Guarda la solicitud, lanza el trabajo de la IA y el aviso
+ * interno en segundo plano, y responde solo con un folio. La tabla no está
+ * expuesta a anon: la creación y el cierre pasan por funciones SQL con un token
+ * por solicitud.
  */
 async function crearSolicitudPublica(request, env, contexto) {
   const ip =
@@ -991,16 +992,64 @@ async function crearSolicitudPublica(request, env, contexto) {
   }
 
   const procesar = procesarSolicitudPublica(env, { ...datos, id }, token)
+  const alertar = notificarTelegram(env, { ...datos, id })
   if (contexto && typeof contexto.waitUntil === 'function') {
     contexto.waitUntil(procesar)
+    contexto.waitUntil(alertar)
   } else {
-    await procesar
+    await Promise.all([procesar, alertar])
   }
 
   return {
     ok: true,
     folio: String(id).slice(0, 8).toUpperCase(),
     mensaje: 'Recibimos tu solicitud. La IA está preparando el análisis y el equipo la revisará.',
+  }
+}
+
+/**
+ * Aviso opcional al equipo por Telegram (gratis). Se activa solo si el Worker
+ * tiene los secretos TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID. Si falla, la
+ * solicitud ya quedó guardada y visible en el panel: la alerta nunca bloquea
+ * la respuesta al visitante.
+ */
+async function notificarTelegram(env, datos) {
+  const token = env.TELEGRAM_BOT_TOKEN
+  const chat = env.TELEGRAM_CHAT_ID
+  if (!token || !chat) return
+
+  const folio = String(datos.id || '').slice(0, 8).toUpperCase()
+  const contacto = [datos.email, datos.telefono].filter(Boolean).join(' · ')
+  const monto = Number(datos.presupuesto)
+  const montoTexto = Number.isFinite(monto)
+    ? `RD$${monto.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+    : ''
+  const lineas = [
+    'Nueva solicitud en el sitio de AviTech',
+    `Folio: ${folio}`,
+    `Nombre: ${datos.nombre}`,
+    datos.empresa ? `Empresa: ${datos.empresa}` : '',
+    `Servicio: ${datos.titulo || datos.tipo}`,
+    `Tipo: ${datos.tipo}`,
+    montoTexto ? `Presupuesto: ${montoTexto}` : '',
+    contacto ? `Contacto: ${contacto}` : '',
+    `Detalle: ${String(datos.descripcion || '').slice(0, 300)}`,
+    '',
+    `Panel: ${(env.SITIO_URL || 'https://aviech.avismael-eg.workers.dev').replace(/\/+$/, '')}/panel#solicitudes`,
+  ].filter(Boolean)
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chat,
+        text: lineas.join('\n'),
+        disable_web_page_preview: true,
+      }),
+    })
+  } catch {
+    // La alerta es opcional: la solicitud ya está guardada.
   }
 }
 
