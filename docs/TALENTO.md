@@ -211,9 +211,11 @@ Debe devolver `ok: true`, nueve pasos y `errores: []`. Capturas en
 > Verificación de producción: `/talento` responde `200`, el service worker
 > `avitech-v2026-10-21-talento-ia` está activo y la tarjeta **Postulación inteligente**
 > aparece (deshabilitada si no hay vacantes). `POST /api/talento/ia-postular` responde
-> `400` con un token inválido. Como aún no hay vacantes públicas, la postulación real con
-> IA no se ejecutó en producción; las RPC se validaron en una transacción revertida y el
-> recorrido completo se probó con datos simulados.
+> `400` con un token inválido. Las RPC `perfil_para_ia_publico` y
+> `postular_con_ia_publica` responden desde producción: la primera devuelve `null` y la
+> segunda `400` (`22023`) ante UUID inválidos. Como aún no hay vacantes públicas, la
+> postulación real con IA no se ejecutó en producción; las RPC se validaron en una
+> transacción revertida y el recorrido completo se probó con datos simulados.
 
 1. Subir `010_talento.sql` y `011_talento_ia.sql` a `main`; el workflow **«Migrar base
    de datos»** los aplica junto con los anteriores y escribe el reporte en

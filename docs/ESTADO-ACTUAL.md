@@ -316,7 +316,10 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   9.ª sesión se confirmaron el asset y el service worker nuevos, la tarjeta
   **Postulación inteligente** visible y deshabilitada porque no hay vacantes
   publicadas, y `POST /api/talento/ia-postular` con `400` ante un token inválido.
-  No se creó ningún perfil sintético. Capturas:
+  Las dos RPC también se invocaron desde producción con UUID inválidos:
+  `perfil_para_ia_publico` devuelve `null` y `postular_con_ia_publica` responde `400`
+  con código `22023` («No encontramos tu perfil o la autorización venció»). No se creó
+  ningún perfil sintético. Capturas:
   `capturas-talento/08-produccion-escritorio.png`,
   `09-produccion-movil.png` y `10-produccion-ia.png`.
 - **Límite de la verificación:** no se ejecutó una postulación real con IA en producción
