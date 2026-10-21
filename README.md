@@ -6,7 +6,7 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Panel de gestión de AviTech Solutions Group: clientes, CRM, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
+Panel de gestión de AviTech Solutions Group: clientes, CRM, talento, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA, con tablero de resumen. Pensado para **República Dominicana**: montos en **RD$**
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
@@ -14,6 +14,7 @@ Interfaz **v4 «Open Design · Mastercard»**: lienzo crema, tinta casi negra y 
 
 - Dirección pública: **https://aviech.avismael-eg.workers.dev**
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
+- Portal público de talento: **https://aviech.avismael-eg.workers.dev/talento**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
 
 ### Módulos
@@ -23,6 +24,7 @@ Interfaz **v4 «Open Design · Mastercard»**: lienzo crema, tinta casi negra y 
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
+| **Talento** | Módulo separado del CRM: candidatos, empresas empleadoras, vacantes, postulaciones y entrevistas. Portal público `/talento` con perfiles anónimos, shortlist, CV privado (PDF ≤ 5 MB) y matching con IA. Sin cuentas públicas ni pagos. Ver **`docs/TALENTO.md`** |
 | **Auditor SEO** | Analiza cualquier página como la ve Google (título, meta, encabezados, imágenes, enlaces, HTTPS, canonical, Open Graph, `robots.txt` y `sitemap.xml`) con puntaje 0–100 e historial; **velocidad** gratis con PageSpeed Insights. Sin claves ni costo |
 | **Prospección** | Busca los **correos, teléfonos y redes sociales** de una web (página principal + contacto) y con un clic los guarda como empresa/contacto en el **CRM**; avisa si la empresa ya existe. Sin claves ni costo |
 | **Solicitudes** | Bandeja de pedidos con **formulario público** (`/solicitud`) y alta interna. La IA prepara plan, propuesta, correo e informe; crea cliente/CRM/servicio y lo cierra. El equipo revisa. Sin correos automáticos. Ver **`docs/SOLICITUDES.md`** |
@@ -62,8 +64,9 @@ npm run lint       # revisión de código (oxlint)
 ### Seguridad (recordatorio permanente)
 
 - La clave «publishable» es pública por diseño; la seguridad real vive en **RLS** en cada tabla.
-- RLS activado en `clientes`, `servicios`, `pagos`, CRM, SEO y `solicitudes_servicio`: solo usuarios autenticados del panel.
+- RLS activado en `clientes`, `servicios`, `pagos`, CRM, SEO, `solicitudes_servicio` y las cuatro tablas de **Talento**: solo usuarios autenticados del panel.
 - El **formulario público** no crea cuentas ni lee la tabla: crea y cierra solicitudes con funciones SQL y un token aleatorio por solicitud.
+- El **portal de talento** tampoco crea cuentas: los candidatos y las empresas entran por RPC públicas con consentimiento y límites; los perfiles se muestran anónimos y los CV viven en un bucket privado. Ver **`docs/TALENTO.md`**.
 - El registro público está cerrado; los usuarios se crean desde Supabase → Authentication → Users.
 - La clave `service_role` **nunca** va en el frontend ni en Git.
 - `.env` está excluido de Git; el repositorio solo contiene `.env.production` con valores públicos.
@@ -97,6 +100,13 @@ src/
       Empresas.tsx        # CRUD de empresas + conversión a cliente
       Contactos.tsx       # CRUD de contactos
       Actividades.tsx     # llamadas, correos, reuniones, tareas y notas
+    talento/
+      Talento.tsx         # contenedor interno: métricas y pestañas
+      Candidatos.tsx      # perfiles, CV privado y notas
+      Empresas.tsx        # empresas empleadoras
+      Vacantes.tsx        # vacantes, publicación y matching con IA
+      Procesos.tsx        # kanban de postulaciones, entrevistas y colocación
+    TalentoPublico.tsx    # portal público /talento (candidatos y empresas)
     seo/
       Seo.tsx             # Auditor SEO: formulario, informe, velocidad e historial
     prospeccion/
@@ -114,6 +124,7 @@ src/
     supabase.ts           # cliente compartido de Supabase
     useTabla.ts           # carga/guardado genérico por tabla
     crm.ts                # convierte una empresa del CRM en cliente
+    talento.ts            # CV privado, URLs firmadas, etiquetas y datos del portal
     seo.ts                # auditoría SEO (Worker) y PageSpeed
     prospeccion.ts        # prospección: Worker + guardado en el CRM
     ia.ts                 # chat del asistente (Worker /api/ia/chat)
@@ -124,13 +135,13 @@ src/
     useContador.ts        # animación de números del tablero
     csv.ts                # exportar tablas a Excel (CSV)
     empresa.ts            # datos fiscales de la empresa (encabezado de facturas)
-  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM, SEO, Solicitud y Prospección
+  types/                  # tipos Cliente, Servicio, Pago, Gasto, Factura, Iguala, CRM, SEO, Solicitud, Prospección y Talento
 worker/
-  index.js                # API del panel en Cloudflare (SEO, prospección, asistente y solicitudes)
+  index.js                # API del panel en Cloudflare (SEO, prospección, asistente, solicitudes y talento)
 public/
   sw.js                   # service worker: abre sin conexión y repite visitas al instante
   manifest.webmanifest    # datos de la app instalable (PWA)
-supabase/sql/             # migraciones (001…009)
+supabase/sql/             # migraciones (001…010)
 docs/                     # plan, estado, despliegue, respaldos, migraciones
 ```
 
@@ -139,10 +150,11 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/PLAN-TECNOLOGICO.md` — plan completo: stack, costos, fases y reglas
 - `docs/ESTADO-ACTUAL.md` — dónde nos quedamos y próximos pasos
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
+- `docs/TALENTO.md` — candidatos, empresas empleadoras, vacantes, portal público, CV privado y matching con IA
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)
 - `docs/PROSPECCION.md` — guía de Prospección (contactos de una web → CRM; gratis)
 - `docs/SOLICITUDES.md` — formulario público, bandeja interna y cierre automático con IA
-- `docs/pruebas/README.md` — pruebas de humo del CRM, Auditor SEO, Prospección, PWA y Solicitudes con datos simulados
+- `docs/pruebas/README.md` — pruebas de humo del CRM, Talento, Auditor SEO, Prospección, PWA y Solicitudes con datos simulados
 - `docs/MIGRACIONES.md` — cómo cambia la base de datos
 - `docs/PUBLICAR-CLOUDFLARE.md` — despliegue automático y manual
 - `docs/RESPALDOS.md` — respaldos y restauración

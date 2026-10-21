@@ -1,9 +1,17 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 20-oct-2026 (cierre de la séptima sesión: rediseño v4 Open Design)
+> Última actualización: 21-oct-2026 (cierre de la octava sesión: módulo Talento)
 
 ## 📌 Punto de continuación
 
+- **Módulo Talento (8.ª sesión, 20–21 oct):** panel interno `#talento` con cinco
+  pestañas (Resumen, Candidatos, Empresas, Vacantes y Procesos), portal público
+  `/talento` con «Busco empleo» y «Busco talento», perfiles anónimos, shortlist,
+  solicitud de entrevista/contratación, CV privado en PDF (≤ 5 MB), matching con
+  Workers AI y kanban de seis etapas con cierre de colocación. Migración **010**,
+  tablas separadas del CRM y RPC públicas con consentimiento y límites. Guía:
+  **`docs/TALENTO.md`**; prueba: **`docs/pruebas/prueba-talento.js`** (8 pasos,
+  0 errores de consola). Sin pagos ni cuentas públicas.
 - **Todo guardado en GitHub:** `main` = `origin/main` al cierre de la 7.ª sesión.
   El **rediseño v4** quedó publicado en `638b2cd` y **Cloudflare ya sirve la
   compilación nueva**: assets `index-ssOHlRfA.js` / `index-CAPS3oNI.css`, service
@@ -93,15 +101,16 @@
 6. Revisa los workflows:
    - `Avismaelg/Aviech` → **Actions** → «Migrar base de datos».
    - `Avismaelg/Aviech-backup` → **Actions** → «Respaldo de la base de datos».
-7. Lee **`docs/CRM.md`**, **`docs/SEO.md`**, **`docs/PROSPECCION.md`**,
-   **`docs/ASISTENTE.md`** y **`docs/SOLICITUDES.md`** para usar esos módulos,
-   **`docs/pruebas/README.md`** para las 5 pruebas de humo y este archivo para el estado general.
+7. Lee **`docs/CRM.md`**, **`docs/TALENTO.md`**, **`docs/SEO.md`**,
+   **`docs/PROSPECCION.md`**, **`docs/ASISTENTE.md`** y **`docs/SOLICITUDES.md`**
+   para usar esos módulos, **`docs/pruebas/README.md`** para las 6 pruebas de humo y
+   este archivo para el estado general.
 8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
-9. Si agregas una migración, créala como `supabase/sql/010_....sql`; el push la aplica.
+9. Si agregas una migración, créala como `supabase/sql/011_....sql`; el push la aplica.
 
-**Pruebas guardadas:** cinco pruebas de humo en `docs/pruebas/` (CRM, Auditor SEO,
-Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`. No usan la base real
-(datos simulados) ni contienen secretos.
+**Pruebas guardadas:** seis pruebas de humo en `docs/pruebas/` (CRM, Talento,
+Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
+`docs/pruebas/README.md`. No usan la base real (datos simulados) ni contienen secretos.
 
 ## ✅ El panel está PUBLICADO y en uso
 
@@ -115,17 +124,20 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
 - Las llaves públicas de Supabase para la compilación se leen del archivo **`.env.production`**
   del repositorio — no hay que configurar nada dentro de Cloudflare.
 - El mismo Worker atiende la **API interna** del panel: `/api/seo/*` (Auditor SEO),
-  `/api/scraper/*` (Prospección), `/api/ia/chat` (Asistente IA) y
-  `/api/solicitudes/ejecutar` (cierre con IA). Todas exigen la sesión de Supabase
-  (`Authorization: Bearer …`) y sin ella responden `401`. El formulario público usa
-  `POST /api/solicitudes`, que solo crea una solicitud y devuelve un folio.
+  `/api/scraper/*` (Prospección), `/api/ia/chat` (Asistente IA),
+  `/api/solicitudes/ejecutar` (cierre con IA) y `/api/talento/match` (matching).
+  Todas exigen la sesión de Supabase (`Authorization: Bearer …`) y sin ella responden
+  `401`. Los formularios públicos usan `POST /api/solicitudes` y las rutas públicas de
+  Talento (`GET /api/talento/vacantes`, `GET /api/talento/candidatos`,
+  `POST /api/talento/postulaciones`, `POST /api/talento/solicitudes` y
+  `POST /api/talento/vacantes/publicar`), que solo crean registros y devuelven un folio.
   Declarado en `wrangler.jsonc` (`main`, `assets.run_worker_first` y binding `ai`). ✅
 - ⚠️ Cuidado con direcciones parecidas: `avitech.workers.dev` **no** es de este proyecto
   (es de otra empresa; da `error code: 1042`). La nuestra termina en `avismael-eg.workers.dev`.
 
 ## ✅ La app está completa (local y en internet)
 
-- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Solicitudes** (formulario público + bandeja y cierre con IA), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
+- Módulos: **Inicio** (tablero), **Clientes** (con RNC), **CRM** (pipeline, empresas, contactos y actividades), **Talento** (candidatos, empresas empleadoras, vacantes y procesos + portal público), **Solicitudes** (formulario público + bandeja y cierre con IA), **Auditor SEO** (informe de páginas y velocidad), **Prospección** (contactos de una web → CRM), **Servicios**, **Igualas**
   (contratos mensuales de contabilidad, software y asesoría legal con ingreso recurrente),
   **Pagos**, **Facturación**, **Gastos**, **Reportes** y **Asistente IA** (chat interno).
 - **Pensado para Santo Domingo / República Dominicana**: montos en **RD$** (pesos dominicanos),
@@ -164,6 +176,12 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   métricas de pipeline abierto / ponderado / ganado, alertas de actividades atrasadas,
   arrastre de tarjetas y conversión de una empresa en cliente con un clic. Guía:
   **`docs/CRM.md`**.
+- **Talento** (nuevo, 8.ª sesión): módulo independiente del CRM para conectar
+  candidatos y empresas empleadoras. Panel interno con candidatos, empresas, vacantes,
+  postulaciones y kanban de seis etapas; portal público `/talento` con perfiles
+  anónimos, shortlist, solicitud de entrevista/contratación sin pago, CV privado en PDF
+  (≤ 5 MB) y matching con Workers AI bajo demanda. Sin cuentas públicas; tablas solo
+  para personal autenticado. Guía: **`docs/TALENTO.md`**.
 - **Auditor SEO** (nuevo, 2ª sesión): escribe una dirección y devuelve un informe con
   **puntaje 0–100**: contenido (título, meta descripción, H1, imágenes con `alt`, enlaces
   internos, datos estructurados), técnico (HTTPS, viewport, canonical, `noindex`, Open Graph,
@@ -204,9 +222,12 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   informe y ejecución de IA), `igualas` (categoría, monto mensual y día de cobro), `pagos`,
   `gastos`, `facturas`, `factura_items` (líneas de factura), las cuatro del CRM
   (`crm_empresas`, `crm_contactos`, `crm_oportunidades`, `crm_actividades`),
-  `seo_auditorias` (informes del Auditor SEO) y `solicitudes_servicio` (bandeja y
-  automatización). Todas con RLS: solo usuarios autenticados; un visitante anónimo no ve nada.
-- Las migraciones viven en **`supabase/sql/`** (001…009) y se aplican solas con el
+  `seo_auditorias` (informes del Auditor SEO), `solicitudes_servicio` (bandeja y
+  automatización) y las cuatro de **Talento** (`talento_candidatos`,
+  `talento_empresas`, `talento_vacantes`, `talento_postulaciones`). Todas con RLS:
+  solo usuarios autenticados; un visitante anónimo no ve nada. Bucket privado
+  `talento-cv`.
+- Las migraciones viven en **`supabase/sql/`** (001…010) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -222,6 +243,12 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   `crear_solicitud_publica`, `finalizar_solicitud` y `marcar_solicitud_error`. Workflow
   «Migrar base de datos» **#10 (en verde)**; RLS anónimo en 0 y prueba anónima de creación +
   cierre con token correcta (revertida). Reporte: `supabase/verificacion-ultima.txt`.
+- **Migración 010 (Talento), 21-oct-2026:** crea las cuatro tablas de Talento, el
+  bucket privado `talento-cv`, las políticas RLS y las RPC públicas. Se aplica con el
+  workflow «Migrar base de datos» en el push de la 8.ª sesión. El reporte incluye
+  columnas, conteos, inserts revertidos, lectura autenticada, comprobación de que `anon`
+  no tiene privilegios directos y prueba pública de las tres RPC. Reporte:
+  `supabase/verificacion-ultima.txt`.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -253,6 +280,12 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
   plan/informe/precio y vista móvil — **0 errores de consola**. Script:
   `docs/pruebas/prueba-solicitudes.js`; capturas en `capturas-solicitudes` (3 pantallas).
   El formulario público también se validó en escritorio (1440 px) y móvil (390 px).
+- **Prueba de Talento** (20–21 oct, 8.ª sesión): 8 pasos con Supabase, Storage y Worker
+  simulados — panel interno (métricas, candidato, empresa, matching con IA, kanban,
+  entrevista y contratación) y portal público (perfil anónimo sin correo/teléfono,
+  shortlist, solicitud de entrevista y alta con CV PDF) — **0 errores de consola** y
+  vista móvil sin desbordes. Script: `docs/pruebas/prueba-talento.js`; capturas en
+  `capturas-talento` (7 pantallas).
 - **QA del rediseño v4** (20-oct, 7.ª sesión): `npm run build` y `npm run lint` limpios;
   las 5 pruebas de humo repitieron en verde y se revisaron visualmente **Login, Inicio,
   Solicitudes (bandeja y detalle), Asistente IA y `/solicitud`** en escritorio (1440 px)
@@ -343,3 +376,7 @@ Prospección, PWA y Solicitudes), con instrucciones en `docs/pruebas/README.md`.
 11. **Asistente IA fase 2 (opcional):** contexto automático de la sección o del cliente con
     permiso explícito, historial por usuario con RLS, respuestas en streaming y voz. Evaluar
     privacidad y consumo antes de activar.
+12. **Talento fase 2:** añadir **Turnstile** o un secreto de servidor a los formularios
+    públicos y a la subida de CV (hoy el límite por IP vive en el Worker), limpiar CV
+    huérfanos, notificar al equipo cuando una empresa solicite una entrevista y permitir
+    que la empresa dé seguimiento a su propia solicitud sin crear cuentas.

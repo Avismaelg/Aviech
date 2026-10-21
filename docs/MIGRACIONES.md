@@ -40,3 +40,4 @@ El orden importa: primero 001, luego 002, etc.
 | `007_crm.sql` | Tablas `crm_empresas`, `crm_contactos`, `crm_oportunidades` y `crm_actividades` + RLS |
 | `008_seo.sql` | Tabla `seo_auditorias` (historial de Auditor SEO) + RLS |
 | `009_solicitudes.sql` | Bandeja `solicitudes_servicio`, campos de ejecución en `servicios`, RPC públicas con token y RLS |
+| `010_talento.sql` | Tablas `talento_candidatos`, `talento_empresas`, `talento_vacantes` y `talento_postulaciones`, bucket privado `talento-cv`, RPC públicas y RLS |

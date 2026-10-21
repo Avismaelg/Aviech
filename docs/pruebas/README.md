@@ -1,6 +1,6 @@
 # Pruebas de navegador
 
-> Cinco pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Seis pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
 ## CRM (`prueba-crm.js`)
@@ -65,6 +65,23 @@ los pasos y los errores de consola (debe ser `[]`).
 5181 y pide en OpenCode `docs/pruebas/prueba-prospeccion.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
 `C:\Users\User\avitech\capturas-prospeccion` (7 imágenes).
+
+## Talento (`prueba-talento.js`)
+
+Prueba de humo del módulo **Talento** con datos simulados: intercepta `**/rest/v1/**`,
+`**/auth/v1/**`, `**/storage/v1/**` y `**/api/talento/**`. No usa la base real, no llama a
+Workers AI y no contiene secretos.
+
+**Qué comprueba:** panel interno (métricas, alta de candidato, alta de empresa, matching
+con IA y alta al pipeline, cambio de etapa a entrevista y cierre como contratado), portal
+público (perfiles anónimos sin correo ni teléfono, shortlist, solicitud de entrevista de una
+empresa, alta de candidato con CV PDF y consentimiento) y vista móvil a 390 px. Al final
+devuelve un JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
+
+**Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el puerto
+5181 y pide en OpenCode `docs/pruebas/prueba-talento.js` con la herramienta de Playwright
+(`browser_run_code_unsafe`, parámetro `filename`). Las capturas se guardan en
+`C:\Users\User\avitech\capturas-talento` (7 imágenes).
 
 ## PWA sin conexión (`prueba-pwa.js`)
 

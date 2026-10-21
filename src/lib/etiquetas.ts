@@ -243,3 +243,148 @@ export const etiquetaOrigenSolicitud: Record<string, string> = {
   interno: 'Interna',
   publico: 'Formulario público',
 }
+
+// ---------- Talento ----------
+export const ETAPAS_TALENTO = ['recibida', 'preseleccion', 'entrevista', 'oferta', 'contratada', 'rechazada'] as const
+
+export const ETAPAS_TALENTO_ABIERTAS = ['recibida', 'preseleccion', 'entrevista', 'oferta'] as const
+
+export const etiquetaEtapaTalento: Record<string, string> = {
+  recibida: 'Recibida',
+  preseleccion: 'Preselección',
+  entrevista: 'Entrevista',
+  oferta: 'Oferta',
+  contratada: 'Contratada',
+  rechazada: 'Rechazada',
+}
+
+export const colorEtapaTalento: Record<string, ColorInsignia> = {
+  recibida: 'slate',
+  preseleccion: 'sky',
+  entrevista: 'blue',
+  oferta: 'amber',
+  contratada: 'emerald',
+  rechazada: 'red',
+}
+
+export const ESTADOS_CANDIDATO = ['nuevo', 'evaluando', 'entrevista', 'oferta', 'contratado', 'descartado'] as const
+
+export const etiquetaEstadoCandidato: Record<string, string> = {
+  nuevo: 'Nuevo',
+  evaluando: 'Evaluando',
+  entrevista: 'En entrevista',
+  oferta: 'Con oferta',
+  contratado: 'Contratado',
+  descartado: 'Descartado',
+}
+
+export const colorEstadoCandidato: Record<string, ColorInsignia> = {
+  nuevo: 'sky',
+  evaluando: 'blue',
+  entrevista: 'cyan',
+  oferta: 'amber',
+  contratado: 'emerald',
+  descartado: 'slate',
+}
+
+export const ESTADOS_EMPRESA_TALENTO = ['prospecto', 'activa', 'pausada', 'cerrada'] as const
+
+export const etiquetaEstadoEmpresaTalento: Record<string, string> = {
+  prospecto: 'Prospecto',
+  activa: 'Activa',
+  pausada: 'Pausada',
+  cerrada: 'Cerrada',
+}
+
+export const colorEstadoEmpresaTalento: Record<string, ColorInsignia> = {
+  prospecto: 'sky',
+  activa: 'emerald',
+  pausada: 'amber',
+  cerrada: 'slate',
+}
+
+export const ESTADOS_VACANTE = ['borrador', 'abierta', 'pausada', 'cerrada'] as const
+
+export const etiquetaEstadoVacante: Record<string, string> = {
+  borrador: 'Borrador',
+  abierta: 'Abierta',
+  pausada: 'Pausada',
+  cerrada: 'Cerrada',
+}
+
+export const colorEstadoVacante: Record<string, ColorInsignia> = {
+  borrador: 'slate',
+  abierta: 'emerald',
+  pausada: 'amber',
+  cerrada: 'red',
+}
+
+export const SENIORITIES = ['junior', 'mid', 'senior', 'lead', 'director'] as const
+
+export const etiquetaSeniority: Record<string, string> = {
+  junior: 'Junior',
+  mid: 'Mid-level',
+  senior: 'Senior',
+  lead: 'Lead',
+  director: 'Director',
+}
+
+export const MODALIDADES_TALENTO = ['presencial', 'hibrido', 'remoto', 'flexible'] as const
+
+export const etiquetaModalidad: Record<string, string> = {
+  presencial: 'Presencial',
+  hibrido: 'Híbrido',
+  remoto: 'Remoto',
+  flexible: 'Flexible',
+}
+
+export const TIPOS_CONTRATO = ['tiempo_completo', 'medio_tiempo', 'contrato', 'temporal', 'practica'] as const
+
+export const etiquetaTipoContrato: Record<string, string> = {
+  tiempo_completo: 'Tiempo completo',
+  medio_tiempo: 'Medio tiempo',
+  contrato: 'Por contrato',
+  temporal: 'Temporal',
+  practica: 'Práctica',
+}
+
+export const ORIGENES_TALENTO = ['publico', 'empresa', 'interno', 'ia', 'referido'] as const
+
+export const etiquetaOrigenTalento: Record<string, string> = {
+  publico: 'Portal · candidato',
+  empresa: 'Portal · empresa',
+  interno: 'Interno',
+  ia: 'Matching IA',
+  referido: 'Referido',
+}
+
+export const colorOrigenTalento: Record<string, ColorInsignia> = {
+  publico: 'sky',
+  empresa: 'blue',
+  interno: 'slate',
+  ia: 'amber',
+  referido: 'emerald',
+}
+
+export const TIPOS_ENTREVISTA = ['telefonica', 'virtual', 'presencial', 'tecnica'] as const
+
+export const etiquetaTipoEntrevista: Record<string, string> = {
+  telefonica: 'Telefónica',
+  virtual: 'Virtual',
+  presencial: 'Presencial',
+  tecnica: 'Técnica',
+}
+
+export const etiquetaSolicitudTalento: Record<string, string> = {
+  entrevista: 'Solicitud de entrevista',
+  contratacion: 'Solicitud de contratación',
+}
+
+export const DISPONIBILIDADES = ['inmediata', '2_semanas', '1_mes', 'flexible'] as const
+
+export const etiquetaDisponibilidad: Record<string, string> = {
+  inmediata: 'Inmediata',
+  '2_semanas': 'En 2 semanas',
+  '1_mes': 'En 1 mes',
+  flexible: 'Flexible',
+}

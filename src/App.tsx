@@ -14,6 +14,7 @@ import { Reportes } from './components/Reportes'
 import { Seo } from './components/seo/Seo'
 import { Servicios } from './components/Servicios'
 import { Solicitudes } from './components/Solicitudes'
+import { Talento } from './components/talento/Talento'
 import { ProveedorAvisos } from './components/toast'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 
@@ -55,7 +56,7 @@ function Comprobando() {
   )
 }
 
-const SECCIONES: Seccion[] = ['inicio', 'clientes', 'crm', 'seo', 'prospeccion', 'solicitudes', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
+const SECCIONES: Seccion[] = ['inicio', 'clientes', 'crm', 'talento', 'seo', 'prospeccion', 'solicitudes', 'servicios', 'igualas', 'pagos', 'facturacion', 'gastos', 'reportes']
 
 /** Enlace profundo: la sección activa vive en la URL (#igualas), así se puede recargar, compartir y usar el botón Atrás. */
 function seccionDesdeHash(): Seccion {
@@ -112,6 +113,7 @@ function App() {
             {seccion === 'inicio' && <Inicio sesion={sesion} onIr={setSeccion} />}
             {seccion === 'clientes' && <Clientes />}
             {seccion === 'crm' && <Crm />}
+            {seccion === 'talento' && <Talento />}
             {seccion === 'seo' && <Seo />}
             {seccion === 'prospeccion' && <Prospeccion onIrAlCrm={() => setSeccion('crm')} />}
             {seccion === 'solicitudes' && <Solicitudes onIrAServicios={() => setSeccion('servicios')} />}

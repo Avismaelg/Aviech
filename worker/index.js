@@ -7,6 +7,12 @@
  * - POST /api/ia/chat                 → Asistente de IA (Workers AI, sin claves).
  * - POST /api/solicitudes             → Formulario público de solicitudes de servicio.
  * - POST /api/solicitudes/ejecutar    → La IA analiza, ejecuta y cierra una solicitud.
+ * - GET  /api/talento/vacantes        → Vacantes públicas del portal de talento.
+ * - GET  /api/talento/candidatos      → Perfiles anónimos visibles a empresas.
+ * - POST /api/talento/postulaciones   → Alta pública de candidato y postulación.
+ * - POST /api/talento/solicitudes     → Empresa solicita entrevista o contratación.
+ * - POST /api/talento/vacantes/publicar → Empresa propone una vacante para revisión.
+ * - POST /api/talento/match           → Matching interno con IA (solo personal).
  *
  * Funciona en el servidor: sin problemas de CORS y el sitio se ve tal como lo ve
  * un visitante. No usa claves de pago: el análisis es propio y la IA usa la
@@ -49,6 +55,24 @@ const solicitudesPublicasPorIP = new Map()
 const ejecucionesSolicitud = new Map()
 const TIPOS_SOLICITUD = ['auditoria', 'consultoria', 'implementacion', 'capacitacion', 'seo', 'contabilidad', 'otro']
 const URGENCIAS_SOLICITUD = ['baja', 'media', 'alta']
+
+// Talento: los formularios públicos son baratos, pero se limitan por IP. El
+// matching con IA se limita por usuario para cuidar la cuota gratuita.
+const LIMITE_TALENTO_POST = 8
+const VENTANA_TALENTO_POST = 60 * 60 * 1000
+const LIMITE_TALENTO_LECTURA = 80
+const VENTANA_TALENTO_LECTURA = 10 * 60 * 1000
+const LIMITE_MATCH_IA = 10
+const VENTANA_MATCH_IA = 10 * 60 * 1000
+const MAX_TOKENS_MATCH = 1400
+const MAX_CANDIDATOS_MATCH = 28
+const talentoPostPorIP = new Map()
+const talentoLecturaPorIP = new Map()
+const matchIAPorUsuario = new Map()
+const SENIORITIES_TALENTO = ['junior', 'mid', 'senior', 'lead', 'director']
+const MODALIDADES_TALENTO = ['presencial', 'hibrido', 'remoto', 'flexible']
+const CONTRATOS_TALENTO = ['tiempo_completo', 'medio_tiempo', 'contrato', 'temporal', 'practica']
+const DISPONIBILIDADES_TALENTO = ['inmediata', '2_semanas', '1_mes', 'flexible']
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 const SISTEMA_IA = `Eres Avi, el asistente de IA del panel interno de AviTech Solutions Group, una startup de auditoría y consultoría en República Dominicana.
@@ -60,7 +84,7 @@ Reglas:
 - Sé útil y conciso: ve al grano y usa listas cuando ayuden.
 - Escribe en texto plano con saltos de línea; evita Markdown, tablas y encabezados con #.
 - No tienes acceso a la base de datos ni a los registros del panel. No inventes clientes, montos, facturas ni cifras. Si te piden datos concretos, dilo y pide que te peguen la información.
-- Las secciones del panel son: Inicio, Clientes, CRM, Auditor SEO, Prospección, Solicitudes, Servicios, Igualas, Pagos, Facturación, Gastos y Reportes.
+- Las secciones del panel son: Inicio, Clientes, CRM, Talento, Auditor SEO, Prospección, Solicitudes, Servicios, Igualas, Pagos, Facturación, Gastos y Reportes.
 - No solicites contraseñas, claves, tokens ni datos sensibles. Si el usuario los comparte, adviértele que no debe hacerlo.
 - No des asesoría legal o fiscal definitiva; recomienda validar con un contador o abogado.
 - Usa RD$ para montos y fechas en formato dominicano cuando aplique.
@@ -101,6 +125,20 @@ Devuelve SOLO un objeto JSON válido con exactamente estas claves:
 
 El precio debe ser un número, sin símbolos ni separadores. Si no hay base para estimarlo, usa 0 y explica por qué en la propuesta.`
 
+const SISTEMA_MATCH = `Eres el motor de matching de talento de AviTech Solutions Group, en República Dominicana. Recibes una vacante y una lista de candidatos con identificadores. Tu tarea es ordenar a los candidatos que mejor encajan.
+
+Reglas:
+- Evalúa habilidades, experiencia, seniority, modalidad, ubicación, disponibilidad y expectativa salarial frente a la vacante.
+- No uses nombre, género, edad, nacionalidad, estado civil ni ningún dato protegido como criterio.
+- No inventes candidatos ni identificadores. Usa exactamente los id que aparecen en la lista.
+- Si falta información, baja el puntaje y dilo en el motivo; no supongas logros.
+- Devuelve como máximo 8 candidatos, ordenados de mayor a menor puntaje.
+- El puntaje es un entero de 0 a 100. Sé exigente: 90+ solo para encaje muy fuerte.
+- El motivo debe ser concreto, en español y de máximo 2 frases.
+- No incluyas Markdown, bloques de código ni texto fuera del JSON.
+
+Devuelve SOLO este JSON:
+{"sugerencias":[{"candidato_id":"uuid","puntaje":87,"motivo":"Motivo concreto del encaje."}]}`
 
 const RUTAS = {
   '/api/seo/auditar': {
@@ -123,6 +161,35 @@ const RUTAS = {
   '/api/solicitudes/ejecutar': {
     metodo: 'POST',
     ejecutar: (request, _url, env, usuario) => ejecutarSolicitud(request, env, usuario),
+  },
+  '/api/talento/vacantes': {
+    metodo: 'GET',
+    publico: true,
+    ejecutar: (request, _url, env) => listarVacantesPublicas(request, env),
+  },
+  '/api/talento/candidatos': {
+    metodo: 'GET',
+    publico: true,
+    ejecutar: (request, _url, env) => listarCandidatosPublicos(request, env),
+  },
+  '/api/talento/postulaciones': {
+    metodo: 'POST',
+    publico: true,
+    ejecutar: (request, _url, env) => crearPostulacionTalento(request, env),
+  },
+  '/api/talento/solicitudes': {
+    metodo: 'POST',
+    publico: true,
+    ejecutar: (request, _url, env) => crearSolicitudEmpresaTalento(request, env),
+  },
+  '/api/talento/vacantes/publicar': {
+    metodo: 'POST',
+    publico: true,
+    ejecutar: (request, _url, env) => crearVacanteTalento(request, env),
+  },
+  '/api/talento/match': {
+    metodo: 'POST',
+    ejecutar: (request, _url, env, usuario) => buscarMatchTalento(request, env, usuario),
   },
 }
 
@@ -939,6 +1006,416 @@ async function leerSolicitudPublica(request) {
   }
 }
 
+// ---------------------------------------------------------------- talento
+
+async function listarVacantesPublicas(request, env) {
+  if (!permitirLecturaTalento(ipDe(request))) {
+    throw conEstado('Recibimos muchas consultas desde esta conexión. Espera unos minutos.', 429)
+  }
+  const datos = await rpcSupabase(env, 'listar_vacantes_publicas', {})
+  return { ok: true, vacantes: Array.isArray(datos) ? datos : [] }
+}
+
+async function listarCandidatosPublicos(request, env) {
+  if (!permitirLecturaTalento(ipDe(request))) {
+    throw conEstado('Recibimos muchas consultas desde esta conexión. Espera unos minutos.', 429)
+  }
+  const datos = await rpcSupabase(env, 'listar_candidatos_publicos', {})
+  return { ok: true, candidatos: Array.isArray(datos) ? datos : [] }
+}
+
+async function crearPostulacionTalento(request, env) {
+  if (!permitirPostTalento(ipDe(request))) {
+    throw conEstado('Recibimos varias solicitudes seguidas desde esta conexión. Espera unos minutos.', 429)
+  }
+  const datos = await leerPostulacionTalento(request)
+  if (datos.trampa) {
+    return { ok: true, candidato_id: null, postulacion_id: null, existente: false, mensaje: 'Recibimos tu perfil.' }
+  }
+
+  const creada = await rpcSupabase(env, 'crear_postulacion_publica', {
+    p_nombre: datos.nombre,
+    p_email: datos.email,
+    p_telefono: datos.telefono,
+    p_ubicacion: datos.ubicacion,
+    p_puesto_objetivo: datos.puesto_objetivo,
+    p_seniority: datos.seniority,
+    p_modalidad: datos.modalidad,
+    p_habilidades: datos.habilidades,
+    p_experiencia: datos.experiencia,
+    p_educacion: datos.educacion,
+    p_disponibilidad: datos.disponibilidad,
+    p_expectativa_salarial: datos.expectativa_salarial,
+    p_cv_path: datos.cv_path,
+    p_cv_url: datos.cv_url,
+    p_cv_nombre: datos.cv_nombre,
+    p_consentimiento: true,
+    p_visible_empresas: datos.visible_empresas,
+    p_vacante_id: datos.vacante_id,
+  })
+  const resultado = Array.isArray(creada) ? creada[0] : creada
+  if (!resultado || !resultado.candidato_id) {
+    throw conEstado('No se pudo registrar tu perfil. Inténtalo otra vez.', 502)
+  }
+  return {
+    ok: true,
+    candidato_id: resultado.candidato_id,
+    postulacion_id: resultado.postulacion_id || null,
+    existente: Boolean(resultado.existente),
+    mensaje: resultado.postulacion_id
+      ? 'Recibimos tu perfil y tu postulación.'
+      : 'Recibimos tu perfil. Las empresas pueden encontrarte.',
+  }
+}
+
+async function leerPostulacionTalento(request) {
+  const datos = await leerCuerpoJSON(request, 60_000)
+  if (!datos || typeof datos !== 'object') {
+    throw conEstado('El perfil no tiene el formato esperado.', 400)
+  }
+
+  const nombre = limitarTexto(datos.nombre, 120)
+  const email = limitarTexto(datos.email, 160).toLowerCase()
+  const puesto = limitarTexto(datos.puesto_objetivo, 180)
+  const cvPath = limitarTexto(datos.cv_path, 500)
+  const cvUrl = limitarTexto(datos.cv_url, 500)
+  const vacanteId = typeof datos.vacante_id === 'string' && UUID.test(datos.vacante_id) ? datos.vacante_id : null
+  const seniority = SENIORITIES_TALENTO.includes(datos.seniority) ? datos.seniority : 'mid'
+  const modalidad = MODALIDADES_TALENTO.includes(datos.modalidad) ? datos.modalidad : 'hibrido'
+  const disponibilidad = DISPONIBILIDADES_TALENTO.includes(datos.disponibilidad) ? datos.disponibilidad : null
+
+  if (nombre.length < 2) throw conEstado('Escribe tu nombre.', 400)
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    throw conEstado('El correo no tiene un formato válido.', 400)
+  }
+  if (puesto.length < 2) throw conEstado('Indica qué puesto buscas.', 400)
+  if (datos.consentimiento !== true) {
+    throw conEstado('Debes autorizar el uso de tus datos para crear el perfil.', 400)
+  }
+  if (cvPath && !/^publico\/[a-z0-9._-]{1,120}\.pdf$/i.test(cvPath)) {
+    throw conEstado('El archivo del CV no es válido.', 400)
+  }
+  if (cvUrl && !esUrlHttp(cvUrl)) {
+    throw conEstado('El enlace del CV no es válido.', 400)
+  }
+
+  return {
+    trampa: Boolean(limitarTexto(datos.website, 200)),
+    nombre,
+    email,
+    telefono: limitarTexto(datos.telefono, 40),
+    ubicacion: limitarTexto(datos.ubicacion, 120),
+    puesto_objetivo: puesto,
+    seniority,
+    modalidad,
+    habilidades: listaHabilidades(datos.habilidades),
+    experiencia: limitarTexto(datos.experiencia, 3000),
+    educacion: limitarTexto(datos.educacion, 1000),
+    disponibilidad,
+    expectativa_salarial: numeroOpcional(datos.expectativa_salarial),
+    cv_path: cvPath || null,
+    cv_url: cvUrl || null,
+    cv_nombre: limitarTexto(datos.cv_nombre, 180) || null,
+    visible_empresas: datos.visible_empresas !== false,
+    vacante_id: vacanteId,
+  }
+}
+
+async function crearSolicitudEmpresaTalento(request, env) {
+  if (!permitirPostTalento(ipDe(request))) {
+    throw conEstado('Recibimos varias solicitudes seguidas desde esta conexión. Espera unos minutos.', 429)
+  }
+  const datos = await leerSolicitudEmpresaTalento(request)
+  if (datos.trampa) {
+    return { ok: true, empresa_id: null, solicitudes: 0, existentes: 0, mensaje: 'Recibimos tu solicitud.' }
+  }
+
+  const creada = await rpcSupabase(env, 'crear_empresa_y_solicitud', {
+    p_empresa_nombre: datos.empresa_nombre,
+    p_sector: datos.sector,
+    p_sitio_web: datos.sitio_web,
+    p_ubicacion: datos.ubicacion,
+    p_contacto_nombre: datos.contacto_nombre,
+    p_contacto_email: datos.contacto_email,
+    p_contacto_telefono: datos.contacto_telefono,
+    p_candidato_ids: datos.candidato_ids,
+    p_solicitud_tipo: datos.solicitud_tipo,
+    p_mensaje: datos.mensaje,
+    p_consentimiento: true,
+  })
+  const resultado = Array.isArray(creada) ? creada[0] : creada
+  return {
+    ok: true,
+    empresa_id: resultado?.empresa_id || null,
+    solicitudes: Number(resultado?.solicitudes || 0),
+    existentes: Number(resultado?.existentes || 0),
+    mensaje: 'Recibimos la solicitud. El equipo coordinará el contacto.',
+  }
+}
+
+async function leerSolicitudEmpresaTalento(request) {
+  const datos = await leerCuerpoJSON(request, 40_000)
+  if (!datos || typeof datos !== 'object') {
+    throw conEstado('La solicitud no tiene el formato esperado.', 400)
+  }
+
+  const empresa = limitarTexto(datos.empresa_nombre, 160)
+  const contacto = limitarTexto(datos.contacto_nombre, 120)
+  const email = limitarTexto(datos.contacto_email, 160).toLowerCase()
+  const sitio = limitarTexto(datos.sitio_web, 300)
+  const tipo = datos.solicitud_tipo === 'contratacion' ? 'contratacion' : 'entrevista'
+  const ids = [...new Set(
+    (Array.isArray(datos.candidato_ids) ? datos.candidato_ids : [])
+      .filter((id) => typeof id === 'string' && UUID.test(id)),
+  )].slice(0, 12)
+
+  if (empresa.length < 2) throw conEstado('Escribe el nombre de la empresa.', 400)
+  if (contacto.length < 2) throw conEstado('Escribe el nombre del contacto.', 400)
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    throw conEstado('El correo del contacto no es válido.', 400)
+  }
+  if (datos.consentimiento !== true) {
+    throw conEstado('Debes autorizar el uso de los datos.', 400)
+  }
+  if (ids.length === 0) throw conEstado('Selecciona al menos un candidato.', 400)
+  if (sitio && !esUrlHttp(sitio)) throw conEstado('El sitio web no tiene un formato válido.', 400)
+
+  return {
+    trampa: Boolean(limitarTexto(datos.website, 200)),
+    empresa_nombre: empresa,
+    sector: limitarTexto(datos.sector, 120),
+    sitio_web: sitio,
+    ubicacion: limitarTexto(datos.ubicacion, 160),
+    contacto_nombre: contacto,
+    contacto_email: email,
+    contacto_telefono: limitarTexto(datos.contacto_telefono, 40),
+    candidato_ids: ids,
+    solicitud_tipo: tipo,
+    mensaje: limitarTexto(datos.mensaje, 2000),
+  }
+}
+
+async function crearVacanteTalento(request, env) {
+  if (!permitirPostTalento(ipDe(request))) {
+    throw conEstado('Recibimos varias solicitudes seguidas desde esta conexión. Espera unos minutos.', 429)
+  }
+  const datos = await leerVacanteTalento(request)
+  if (datos.trampa) {
+    return { ok: true, empresa_id: null, vacante_id: null, mensaje: 'Recibimos la vacante.' }
+  }
+
+  const creada = await rpcSupabase(env, 'crear_vacante_publica', {
+    p_empresa_nombre: datos.empresa_nombre,
+    p_sector: datos.sector,
+    p_sitio_web: datos.sitio_web,
+    p_ubicacion: datos.ubicacion,
+    p_contacto_nombre: datos.contacto_nombre,
+    p_contacto_email: datos.contacto_email,
+    p_contacto_telefono: datos.contacto_telefono,
+    p_titulo: datos.titulo,
+    p_descripcion: datos.descripcion,
+    p_requisitos: datos.requisitos,
+    p_ubicacion_vacante: datos.ubicacion_vacante,
+    p_modalidad: datos.modalidad,
+    p_seniority: datos.seniority,
+    p_tipo_contrato: datos.tipo_contrato,
+    p_salario_min: datos.salario_min,
+    p_salario_max: datos.salario_max,
+    p_consentimiento: true,
+  })
+  const resultado = Array.isArray(creada) ? creada[0] : creada
+  return {
+    ok: true,
+    empresa_id: resultado?.empresa_id || null,
+    vacante_id: resultado?.vacante_id || null,
+    mensaje: 'Recibimos la vacante. El equipo la revisará antes de publicarla.',
+  }
+}
+
+async function leerVacanteTalento(request) {
+  const datos = await leerCuerpoJSON(request, 40_000)
+  if (!datos || typeof datos !== 'object') {
+    throw conEstado('La vacante no tiene el formato esperado.', 400)
+  }
+
+  const empresa = limitarTexto(datos.empresa_nombre, 160)
+  const contacto = limitarTexto(datos.contacto_nombre, 120)
+  const email = limitarTexto(datos.contacto_email, 160).toLowerCase()
+  const titulo = limitarTexto(datos.titulo, 180)
+  const descripcion = limitarTexto(datos.descripcion, 5000)
+  const sitio = limitarTexto(datos.sitio_web, 300)
+
+  if (empresa.length < 2) throw conEstado('Escribe el nombre de la empresa.', 400)
+  if (contacto.length < 2) throw conEstado('Escribe el nombre del contacto.', 400)
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    throw conEstado('El correo del contacto no es válido.', 400)
+  }
+  if (titulo.length < 3) throw conEstado('Escribe el título de la vacante.', 400)
+  if (descripcion.length < 20) throw conEstado('Describe la vacante con un poco más de detalle.', 400)
+  if (datos.consentimiento !== true) throw conEstado('Debes autorizar la publicación de la vacante.', 400)
+  if (sitio && !esUrlHttp(sitio)) throw conEstado('El sitio web no tiene un formato válido.', 400)
+
+  const minimo = numeroOpcional(datos.salario_min)
+  const maximo = numeroOpcional(datos.salario_max)
+  if (minimo != null && maximo != null && minimo > maximo) {
+    throw conEstado('El salario mínimo no puede ser mayor que el máximo.', 400)
+  }
+
+  return {
+    trampa: Boolean(limitarTexto(datos.website, 200)),
+    empresa_nombre: empresa,
+    sector: limitarTexto(datos.sector, 120),
+    sitio_web: sitio,
+    ubicacion: limitarTexto(datos.ubicacion, 160),
+    contacto_nombre: contacto,
+    contacto_email: email,
+    contacto_telefono: limitarTexto(datos.contacto_telefono, 40),
+    titulo,
+    descripcion,
+    requisitos: limitarTexto(datos.requisitos, 3000),
+    ubicacion_vacante: limitarTexto(datos.ubicacion_vacante, 160),
+    modalidad: MODALIDADES_TALENTO.includes(datos.modalidad) ? datos.modalidad : 'hibrido',
+    seniority: SENIORITIES_TALENTO.includes(datos.seniority) ? datos.seniority : 'mid',
+    tipo_contrato: CONTRATOS_TALENTO.includes(datos.tipo_contrato) ? datos.tipo_contrato : 'tiempo_completo',
+    salario_min: minimo,
+    salario_max: maximo,
+  }
+}
+
+async function buscarMatchTalento(request, env, usuario) {
+  if (!env.AI) throw conEstado('El matching con IA no está activado en este entorno.', 503)
+  if (!permitirMatchIA(usuario)) {
+    throw conEstado('Has hecho varios análisis seguidos. Espera unos minutos y vuelve a intentarlo.', 429)
+  }
+
+  const cuerpo = await leerCuerpoJSON(request, 4_000)
+  const vacanteId = cuerpo && typeof cuerpo.vacante_id === 'string' ? cuerpo.vacante_id : ''
+  if (!UUID.test(vacanteId)) throw conEstado('La vacante indicada no es válida.', 400)
+
+  const autorizacion = request.headers.get('Authorization')
+  const filasVacante = await consultarSupabase(
+    env,
+    `talento_vacantes?id=eq.${encodeURIComponent(vacanteId)}&select=*,talento_empresas(nombre,sector)`,
+    autorizacion,
+  )
+  const vacante = Array.isArray(filasVacante) ? filasVacante[0] : null
+  if (!vacante) throw conEstado('La vacante no existe o no tienes acceso a ella.', 404)
+
+  const filasPostuladas = await consultarSupabase(
+    env,
+    `talento_postulaciones?vacante_id=eq.${encodeURIComponent(vacanteId)}&select=candidato_id`,
+    autorizacion,
+  )
+  const yaPostulados = new Set(
+    (Array.isArray(filasPostuladas) ? filasPostuladas : [])
+      .map((fila) => fila && fila.candidato_id)
+      .filter(Boolean),
+  )
+
+  const filasCandidatos = await consultarSupabase(
+    env,
+    'talento_candidatos?select=id,nombre,puesto_objetivo,seniority,modalidad,ubicacion,habilidades,experiencia,educacion,disponibilidad,expectativa_salarial,consentimiento,estado&order=created_at.desc&limit=60',
+    autorizacion,
+  )
+  const candidatos = (Array.isArray(filasCandidatos) ? filasCandidatos : [])
+    .filter(
+      (candidato) =>
+        candidato &&
+        candidato.consentimiento === true &&
+        !['descartado', 'contratado'].includes(candidato.estado) &&
+        !yaPostulados.has(candidato.id),
+    )
+    .slice(0, MAX_CANDIDATOS_MATCH)
+
+  if (candidatos.length === 0) {
+    return {
+      ok: true,
+      sugerencias: [],
+      total_evaluados: 0,
+      mensaje: 'No hay candidatos nuevos con consentimiento para analizar en esta vacante.',
+    }
+  }
+
+  const vacanteTexto = [
+    `Puesto: ${limitarTexto(vacante.titulo, 180)}`,
+    `Empresa: ${limitarTexto(vacante.talento_empresas?.nombre, 160)}`,
+    `Sector: ${limitarTexto(vacante.talento_empresas?.sector, 120) || 'No indicado'}`,
+    `Descripción: ${limitarTexto(vacante.descripcion, 1800)}`,
+    `Requisitos: ${limitarTexto(vacante.requisitos, 1200) || 'No indicados'}`,
+    `Ubicación: ${limitarTexto(vacante.ubicacion, 160) || 'No indicada'}`,
+    `Modalidad: ${vacante.modalidad}`,
+    `Seniority: ${vacante.seniority}`,
+    `Contrato: ${vacante.tipo_contrato}`,
+    `Salario: ${vacante.salario_min == null && vacante.salario_max == null ? 'A convenir' : `${vacante.salario_min ?? '—'} a ${vacante.salario_max ?? '—'} RD$`}`,
+  ].join('\n')
+
+  const candidatosTexto = candidatos
+    .map((candidato, indice) => {
+      const habilidades = Array.isArray(candidato.habilidades) ? candidato.habilidades.slice(0, 12).join(', ') : ''
+      return [
+        `${indice + 1}. id=${candidato.id}`,
+        `Puesto objetivo: ${limitarTexto(candidato.puesto_objetivo, 180)}`,
+        `Seniority: ${candidato.seniority}`,
+        `Modalidad: ${candidato.modalidad}`,
+        `Ubicación: ${limitarTexto(candidato.ubicacion, 120) || 'No indicada'}`,
+        `Habilidades: ${habilidades || 'No indicadas'}`,
+        `Experiencia: ${limitarTexto(candidato.experiencia, 500) || 'No indicada'}`,
+        `Educación: ${limitarTexto(candidato.educacion, 260) || 'No indicada'}`,
+        `Disponibilidad: ${candidato.disponibilidad || 'No indicada'}`,
+        `Expectativa: ${candidato.expectativa_salarial == null ? 'No indicada' : `${candidato.expectativa_salarial} RD$`}`,
+      ].join(' | ')
+    })
+    .join('\n')
+
+  let salida
+  try {
+    salida = await env.AI.run(MODELO_IA, {
+      messages: [
+        { role: 'system', content: SISTEMA_MATCH },
+        {
+          role: 'user',
+          content: `Vacante:\n${vacanteTexto}\n\nCandidatos:\n${candidatosTexto}\n\nDevuelve el JSON con las mejores sugerencias.`,
+        },
+      ],
+      max_tokens: MAX_TOKENS_MATCH,
+      temperature: 0.15,
+      chat_template_kwargs: { enable_thinking: false },
+    })
+  } catch (error) {
+    const detalle = String(error && error.message ? error.message : '')
+    if (/neuron|quota|capacity|rate.?limit|too many/i.test(detalle)) {
+      throw conEstado('El matching con IA agotó la cuota gratuita por un momento. Inténtalo más tarde.', 429)
+    }
+    throw conEstado('No se pudo ejecutar el matching con IA. Inténtalo otra vez.', 502)
+  }
+
+  const texto = typeof salida === 'string' ? salida : salida && typeof salida.response === 'string' ? salida.response : ''
+  const datos = parsearJSONDeIA(texto)
+  const porId = new Map(candidatos.map((candidato) => [candidato.id, candidato]))
+  const vistos = new Set()
+  const sugerencias = []
+  for (const item of Array.isArray(datos.sugerencias) ? datos.sugerencias : []) {
+    const id = item && typeof item.candidato_id === 'string' ? item.candidato_id : ''
+    if (!porId.has(id) || vistos.has(id)) continue
+    const puntaje = Math.max(0, Math.min(100, Math.round(Number(item.puntaje) || 0)))
+    const motivo = limitarTexto(item.motivo, 280)
+    if (!motivo) continue
+    vistos.add(id)
+    sugerencias.push({
+      candidato_id: id,
+      nombre: porId.get(id).nombre,
+      puntaje,
+      motivo,
+    })
+  }
+  sugerencias.sort((a, b) => b.puntaje - a.puntaje)
+  const mejores = sugerencias.slice(0, 8)
+  if (mejores.length === 0) {
+    throw conEstado('La IA no devolvió sugerencias válidas. Inténtalo otra vez.', 502)
+  }
+  return { ok: true, sugerencias: mejores, total_evaluados: candidatos.length }
+}
+
 /** Ejecuta una solicitud desde el panel, con la sesión del personal. */
 async function ejecutarSolicitud(request, env, usuario) {
   if (!env.AI) {
@@ -1179,6 +1656,28 @@ async function rpcSupabase(env, funcion, cuerpo, token) {
   return datos
 }
 
+async function consultarSupabase(env, ruta, autorizacion) {
+  let respuesta
+  try {
+    respuesta = await fetch(`${env.SUPABASE_URL}/rest/v1/${ruta}`, {
+      headers: {
+        apikey: env.SUPABASE_ANON_KEY,
+        authorization: autorizacion || `Bearer ${env.SUPABASE_ANON_KEY}`,
+        accept: 'application/json',
+      },
+    })
+  } catch {
+    throw conEstado('No se pudo consultar la base de datos. Inténtalo de nuevo.', 502)
+  }
+  if (!respuesta.ok) {
+    throw conEstado(
+      'No se pudo consultar la información de Talento. Vuelve a iniciar sesión.',
+      respuesta.status === 401 || respuesta.status === 403 ? 401 : 502,
+    )
+  }
+  return respuesta.json().catch(() => [])
+}
+
 async function obtenerSolicitud(env, id, autorizacion) {
   let respuesta
   try {
@@ -1247,6 +1746,53 @@ function permitirEjecucionSolicitud(usuario) {
   return true
 }
 
+function ipDe(request) {
+  return (
+    request.headers.get('CF-Connecting-IP') ||
+    request.headers.get('x-forwarded-for') ||
+    'sin-ip'
+  )
+}
+
+function permitirPostTalento(ip) {
+  const ahora = Date.now()
+  const clave = String(ip || 'sin-ip')
+  const recientes = (talentoPostPorIP.get(clave) || []).filter(
+    (marca) => ahora - marca < VENTANA_TALENTO_POST,
+  )
+  if (recientes.length >= LIMITE_TALENTO_POST) return false
+  recientes.push(ahora)
+  talentoPostPorIP.set(clave, recientes)
+  limpiarMapa(talentoPostPorIP, ahora, VENTANA_TALENTO_POST, 500)
+  return true
+}
+
+function permitirLecturaTalento(ip) {
+  const ahora = Date.now()
+  const clave = String(ip || 'sin-ip')
+  const recientes = (talentoLecturaPorIP.get(clave) || []).filter(
+    (marca) => ahora - marca < VENTANA_TALENTO_LECTURA,
+  )
+  if (recientes.length >= LIMITE_TALENTO_LECTURA) return false
+  recientes.push(ahora)
+  talentoLecturaPorIP.set(clave, recientes)
+  limpiarMapa(talentoLecturaPorIP, ahora, VENTANA_TALENTO_LECTURA, 500)
+  return true
+}
+
+function permitirMatchIA(usuario) {
+  const ahora = Date.now()
+  const clave = (usuario && (usuario.id || usuario.email)) || 'panel'
+  const recientes = (matchIAPorUsuario.get(clave) || []).filter(
+    (marca) => ahora - marca < VENTANA_MATCH_IA,
+  )
+  if (recientes.length >= LIMITE_MATCH_IA) return false
+  recientes.push(ahora)
+  matchIAPorUsuario.set(clave, recientes)
+  limpiarMapa(matchIAPorUsuario, ahora, VENTANA_MATCH_IA, 200)
+  return true
+}
+
 function limpiarMapa(mapa, ahora, ventana, maximo) {
   if (mapa.size <= maximo) return
   for (const [clave, marcas] of mapa) {
@@ -1284,6 +1830,47 @@ function listaSegura(valor, maximo, limite) {
     .map((elemento) => limitarTexto(elemento, limite))
     .filter(Boolean)
     .slice(0, maximo)
+}
+
+function listaHabilidades(valor) {
+  const elementos = Array.isArray(valor)
+    ? valor
+    : typeof valor === 'string'
+      ? valor.split(',')
+      : []
+  return [...new Set(elementos.map((elemento) => limitarTexto(elemento, 40)).filter(Boolean))].slice(0, 20)
+}
+
+function numeroOpcional(valor) {
+  if (valor === '' || valor == null) return null
+  const numero = Number(valor)
+  return Number.isFinite(numero) && numero >= 0 ? Math.round(numero * 100) / 100 : null
+}
+
+function esUrlHttp(valor) {
+  try {
+    const url = new URL(valor)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+function parsearJSONDeIA(texto) {
+  const limpio = String(texto || '')
+    .replace(/```json/gi, '')
+    .replace(/```/g, '')
+    .trim()
+  const inicio = limpio.indexOf('{')
+  const fin = limpio.lastIndexOf('}')
+  if (inicio < 0 || fin <= inicio) {
+    throw conEstado('La IA no devolvió un JSON válido. Inténtalo otra vez.', 502)
+  }
+  try {
+    return JSON.parse(limpio.slice(inicio, fin + 1))
+  } catch {
+    throw conEstado('La IA no devolvió un JSON válido. Inténtalo otra vez.', 502)
+  }
 }
 
 function esFechaISO(valor) {

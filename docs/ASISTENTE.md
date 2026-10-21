@@ -8,7 +8,9 @@ Un chat dentro del panel (`Asistente IA`). En escritorio se abre desde el botón
 la barra de contexto, arriba a la derecha; en móvil, desde el icono de destellos
 de la cabecera fija.
 Ayuda a redactar correos y propuestas, resumir textos, revisar redacciones y pensar
-ideas comerciales. Responde en español y conoce las secciones del panel.
+ideas comerciales. Responde en español y conoce las secciones del panel, incluida
+**Talento** (puede ayudar a redactar una vacante o un mensaje para un candidato,
+pero no ve los perfiles ni los CV).
 
 **Importante:** no tiene acceso a la base de datos. No ve clientes, facturas,
 pagos, montos ni conversaciones anteriores. Si necesitas analizar datos, hay que

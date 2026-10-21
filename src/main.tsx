@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { SolicitudPublica } from './components/SolicitudPublica.tsx'
+import { TalentoPublico } from './components/TalentoPublico.tsx'
 
-const esFormularioPublico = /^\/solicitud\/?$/i.test(window.location.pathname)
+const esSolicitudPublica = /^\/solicitud\/?$/i.test(window.location.pathname)
+const esTalentoPublico = /^\/talento\/?$/i.test(window.location.pathname)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {esFormularioPublico ? <SolicitudPublica /> : <App />}
+    {esSolicitudPublica ? <SolicitudPublica /> : esTalentoPublico ? <TalentoPublico /> : <App />}
   </StrictMode>,
 )
 

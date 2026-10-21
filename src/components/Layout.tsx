@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { Briefcase, FileText, Handshake, Inbox, LayoutDashboard, LogOut, Menu, Radar, Receipt, ReceiptText, SearchCheck, Sparkles, Target, Users, Wallet, X } from 'lucide-react'
+import { Briefcase, BriefcaseBusiness, FileText, Handshake, Inbox, LayoutDashboard, LogOut, Menu, Radar, Receipt, ReceiptText, SearchCheck, Sparkles, Target, Users, Wallet, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { cx } from '../lib/estilos'
@@ -10,6 +10,7 @@ export type Seccion =
   | 'inicio'
   | 'clientes'
   | 'crm'
+  | 'talento'
   | 'seo'
   | 'prospeccion'
   | 'solicitudes'
@@ -26,6 +27,7 @@ const NAVEGACION: Array<{ id: Seccion; etiqueta: string; Icono: LucideIcon; grup
   { id: 'inicio', etiqueta: 'Inicio', Icono: LayoutDashboard, grupo: 'Operación' },
   { id: 'clientes', etiqueta: 'Clientes', Icono: Users, grupo: 'Operación' },
   { id: 'crm', etiqueta: 'CRM', Icono: Target, grupo: 'Operación' },
+  { id: 'talento', etiqueta: 'Talento', Icono: BriefcaseBusiness, grupo: 'Operación' },
   { id: 'solicitudes', etiqueta: 'Solicitudes', Icono: Inbox, grupo: 'Operación' },
   { id: 'seo', etiqueta: 'Auditor SEO', Icono: SearchCheck, grupo: 'Herramientas' },
   { id: 'prospeccion', etiqueta: 'Prospección', Icono: Radar, grupo: 'Herramientas' },
@@ -41,6 +43,7 @@ const DESCRIPCIONES: Record<Seccion, string> = {
   inicio: 'Pulso operativo',
   clientes: 'Cartera y contactos',
   crm: 'Pipeline comercial',
+  talento: 'Candidatos, vacantes y procesos',
   seo: 'Auditorías técnicas',
   prospeccion: 'Nuevos prospectos',
   solicitudes: 'Entrada y cierre con IA',

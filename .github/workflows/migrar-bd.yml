@@ -67,14 +67,14 @@ jobs:
             echo "## Tablas de public"
             psql "$DB" -c '\dt public.*'
             echo "## Columnas de todas las tablas"
-            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades','seo_auditorias','solicitudes_servicio') order by table_name, ordinal_position;"
+            psql "$DB" -c "select table_name, column_name, data_type from information_schema.columns where table_schema='public' and table_name in ('clientes','servicios','pagos','gastos','facturas','factura_items','igualas','crm_empresas','crm_contactos','crm_oportunidades','crm_actividades','seo_auditorias','solicitudes_servicio','talento_candidatos','talento_empresas','talento_vacantes','talento_postulaciones') order by table_name, ordinal_position;"
             echo "## Conteos"
-            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas union all select 'crm_empresas', count(*) from public.crm_empresas union all select 'crm_contactos', count(*) from public.crm_contactos union all select 'crm_oportunidades', count(*) from public.crm_oportunidades union all select 'crm_actividades', count(*) from public.crm_actividades union all select 'seo_auditorias', count(*) from public.seo_auditorias union all select 'solicitudes_servicio', count(*) from public.solicitudes_servicio;"
+            psql "$DB" -c "select 'clientes' as tabla, count(*) as filas from public.clientes union all select 'servicios', count(*) from public.servicios union all select 'pagos', count(*) from public.pagos union all select 'gastos', count(*) from public.gastos union all select 'facturas', count(*) from public.facturas union all select 'factura_items', count(*) from public.factura_items union all select 'igualas', count(*) from public.igualas union all select 'crm_empresas', count(*) from public.crm_empresas union all select 'crm_contactos', count(*) from public.crm_contactos union all select 'crm_oportunidades', count(*) from public.crm_oportunidades union all select 'crm_actividades', count(*) from public.crm_actividades union all select 'seo_auditorias', count(*) from public.seo_auditorias union all select 'solicitudes_servicio', count(*) from public.solicitudes_servicio union all select 'talento_candidatos', count(*) from public.talento_candidatos union all select 'talento_empresas', count(*) from public.talento_empresas union all select 'talento_vacantes', count(*) from public.talento_vacantes union all select 'talento_postulaciones', count(*) from public.talento_postulaciones;"
             echo "## Prueba de inserciones (se revierte al final)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
           do $$
-          declare c uuid; f uuid; e uuid; ct uuid; o uuid; s uuid; v_sol jsonb;
+          declare c uuid; f uuid; e uuid; ct uuid; o uuid; s uuid; v_sol jsonb; tc uuid; te uuid; tv uuid;
           begin
             insert into public.clientes (nombre, empresa, estado) values ('__prueba_migracion__', 'Prueba', 'prospecto') returning id into c;
             insert into public.servicios (cliente_id, titulo, monto) values (c, '__prueba__', 10);
@@ -91,6 +91,17 @@ jobs:
             insert into public.solicitudes_servicio (solicitante_nombre, titulo, descripcion, origen)
               values ('__prueba__', '__prueba__', 'Descripción de prueba de la migración 009.', 'interno')
               returning id into s;
+            insert into public.talento_candidatos (nombre, email, puesto_objetivo, consentimiento)
+              values ('__prueba__', 'prueba@talento.test', '__prueba__', true)
+              returning id into tc;
+            insert into public.talento_empresas (nombre, contacto_nombre, contacto_email)
+              values ('__prueba_talento__', '__prueba__', 'prueba@talento.test')
+              returning id into te;
+            insert into public.talento_vacantes (empresa_id, titulo, descripcion)
+              values (te, '__prueba__', 'Descripción de prueba de la migración 010.')
+              returning id into tv;
+            insert into public.talento_postulaciones (candidato_id, empresa_id, vacante_id)
+              values (tc, te, tv);
             v_sol := public.crear_solicitud_publica(
               '__prueba_publica__', 'Prueba', 'prueba@ejemplo.com', '8095550101',
               'https://ejemplo.com', 'seo', 'Auditoría de prueba',
@@ -123,7 +134,11 @@ jobs:
                  (select count(*) from public.crm_oportunidades) as crm_oportunidades,
                  (select count(*) from public.crm_actividades) as crm_actividades,
                  (select count(*) from public.seo_auditorias) as seo_auditorias,
-                 (select count(*) from public.solicitudes_servicio) as solicitudes_servicio;
+                 (select count(*) from public.solicitudes_servicio) as solicitudes_servicio,
+                 (select count(*) from public.talento_candidatos) as talento_candidatos,
+                 (select count(*) from public.talento_empresas) as talento_empresas,
+                 (select count(*) from public.talento_vacantes) as talento_vacantes,
+                 (select count(*) from public.talento_postulaciones) as talento_postulaciones;
           rollback;
           SQL
             echo "## RLS: lectura como anónimo (debe dar 0 en todo)"
@@ -145,6 +160,8 @@ jobs:
                  (select count(*) from public.solicitudes_servicio) as solicitudes_servicio;
           rollback;
           SQL
+            echo "## Permisos directos de Talento para anónimo (debe ser false)"
+            psql "$DB" -c "select has_table_privilege('anon','public.talento_candidatos','select') as candidatos, has_table_privilege('anon','public.talento_empresas','select') as empresas, has_table_privilege('anon','public.talento_vacantes','select') as vacantes, has_table_privilege('anon','public.talento_postulaciones','select') as postulaciones;"
             echo "## RPC pública como anónimo (crea y cierra con token; se revierte)"
             psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
           begin;
@@ -161,6 +178,37 @@ jobs:
             (datos ->> 'token')::uuid,
             '{}'::jsonb, 'Informe de prueba', 'Propuesta de prueba', 'Correo de prueba', 0, null
           ) from creada;
+          rollback;
+          SQL
+            echo "## RPC pública de Talento como anónimo (se revierte)"
+            psql "$DB" -v ON_ERROR_STOP=1 <<'SQL'
+          begin;
+          set local role anon;
+          do $$
+          declare v_cand jsonb; v_emp jsonb; v_vac jsonb;
+          begin
+            v_cand := public.crear_postulacion_publica(
+              '__prueba_candidato_publico__', 'anonimo@talento.test', null, null,
+              '__prueba_puesto__', 'mid', 'hibrido', array['Excel', 'NIIF'],
+              null, null, null, null, null, null, null, true, true, null
+            );
+            v_emp := public.crear_empresa_y_solicitud(
+              '__prueba_empresa_publica__', 'Prueba', null, null,
+              '__prueba_contacto__', 'anonimo@talento.test', null,
+              array[(v_cand ->> 'candidato_id')::uuid], 'entrevista',
+              'Solicitud de prueba de Talento.', true
+            );
+            v_vac := public.crear_vacante_publica(
+              '__prueba_empresa_publica__', 'Prueba', null, null,
+              '__prueba_contacto__', 'anonimo@talento.test', null,
+              '__prueba_vacante__', 'Descripción de prueba de la vacante pública.',
+              null, null, 'hibrido', 'mid', 'tiempo_completo', null, null, true
+            );
+            perform public.listar_vacantes_publicas();
+            perform public.listar_candidatos_publicos();
+            raise notice 'Talento público: candidato %, empresa %, vacante %',
+              v_cand ->> 'candidato_id', v_emp ->> 'empresa_id', v_vac ->> 'vacante_id';
+          end $$;
           rollback;
           SQL
           } > "$REPORTE" 2>&1

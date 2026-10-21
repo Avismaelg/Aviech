@@ -142,6 +142,8 @@ usan como acento de marca ni para botones primarios.
 | `Login` | Dos columnas: panel de marca en tinta con órbita naranja + tarjeta de superficie con acceso. Píldora «Acceso privado», ver/ocultar contraseña y error legible. En móvil se apila. |
 | `Inicio` | Hero editorial con saludo capitalizado, acciones rápidas, KPIs, gráfica de ingresos (barras de tinta + mes actual naranja), tarjeta de ingreso recurrente y anillo de cobro. |
 | `CRM` | Pestañas accesibles (flechas ←/→), kanban horizontal, arrastre nativo y edición en modal. |
+| `Talento` | Contenedor con 5 pestañas (Resumen, Candidatos, Empresas, Vacantes y Procesos), tarjetas de métricas y kanban de 6 etapas en rejilla de 3 columnas en escritorio (1 en móvil, 2 en tablet), con arrastre nativo y detalle en modal. Reutiliza `Boton`, `Insignia`, `Tarjeta`, `Campo` y `Modal`. |
+| `Talento público` | Página `/talento` sin sesión con dos modos tipo pestaña («Busco empleo» y «Busco talento»). Perfiles anónimos en tarjetas, shortlist flotante y solicitud en modal; formulario de CV con carga directa al bucket privado. En móvil apila columnas y mantiene la barra de shortlist sobre el área segura. |
 | `Auditor SEO` | Puntaje 0–100 (verde ≥ 80, ámbar ≥ 50, rojo < 50), comprobaciones agrupadas y columna de PageSpeed + ficha técnica. |
 | `Prospección` | Validación en línea, hallazgos de correo/teléfono/redes y guardado en el CRM con aviso si la empresa ya existe. |
 | `Solicitudes` | Bandeja con 4 tarjetas (2×2 en móvil), búsqueda, filtro por estado y filas con origen, urgencia, estado y acciones. El detalle muestra plan, confianza, datos pendientes, propuesta, correo, informe descargable y enlace a Servicios. |
@@ -150,7 +152,7 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual del rediseño: `avitech-v2026-10-20-open-design`.
+  Versión actual: `avitech-v2026-10-21-talento`.
 
 ## 7. Regla de oro: factura e impresión en claro
 
@@ -197,6 +199,7 @@ usan como acento de marca ni para botones primarios.
 - [ ] Focus visible en botones, campos y enlaces
 - [ ] Responsive 375 / 768 / 1024 / 1440 sin recortes (menú móvil incluido)
 - [ ] Formulario público `/solicitud` sin recortes a 390 px y con consentimiento visible
+- [ ] Portal `/talento` sin recortes a 390 px, perfiles sin datos de contacto y shortlist usable
 - [ ] Modales abiertos desde cualquier sección sin recortes (portal al `body`)
 - [ ] Impresión: fondo blanco, sin menús, acentos legibles
 - [ ] `prefers-reduced-motion` respetado
