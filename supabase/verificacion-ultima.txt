@@ -1,29 +1,30 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-21 13:57 UTC
+Fecha: 2026-10-21 15:20 UTC
 
 ## Tablas de public
-                 List of relations
- Schema |         Name          | Type  |  Owner   
---------+-----------------------+-------+----------
- public | clientes              | table | postgres
- public | crm_actividades       | table | postgres
- public | crm_contactos         | table | postgres
- public | crm_empresas          | table | postgres
- public | crm_oportunidades     | table | postgres
- public | factura_items         | table | postgres
- public | facturas              | table | postgres
- public | gastos                | table | postgres
- public | igualas               | table | postgres
- public | pagos                 | table | postgres
- public | seo_auditorias        | table | postgres
- public | servicios             | table | postgres
- public | solicitudes_servicio  | table | postgres
- public | talento_candidatos    | table | postgres
- public | talento_empresas      | table | postgres
- public | talento_postulaciones | table | postgres
- public | talento_vacantes      | table | postgres
-(17 rows)
+                  List of relations
+ Schema |           Name           | Type  |  Owner   
+--------+--------------------------+-------+----------
+ public | clientes                 | table | postgres
+ public | crm_actividades          | table | postgres
+ public | crm_contactos            | table | postgres
+ public | crm_empresas             | table | postgres
+ public | crm_oportunidades        | table | postgres
+ public | factura_items            | table | postgres
+ public | facturas                 | table | postgres
+ public | gastos                   | table | postgres
+ public | igualas                  | table | postgres
+ public | pagos                    | table | postgres
+ public | seo_auditorias           | table | postgres
+ public | servicios                | table | postgres
+ public | solicitudes_servicio     | table | postgres
+ public | talento_candidatos       | table | postgres
+ public | talento_empresas         | table | postgres
+ public | talento_limites_publicos | table | postgres
+ public | talento_postulaciones    | table | postgres
+ public | talento_vacantes         | table | postgres
+(18 rows)
 
 ## Columnas de todas las tablas
       table_name       |     column_name      |        data_type         
@@ -312,13 +313,20 @@ BEGIN
 SET
                                                                                                                                                                        finalizar_solicitud                                                                                                                                                                       
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- {"repetida": false, "cliente_id": "40825d43-800e-4af1-a0db-7574ae556863", "empresa_id": "9d938094-f68b-41a5-840c-c52f75645c80", "contacto_id": "f5f8b4fc-eab2-4761-a576-26b737551e70", "servicio_id": "cfee433e-776e-4fc2-82f9-463159324303", "solicitud_id": "d0b410cf-30f0-4002-a9d6-aa18bbb8918e", "oportunidad_id": "b1e10d41-f6aa-463a-9b6a-e483876a4001"}
+ {"repetida": false, "cliente_id": "20bfc502-fd81-4873-9b82-621b43a99330", "empresa_id": "bceb45ee-bf7a-483e-936c-973bff59835b", "contacto_id": "aa8dbce2-21f1-4e0e-b3ff-5c7315d4bc14", "servicio_id": "b865c8ea-507e-4a30-9889-bdccffd696da", "solicitud_id": "25a4ee95-8b51-43ae-a8a9-f0a74fc26f47", "oportunidad_id": "62941a27-e878-4db5-8456-0a2009b0419d"}
 (1 row)
 
 ROLLBACK
 ## RPC pública de Talento como anónimo (se revierte)
 BEGIN
 SET
-NOTICE:  Talento público: candidato f09169eb-b655-4ae7-8892-e1c12159bda7, empresa 94697740-5ea7-443d-958b-dffacedefe25, vacante 4ff81d4e-c410-426c-b0a3-5f56e0394fdd, IA {"vacantes": [], "aplicadas": 0, "existentes": 0}
-DO
-ROLLBACK
+ERROR:  function public.crear_postulacion_publica(unknown, unknown, unknown, unknown, unknown, unknown, unknown, text[], unknown, unknown, unknown, unknown, unknown, unknown, unknown, boolean, boolean, unknown) does not exist
+LINE 1: v_cand := public.crear_postulacion_publica(
+                  ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+QUERY:  v_cand := public.crear_postulacion_publica(
+    '__prueba_candidato_publico__', 'anonimo@talento.test', null, null,
+    '__prueba_puesto__', 'mid', 'hibrido', array['Excel', 'NIIF'],
+    null, null, null, null, null, null, null, true, true, null
+  )
+CONTEXT:  PL/pgSQL function inline_code_block line 4 at assignment
