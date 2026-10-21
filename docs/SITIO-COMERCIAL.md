@@ -146,7 +146,7 @@ sirven como respaldo. No inventar números ni correos.
 ## PWA y rutas del panel
 
 - El manifest abre en **`/panel`**; el service worker cachea `/`, `/panel` y el
-  armazón. Versión: `avitech-v2026-10-21-sitio-comercial`.
+  armazón. Versión: `avitech-v2026-10-21-lanzamiento`.
 - `main.tsx` carga solo el paquete de la ruta (`SitioPublico`, `App`,
   `SolicitudPublica` o `TalentoPublico`).
 - Enlaces antiguos del panel: si la ruta es `/` y el hash es una sección conocida

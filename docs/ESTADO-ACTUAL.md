@@ -14,9 +14,9 @@
   internos. Se sumaron **preguntas frecuentes**, **privacidad/términos** y **alertas
   opcionales por Telegram** para cada solicitud nueva. Prueba nueva:
   `docs/pruebas/prueba-sitio.js` (**9 pasos, 0 errores**).
-  **Publicado y verificado en producción** el 21-oct (commit `353e4da`): `/` y
+  **Publicado y verificado en producción** el 21-oct (commits `353e4da` y `643e686`): `/` y
   `/panel` responden `200`, `/solicitud` y `/talento` siguen operativos, el service
-  worker es `avitech-v2026-10-21-sitio-comercial` y la revisión no encontró errores
+  worker es `avitech-v2026-10-21-lanzamiento` y la revisión no encontró errores
   de consola.
 - **Seguridad y rendimiento de Talento (10.ª sesión, 21 oct):** perfil **protegido con
   token** (actualizar un correo ya registrado exige el token del navegador;
