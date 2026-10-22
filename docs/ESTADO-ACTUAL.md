@@ -21,9 +21,9 @@
   build nuevo y el service worker `avitech-v2026-10-22-auditoria`; verificado en
   producción (rutas 200, 404 real, canónicas, PWA y API). La migración 013 se aplicó
   el 22-oct a las 14:29 UTC y actualizó `supabase/verificacion-ultima.txt`; la prueba
-  de inserciones y las comprobaciones de RLS terminaron sin errores. GitHub Actions
-  todavía muestra el run como «queued» por la degradación, pero el reporte confirma
-  la ejecución. El panel además bloquea NCF duplicados antes de guardar.
+  de inserciones y las comprobaciones de RLS terminaron sin errores (run de GitHub
+  Actions completado con éxito). El panel además bloquea NCF duplicados antes de
+  guardar.
 - **Interactividad y modelo IA (12.ª sesión, 21 oct, local):** hero con red de
   partículas, parallax 3D y pulso al clic; tarjetas de servicio con inclinación,
   brillo y detalle; aparición de secciones al hacer scroll; microinteracciones en
@@ -528,5 +528,4 @@ ni contienen secretos.
     cabeceras `_headers`. Verificado en producción: portada, `/panel`, `/talento`,
     legales, PWA y 404. La migración 013 quedó aplicada y el reporte
     `supabase/verificacion-ultima.txt` se actualizó con la prueba de inserciones y RLS
-    sin errores (aunque el run siga marcado como «queued» por la degradación de
-    GitHub Actions).
+    sin errores; el workflow terminó con éxito.
