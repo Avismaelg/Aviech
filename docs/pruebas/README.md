@@ -16,10 +16,13 @@ consentimiento y honeypot), confirmación con folio real, reinicio del formulari
 móvil sin desbordes a 390 px, panel en `/panel` y redirección de `/#crm` a
 `/panel#crm`. Devuelve JSON con `ok`, 9 pasos y los errores de consola (debe ser `[]`).
 
-**Cómo ejecutarla:** compila, levanta la vista previa en el puerto 5181 y pide en OpenCode
-`docs/pruebas/prueba-sitio.js` con la herramienta de Playwright
-(`browser_run_code_unsafe`, parámetro `filename`). Capturas en
+**Cómo ejecutarla:** compila, levanta la vista previa en el puerto 5181 y ejecuta el
+archivo con un runner de Playwright que lo evalúe como `async (page)`. Capturas en
 `C:\Users\User\avitech\capturas-sitio`.
+
+> La vista previa de Vite no aplica `_redirects`: ahí las rutas desconocidas muestran el
+> componente React de respaldo con `noindex`. El **404 HTTP real** se comprueba con
+> `wrangler dev` (por ejemplo, `curl -I http://127.0.0.1:8787/ruta-que-no-existe`).
 
 ## Interactividad (`prueba-interaccion.js`)
 

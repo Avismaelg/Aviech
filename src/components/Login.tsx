@@ -21,15 +21,23 @@ export function Login() {
     if (!supabase) return
     setCargando(true)
     setError(null)
-    const { error: errorAcceso } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-    if (errorAcceso) {
-      setError(
-        errorAcceso.message === 'Invalid login credentials'
-          ? 'Correo o contraseña incorrectos.'
-          : `No se pudo entrar: ${errorAcceso.message}`,
-      )
+    try {
+      const { error: errorAcceso } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      })
+      if (errorAcceso) {
+        setError(
+          errorAcceso.message === 'Invalid login credentials'
+            ? 'Correo o contraseña incorrectos.'
+            : `No se pudo entrar: ${errorAcceso.message}`,
+        )
+      }
+    } catch {
+      setError('No se pudo conectar con el servidor. Revisa tu conexión e inténtalo otra vez.')
+    } finally {
+      setCargando(false)
     }
-    setCargando(false)
   }
 
   return (

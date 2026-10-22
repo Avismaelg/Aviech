@@ -172,7 +172,7 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-21-interactivo`.
+  Versión actual: `avitech-v2026-10-22-auditoria`.
 - **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
   que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
   bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
@@ -185,6 +185,16 @@ usan como acento de marca ni para botones primarios.
   `.sitio-comercial`; la cuadrícula del hero es `.cuadricula-sitio`; el desplazamiento
   suave solo se activa con `html:has(.sitio-comercial)` y respeta
   `prefers-reduced-motion`. El manifest de la PWA abre en `/panel`.
+- **Página 404 y metadatos (13.ª sesión):** las rutas desconocidas devuelven
+  `404.html` con estado HTTP 404 y `robots: noindex`; `_redirects` sirve la portada
+  con 200 para `/panel`, `/solicitud`, `/talento`, `/privacidad` y `/terminos`, con o
+  sin barra final (`/` se sirve directamente como portada).
+  En desarrollo, `main.tsx` conserva `NoEncontrada` como respaldo. `/talento` tiene
+  canónica propia y ya no se excluye de buscadores; las páginas legales actualizan su
+  canónica al entrar. La PWA usa `icon-192.png`, `icon-512.png` y
+  `apple-touch-icon.png`, y `public/_headers` aplica seguridad (`nosniff`, `DENY`,
+  `Referrer-Policy`, `Permissions-Policy`, HSTS) y caché larga a los activos con hash.
+  El `og-image.png` (1200×630) sigue siendo la imagen social.
 
 ## 7. Regla de oro: factura e impresión en claro
 

@@ -32,6 +32,8 @@ export function SitioPublico() {
     const descripcionAnterior = meta?.getAttribute('content') ?? ''
     meta?.setAttribute('content', SITIO.descripcion)
 
+    const canonicaAnterior = document.querySelector('link[rel="canonical"]')
+    canonicaAnterior?.remove()
     const canonica = document.createElement('link')
     canonica.rel = 'canonical'
     canonica.href = `${SITIO.url}/`
@@ -53,6 +55,7 @@ export function SitioPublico() {
       document.title = tituloAnterior
       if (meta) meta.setAttribute('content', descripcionAnterior)
       canonica.remove()
+      if (canonicaAnterior) document.head.appendChild(canonicaAnterior)
       datosEstructurados.remove()
     }
   }, [])

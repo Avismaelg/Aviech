@@ -8,6 +8,10 @@ export function descargarCSV(nombreArchivo: string, filas: Array<Array<string | 
   const enlace = document.createElement('a')
   enlace.href = url
   enlace.download = nombreArchivo.toLowerCase().endsWith('.csv') ? nombreArchivo : `${nombreArchivo}.csv`
+  enlace.style.display = 'none'
+  document.body.appendChild(enlace)
   enlace.click()
-  URL.revokeObjectURL(url)
+  enlace.remove()
+  // Firefox puede cancelar la descarga si el objeto se revoca en el mismo tick.
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000)
 }

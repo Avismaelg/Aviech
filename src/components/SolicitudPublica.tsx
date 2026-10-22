@@ -329,6 +329,7 @@ export function SolicitudPublica() {
                     <Entrada
                       type="number"
                       min="0"
+                      max="999999999.99"
                       step="0.01"
                       value={formulario.presupuesto}
                       onChange={(evento) => setFormulario({ ...formulario, presupuesto: evento.target.value })}
@@ -409,7 +410,7 @@ export function SolicitudPublica() {
 
           <p className="mt-4 text-center text-xs text-tinta-tenue">
             ¿Eres del equipo?{' '}
-            <a href="/" className="font-semibold text-clay transition-colors hover:text-acento">
+            <a href="/panel" className="font-semibold text-clay transition-colors hover:text-acento">
               Entrar al panel
             </a>
           </p>

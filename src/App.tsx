@@ -115,16 +115,33 @@ function App() {
 
   useEffect(() => {
     if (!supabase) return
-    void supabase.auth.getSession().then(({ data }) => {
-      setSesion(data.session)
-      setComprobando(false)
-    })
+    let activo = true
+    const limite = window.setTimeout(() => {
+      if (activo) setComprobando(false)
+    }, 8_000)
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (activo) setSesion(data.session)
+      })
+      .catch(() => {
+        if (activo) setSesion(null)
+      })
+      .finally(() => {
+        window.clearTimeout(limite)
+        if (activo) setComprobando(false)
+      })
     const { data } = supabase.auth.onAuthStateChange((_evento, sesionNueva) => {
+      if (!activo) return
       setSesion(sesionNueva)
       if (!sesionNueva) setSeccion('inicio')
       setComprobando(false)
     })
-    return () => data.subscription.unsubscribe()
+    return () => {
+      activo = false
+      window.clearTimeout(limite)
+      data.subscription.unsubscribe()
+    }
   }, [])
 
   useEffect(() => {

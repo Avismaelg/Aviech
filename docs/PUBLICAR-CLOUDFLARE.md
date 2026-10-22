@@ -30,7 +30,10 @@ npx wrangler deploy
 ```
 
 - `wrangler` quedó autorizado con tu cuenta de Cloudflare en este PC (la sesión se guarda).
-- El archivo `wrangler.jsonc` (raíz del repo) indica qué publicar: la carpeta `dist/` como sitio SPA.
+- El archivo `wrangler.jsonc` (raíz del repo) indica qué publicar: la carpeta `dist/`.
+  `public/_redirects` sirve la portada con 200 para las rutas conocidas de la SPA y
+  `public/404.html` responde con un 404 real a las desconocidas (`not_found_handling:
+  "404-page"`). Al agregar una ruta nueva (salvo `/`), añadirla también a `_redirects`.
 
 ## Problemas conocidos y solución
 

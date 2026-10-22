@@ -29,6 +29,8 @@
 
 const LIMITE_HTML = 400_000
 const LIMITE_SCRAPER = 200_000
+const MAX_BYTES_RESPUESTA = 2_000_000
+const MAX_MONTO = 999_999_999.99
 const TIMEOUT_PAGINA = 15_000
 const TIMEOUT_ARCHIVO = 8_000
 const TIMEOUT_SCRAPER = 12_000
@@ -280,9 +282,15 @@ export default {
 async function usuarioAutenticado(request, env) {
   const cabecera = request.headers.get('Authorization') || ''
   if (!cabecera.startsWith('Bearer ')) return null
-  const respuesta = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
-    headers: { apikey: env.SUPABASE_ANON_KEY, authorization: cabecera },
-  })
+  let respuesta
+  try {
+    respuesta = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+      headers: { apikey: env.SUPABASE_ANON_KEY, authorization: cabecera },
+      signal: AbortSignal.timeout(8_000),
+    })
+  } catch {
+    return null
+  }
   if (!respuesta.ok) return null
   const usuario = await respuesta.json().catch(() => null)
   return usuario && usuario.id ? usuario : null
@@ -301,17 +309,86 @@ function validarUrl(entrada) {
   if (!/^https?:$/.test(url.protocol)) {
     throw conEstado('Solo se pueden visitar direcciones http o https.', 400)
   }
-  const host = url.hostname.toLowerCase()
-  const privados = ['localhost', '127.0.0.1', '0.0.0.0', '[::1]']
-  if (
-    privados.includes(host) ||
-    host.endsWith('.local') ||
-    /^(10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host) ||
-    /^\d+$/.test(host)
-  ) {
+  if (url.username || url.password) {
+    throw conEstado('La dirección no puede incluir credenciales.', 400)
+  }
+  if (esHostPrivado(url.hostname)) {
     throw conEstado('Esa dirección es privada y no se puede visitar.', 400)
   }
   return url
+}
+
+/**
+ * Bloquea destinos internos, loopback, enlaces locales y rangos reservados.
+ * No sustituye el aislamiento de red de Cloudflare, pero evita que el Auditor
+ * SEO o la prospección visiten direcciones que nunca deberían salir a internet.
+ */
+function esHostPrivado(hostname) {
+  const host = hostname.toLowerCase().replace(/\.$/, '')
+  if (!host) return true
+  if (
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.endsWith('.local') ||
+    host.endsWith('.localdomain') ||
+    host.endsWith('.lan') ||
+    host.endsWith('.internal') ||
+    host.endsWith('.intranet') ||
+    host.endsWith('.corp') ||
+    host.endsWith('.home') ||
+    host.endsWith('.home.arpa') ||
+    host === 'metadata.google.internal'
+  ) {
+    return true
+  }
+
+  // IPv6: URL.hostname conserva los corchetes.
+  if (host.startsWith('[') && host.endsWith(']')) {
+    const ip = host.slice(1, -1)
+    if (ip === '::' || ip === '::1') return true
+    if (/^::[0-9a-f]{1,4}$/i.test(ip)) return true // IPv4-compatible reservada
+    if (/^f[cd][0-9a-f]{2}:/i.test(ip)) return true // fc00::/7
+    if (/^fe[89ab][0-9a-f]:/i.test(ip)) return true // fe80::/10
+    if (/^fe[c-f][0-9a-f]:/i.test(ip)) return true // fec0::/10 (site-local obsoleto)
+    if (/^ff[0-9a-f]{2}:/i.test(ip)) return true // ff00::/8 (multicast)
+    if (/^2001:db8:/i.test(ip)) return true // documentación
+    const mapeada = /^::ffff:(?:(\d{1,3}(?:\.\d{1,3}){3})|([0-9a-f]{1,4}):([0-9a-f]{1,4}))$/i.exec(ip)
+    if (mapeada) {
+      if (mapeada[1]) return esIPv4Privada(mapeada[1])
+      const alto = parseInt(mapeada[2], 16)
+      const bajo = parseInt(mapeada[3], 16)
+      return esIPv4Privada(`${alto >> 8}.${alto & 255}.${bajo >> 8}.${bajo & 255}`)
+    }
+    return false
+  }
+
+  if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host)) return esIPv4Privada(host)
+
+  // Un nombre de una sola etiqueta suele ser un equipo de la red local.
+  if (!host.includes('.')) return true
+  return false
+}
+
+function esIPv4Privada(host) {
+  const partes = host.split('.').map(Number)
+  if (partes.length !== 4 || partes.some((parte) => !Number.isInteger(parte) || parte < 0 || parte > 255)) {
+    return true
+  }
+  const [a, b, c] = partes
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    (a === 192 && b === 0 && (c === 0 || c === 2)) ||
+    (a === 198 && (b === 18 || b === 19)) ||
+    (a === 198 && b === 51 && c === 100) ||
+    (a === 203 && b === 0 && c === 113) ||
+    a >= 224
+  )
 }
 
 function conEstado(mensaje, estado) {
@@ -333,6 +410,7 @@ function cabecerasCors(origen) {
     cabeceras['access-control-allow-origin'] = origen
     cabeceras['access-control-allow-methods'] = 'GET, POST, OPTIONS'
     cabeceras['access-control-allow-headers'] = 'Authorization, Content-Type'
+    cabeceras['access-control-max-age'] = '86400'
     cabeceras.vary = 'Origin'
   }
   return cabeceras
@@ -343,6 +421,8 @@ function json(datos, estado, origen, extras) {
     status: estado,
     headers: {
       'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-content-type-options': 'nosniff',
       ...cabecerasCors(origen),
       ...(extras || {}),
     },
@@ -351,11 +431,66 @@ function json(datos, estado, origen, extras) {
 
 // ---------------------------------------------------------------- auditoría
 
+/**
+ * Lee el cuerpo con un tope de bytes y caracteres. Evita que una página
+ * gigante o una respuesta "chunked" sin Content-Length consuma memoria.
+ */
+async function leerTextoLimitado(respuesta, limite, limiteBytes = MAX_BYTES_RESPUESTA) {
+  const declarado = Number(respuesta.headers.get('content-length') || 0)
+  if (Number.isFinite(declarado) && declarado > limiteBytes) {
+    try {
+      await respuesta.body?.cancel()
+    } catch {
+      // El cuerpo ya no se necesita.
+    }
+    return { texto: '', excedido: true }
+  }
+  if (!respuesta.body) {
+    const texto = await respuesta.text()
+    return { texto: texto.slice(0, limite), excedido: texto.length > limite }
+  }
+
+  const lector = respuesta.body.getReader()
+  const decodificador = new TextDecoder()
+  let texto = ''
+  let bytes = 0
+  let excedido = false
+  try {
+    while (true) {
+      const { done, value } = await lector.read()
+      if (done) break
+      bytes += value.byteLength
+      if (bytes > limiteBytes) {
+        excedido = true
+        break
+      }
+      texto += decodificador.decode(value, { stream: true })
+      if (texto.length > limite) {
+        excedido = true
+        break
+      }
+    }
+    if (!excedido) texto += decodificador.decode()
+  } finally {
+    if (excedido) {
+      try {
+        await lector.cancel()
+      } catch {
+        // El cuerpo ya se cortó.
+      }
+    }
+    lector.releaseLock()
+  }
+  return { texto: texto.slice(0, limite), excedido }
+}
+
 async function auditar(destino) {
   const inicio = Date.now()
   const control = new AbortController()
   const temporizador = setTimeout(() => control.abort(), TIMEOUT_PAGINA)
   let respuesta
+  let html
+  let recortado = false
   try {
     respuesta = await fetch(destino.href, {
       redirect: 'follow',
@@ -366,22 +501,30 @@ async function auditar(destino) {
         'accept-language': 'es-DO,es;q=0.9,en;q=0.8',
       },
     })
-  } catch {
+    const leido = await leerTextoLimitado(respuesta, LIMITE_HTML)
+    if (leido.excedido && !leido.texto) {
+      throw conEstado('La página es demasiado grande para analizarla (más de 2 MB).', 413)
+    }
+    html = leido.texto
+    recortado = leido.excedido
+  } catch (error) {
+    if (error && typeof error === 'object' && 'estado' in error) throw error
     throw conEstado('No se pudo conectar con el sitio. Revisa la dirección o inténtalo de nuevo.', 502)
   } finally {
     clearTimeout(temporizador)
   }
 
   const tiempoMs = Date.now() - inicio
-  const html = await respuesta.text()
   const tipo = respuesta.headers.get('content-type') || ''
   if (!/html|xml/i.test(tipo) && !/<html|<!doctype html/i.test(html.slice(0, 2000))) {
     throw conEstado('Esa dirección no devuelve una página HTML (puede ser un archivo o una API).', 422)
   }
 
   const urlFinal = new URL(respuesta.url || destino.href)
-  const recortado = html.length > LIMITE_HTML
-  const trozo = recortado ? html.slice(0, LIMITE_HTML) : html
+  if (esHostPrivado(urlFinal.hostname)) {
+    throw conEstado('La página redirige a una dirección privada y no se puede analizar.', 400)
+  }
+  const trozo = html
   const metas = leerMetas(extraerCabeza(trozo))
   const contenido = analizarContenido(trozo, urlFinal, metas)
   const tecnico = analizarTecnico(trozo, metas)
@@ -574,7 +717,8 @@ async function traerTexto(direccion) {
       signal: control.signal,
       headers: { 'user-agent': 'Mozilla/5.0 (compatible; AviTechSEO/1.0)' },
     })
-    const texto = (await respuesta.text()).slice(0, 200_000)
+    const leido = await leerTextoLimitado(respuesta, 200_000)
+    const texto = leido.texto
     return { ok: respuesta.ok && !/<html/i.test(texto.slice(0, 200)), estado: respuesta.status, texto }
   } catch {
     return { ok: false, estado: 0, texto: '' }
@@ -631,6 +775,9 @@ async function buscarContactos(destino) {
     )
   }
   const urlFinal = primera.urlFinal.href
+  if (esHostPrivado(primera.urlFinal.hostname)) {
+    throw conEstado('Esa web redirige a una dirección privada y no se puede visitar.', 400)
+  }
   visitadas.add(urlFinal)
   paginas.push({ url: urlFinal, estado: primera.estado, titulo: primera.titulo })
   recolectarContactos(primera, emails, telefonos, redes)
@@ -681,7 +828,8 @@ async function traerPaginaScraper(direccion) {
       },
     })
     const urlFinal = new URL(respuesta.url || direccion)
-    const html = await respuesta.text()
+    const leido = await leerTextoLimitado(respuesta, LIMITE_SCRAPER)
+    const html = leido.texto
     const tipo = respuesta.headers.get('content-type') || ''
     if (!/html|xml/i.test(tipo) && !/<html|<!doctype html/i.test(html.slice(0, 2000))) {
       return paginaVacia(respuesta.status, urlFinal)
@@ -1028,10 +1176,11 @@ async function notificarTelegram(env, datos) {
 
   const folio = String(datos.id || '').slice(0, 8).toUpperCase()
   const contacto = [datos.email, datos.telefono].filter(Boolean).join(' · ')
-  const monto = Number(datos.presupuesto)
-  const montoTexto = Number.isFinite(monto)
-    ? `RD$${monto.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
-    : ''
+  const monto = datos.presupuesto == null ? null : Number(datos.presupuesto)
+  const montoTexto =
+    monto != null && Number.isFinite(monto)
+      ? `RD$${monto.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+      : ''
   const lineas = [
     'Nueva solicitud en el sitio de AviTech',
     `Folio: ${folio}`,
@@ -1055,6 +1204,7 @@ async function notificarTelegram(env, datos) {
         text: lineas.join('\n'),
         disable_web_page_preview: true,
       }),
+      signal: AbortSignal.timeout(8_000),
     })
   } catch {
     // La alerta es opcional: la solicitud ya está guardada.
@@ -1087,6 +1237,20 @@ async function leerSolicitudPublica(request) {
   if (!email && !telefono) {
     throw conEstado('Deja un correo o un teléfono para contactarte.', 400)
   }
+  let sitioWeb = limitarTexto(datos.sitio_web, 300)
+  if (sitioWeb) {
+    try {
+      sitioWeb = validarUrl(sitioWeb).href
+    } catch {
+      throw conEstado('El sitio web no tiene una dirección válida. Usa un enlace como https://tuempresa.com.', 400)
+    }
+  }
+  if (
+    presupuesto !== null &&
+    (!Number.isFinite(presupuesto) || presupuesto < 0 || presupuesto > MAX_MONTO)
+  ) {
+    throw conEstado('El presupuesto debe ser un número entre 0 y 999,999,999.99.', 400)
+  }
   if (datos.consentimiento !== true) {
     throw conEstado('Debes autorizar el uso de tus datos para responder a la solicitud.', 400)
   }
@@ -1097,12 +1261,12 @@ async function leerSolicitudPublica(request) {
     empresa: limitarTexto(datos.empresa, 160),
     email,
     telefono,
-    sitio_web: limitarTexto(datos.sitio_web, 300),
+    sitio_web: sitioWeb,
     tipo,
     titulo: limitarTexto(datos.titulo, 180) || `Solicitud de ${tipo}`,
     descripcion,
     objetivos: limitarTexto(datos.objetivos, 2000),
-    presupuesto: Number.isFinite(presupuesto) && presupuesto >= 0 ? Math.round(presupuesto * 100) / 100 : null,
+    presupuesto: presupuesto === null ? null : Math.round(presupuesto * 100) / 100,
     urgencia,
     fecha_deseada: esFechaISO(datos.fecha_deseada) ? datos.fecha_deseada : null,
   }
@@ -2131,6 +2295,10 @@ async function leerCuerpoJSON(request, limite) {
   if (!tipo.includes('application/json')) {
     throw conEstado('La solicitud no tiene el formato esperado.', 415)
   }
+  const declarado = Number(request.headers.get('content-length') || 0)
+  if (Number.isFinite(declarado) && declarado > limite * 4) {
+    throw conEstado('La información enviada es demasiado larga.', 413)
+  }
   const crudo = await request.text()
   if (crudo.length > limite) {
     throw conEstado('La información enviada es demasiado larga.', 413)
@@ -2170,7 +2338,7 @@ function listaHabilidades(valor) {
 function numeroOpcional(valor) {
   if (valor === '' || valor == null) return null
   const numero = Number(valor)
-  return Number.isFinite(numero) && numero >= 0 ? Math.round(numero * 100) / 100 : null
+  return Number.isFinite(numero) && numero >= 0 && numero <= MAX_MONTO ? Math.round(numero * 100) / 100 : null
 }
 
 function esUrlHttp(valor) {
@@ -2201,8 +2369,14 @@ function parsearJSONDeIA(texto) {
 
 function esFechaISO(valor) {
   if (typeof valor !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(valor)) return false
-  const fecha = new Date(`${valor}T12:00:00`)
-  return !Number.isNaN(fecha.getTime())
+  const [anio, mes, dia] = valor.split('-').map(Number)
+  if (anio < 1900 || anio > 2200 || mes < 1 || mes > 12 || dia < 1 || dia > 31) return false
+  const fecha = new Date(Date.UTC(anio, mes - 1, dia, 12))
+  return (
+    fecha.getUTCFullYear() === anio &&
+    fecha.getUTCMonth() === mes - 1 &&
+    fecha.getUTCDate() === dia
+  )
 }
 
 function mensajeCorto(error) {

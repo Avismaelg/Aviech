@@ -199,12 +199,26 @@ export function TalentoPublico() {
 
   useEffect(() => {
     document.title = 'Talento · AviTech Solutions Group'
-    const meta = document.createElement('meta')
-    meta.name = 'robots'
-    meta.content = 'noindex'
-    document.head.appendChild(meta)
+    const metaDescripcion = document.querySelector('meta[name="description"]')
+    const descripcionAnterior = metaDescripcion?.getAttribute('content') ?? ''
+    metaDescripcion?.setAttribute(
+      'content',
+      'Vacantes y perfiles profesionales en República Dominicana. Publica tu perfil, encuentra oportunidades o busca talento con AviTech.',
+    )
+    const tema = document.querySelector('meta[name="theme-color"]')
+    const temaAnterior = tema?.getAttribute('content') ?? ''
+    tema?.setAttribute('content', '#f3f0ee')
+    const canonicalAnterior = document.querySelector('link[rel="canonical"]')
+    canonicalAnterior?.remove()
+    const canonical = document.createElement('link')
+    canonical.rel = 'canonical'
+    canonical.href = `${window.location.origin}/talento`
+    document.head.appendChild(canonical)
     return () => {
-      meta.remove()
+      metaDescripcion?.setAttribute('content', descripcionAnterior)
+      if (tema) tema.setAttribute('content', temaAnterior)
+      canonical.remove()
+      if (canonicalAnterior) document.head.appendChild(canonicalAnterior)
     }
   }, [])
 
@@ -231,7 +245,7 @@ export function TalentoPublico() {
             </span>
           </a>
           <a
-            href="/"
+            href="/panel"
             className="inline-flex items-center gap-1.5 rounded-full border border-borde bg-superficie px-3 py-1.5 text-xs font-medium text-tinta-suave transition-colors hover:bg-arena hover:text-tinta"
           >
             Panel interno <ArrowUpRight size={13} />
@@ -336,7 +350,7 @@ export function TalentoPublico() {
             <a href="/solicitud" className="font-medium text-tinta-suave transition-colors hover:text-clay">
               ¿Necesitas un servicio?
             </a>
-            <a href="/" className="font-medium text-tinta-suave transition-colors hover:text-clay">
+            <a href="/panel" className="font-medium text-tinta-suave transition-colors hover:text-clay">
               Entrar al panel
             </a>
           </div>

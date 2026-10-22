@@ -13,6 +13,11 @@ digitalización empresarial. Vive en la **raíz `/`**; el panel interno se movi�
 | `/privacidad` | Política de privacidad |
 | `/terminos` | Términos del servicio |
 
+Cualquier otra ruta devuelve `404.html` con **estado HTTP 404** y `noindex`; `_redirects`
+sirve la portada con 200 solo para las rutas conocidas. El formulario acepta el
+presupuesto en formato dominicano (`1.500,50`, `40,000` o `40000`) y lo envía como
+número; el máximo es RD$999,999,999.99.
+
 ## Estructura
 
 1. **Portada:** mensaje principal, subtítulo, botones y una composición visual de

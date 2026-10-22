@@ -252,9 +252,12 @@ export function Facturacion() {
   }, [facturas, busqueda, filtroEstado])
 
   const lineasValidas = formulario.lineas.filter(
-    (linea) => linea.descripcion.trim() !== '' && (Number(linea.precio) || 0) > 0,
+    (linea) =>
+      linea.descripcion.trim() !== '' &&
+      (Number(linea.cantidad) || 0) > 0 &&
+      (Number(linea.precio) || 0) > 0,
   )
-  const subtotalForm = redondear(formulario.lineas.reduce((total, linea) => total + importeLinea(linea), 0))
+  const subtotalForm = redondear(lineasValidas.reduce((total, linea) => total + importeLinea(linea), 0))
   const itbisForm = formulario.aplica_itbis ? redondear(subtotalForm * TASA_ITBIS) : 0
   const totalForm = redondear(subtotalForm + itbisForm)
 
@@ -311,7 +314,7 @@ export function Facturacion() {
       return
     }
     if (lineasValidas.length === 0) {
-      aviso('Agrega al menos una línea con descripción y precio', 'error')
+      aviso('Agrega al menos una línea con descripción, cantidad y precio', 'error')
       return
     }
     const numero = formulario.numero.trim().toUpperCase()
@@ -326,6 +329,22 @@ export function Facturacion() {
     if (formulario.estado !== 'borrador' && !numero) {
       aviso('Para emitir la factura se necesita el NCF/e-NCF', 'error')
       return
+    }
+    if (numero) {
+      const { data: repetidas, error: errorNumero } = await supabase
+        .from('facturas')
+        .select('id')
+        .eq('numero', numero)
+        .neq('id', editandoId ?? '00000000-0000-0000-0000-000000000000')
+        .limit(1)
+      if (errorNumero) {
+        aviso(`No se pudo comprobar el NCF: ${errorNumero.message}`, 'error')
+        return
+      }
+      if (repetidas && repetidas.length > 0) {
+        aviso('Ya existe una factura con ese NCF/e-NCF. Usa un número distinto.', 'error')
+        return
+      }
     }
 
     setGuardando(true)
@@ -376,8 +395,8 @@ export function Facturacion() {
       lineasValidas.map((linea) => ({
         factura_id: facturaId,
         descripcion: linea.descripcion.trim(),
-        cantidad: Number(linea.cantidad) || 1,
-        precio: Number(linea.precio) || 0,
+        cantidad: Number(linea.cantidad),
+        precio: Number(linea.precio),
       })),
     )
     if (errorItems) {

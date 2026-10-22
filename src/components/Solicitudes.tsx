@@ -496,6 +496,7 @@ export function Solicitudes({ onIrAServicios }: { onIrAServicios: () => void }) 
             <Entrada
               type="number"
               min="0"
+              max="999999999.99"
               step="0.01"
               value={formulario.presupuesto}
               onChange={(evento) => setFormulario({ ...formulario, presupuesto: evento.target.value })}

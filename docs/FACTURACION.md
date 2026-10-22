@@ -20,6 +20,9 @@
 - **NCF tradicional**: `B` + 10 dígitos (ej. `B0200000001`); el prefijo debe coincidir con
   el tipo: B01 (crédito fiscal), B02 (consumo), B14 (regímenes especiales), B15 (gubernamental).
 - **e-NCF**: `E` + 12 dígitos (ej. `E320000000001`); tipos E31, E32, E44 y E45.
+- **NCF/e-NCF no repetido**: el panel comprueba antes de guardar y la migración 013
+  añade un trigger en la base; si dos pestañas intentan el mismo número, la segunda
+  recibe un error claro.
 - Una factura emitida **no se edita**: se anula y se reemite (así lo pide la práctica fiscal).
 - Las facturas anuladas no cuentan en «Facturado» de los reportes.
 

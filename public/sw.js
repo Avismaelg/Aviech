@@ -2,8 +2,17 @@
 // - Guarda el armazón (HTML, CSS, JS, fuentes): repetir visita al instante y abrir sin conexión.
 // - La API (/api/*) y Supabase NUNCA se guardan en caché: los datos siempre van a la red.
 // Al cambiar esta lógica, sube VERSION para purgar las cachés viejas.
-const VERSION = 'avitech-v2026-10-21-interactivo'
-const ARMAZON = ['/', '/panel', '/index.html', '/manifest.webmanifest', '/favicon.svg']
+const VERSION = 'avitech-v2026-10-22-auditoria'
+const ARMAZON = [
+  '/',
+  '/panel',
+  '/index.html',
+  '/manifest.webmanifest',
+  '/favicon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
+]
 
 self.addEventListener('install', (evento) => {
   evento.waitUntil(

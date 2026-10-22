@@ -18,6 +18,35 @@ interface FormularioContacto {
 type ClaveError = 'nombre' | 'email' | 'servicio' | 'descripcion' | 'presupuesto' | 'consentimiento'
 type Errores = Partial<Record<ClaveError, string>>
 
+/**
+ * Convierte montos escritos por una persona (40.000 / 40,000 / 1.500,50) a
+ * número. Los presupuestos son orientativos, así que se redondean a centavos.
+ */
+function parsearPresupuesto(texto: string): number | null {
+  const limpio = texto.trim().replace(/[^\d.,]/g, '')
+  if (!limpio) return null
+  const ultimaComa = limpio.lastIndexOf(',')
+  const ultimoPunto = limpio.lastIndexOf('.')
+  let normalizado = limpio
+
+  if (ultimaComa >= 0 && ultimoPunto >= 0) {
+    const decimal = ultimaComa > ultimoPunto ? ',' : '.'
+    const miles = decimal === ',' ? '.' : ','
+    normalizado = limpio.split(miles).join('').replace(decimal, '.')
+  } else if (ultimaComa >= 0 || ultimoPunto >= 0) {
+    const separador = ultimaComa >= 0 ? ',' : '.'
+    const partes = limpio.split(separador)
+    normalizado =
+      partes.length > 2 || (partes[1] && partes[1].length === 3)
+        ? partes.join('')
+        : `${partes[0]}.${partes[1] ?? ''}`
+  }
+
+  const numero = Number(normalizado)
+  if (!Number.isFinite(numero) || numero < 0 || numero > 999_999_999.99) return null
+  return Math.round(numero * 100) / 100
+}
+
 const FORMULARIO_VACIO: FormularioContacto = {
   nombre: '',
   empresa: '',
@@ -84,8 +113,12 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
     if (formulario.descripcion.trim().length < 20) {
       nuevos.descripcion = 'Cuéntanos un poco más: al menos 20 caracteres.'
     }
-    if (formulario.presupuesto.trim() && !/^\d[\d.,\s]*$/.test(formulario.presupuesto.trim())) {
-      nuevos.presupuesto = 'Escribe solo números, por ejemplo 40000.'
+    if (formulario.presupuesto.trim()) {
+      if (!/^\d[\d.,\s]*$/.test(formulario.presupuesto.trim())) {
+        nuevos.presupuesto = 'Escribe solo números, por ejemplo 40000.'
+      } else if (parsearPresupuesto(formulario.presupuesto) === null) {
+        nuevos.presupuesto = 'El monto debe estar entre RD$0 y RD$999,999,999.99.'
+      }
     }
     if (!consentimiento) nuevos.consentimiento = 'Marca la autorización para usar tus datos en esta solicitud.'
     return nuevos
@@ -108,9 +141,7 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
     if (!servicio) return
 
     const plazo = PLAZOS_CONTACTO.find((item) => item.id === formulario.plazo) ?? PLAZOS_CONTACTO[1]
-    const presupuestoNumero = formulario.presupuesto.trim()
-      ? Number(formulario.presupuesto.replace(/\D/g, ''))
-      : null
+    const presupuestoNumero = parsearPresupuesto(formulario.presupuesto)
     const presupuestoTexto =
       presupuestoNumero !== null ? `RD$${presupuestoNumero.toLocaleString('es-DO')}` : 'por definir'
     const detalle = [
@@ -428,6 +459,7 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
                     name="presupuesto"
                     type="text"
                     inputMode="numeric"
+                    maxLength={15}
                     value={formulario.presupuesto}
                     onChange={(evento) => cambiar('presupuesto', evento.target.value)}
                     aria-invalid={errores.presupuesto ? true : undefined}

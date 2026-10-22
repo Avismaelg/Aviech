@@ -30,7 +30,11 @@ export function ParticulasHero() {
     const seccion = lienzo.closest('section')
     const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const tactil = window.matchMedia('(pointer: coarse)').matches
-    const ligero = tactil || (navigator.hardwareConcurrency || 8) <= 4
+    const memoria = (navigator as Navigator & { deviceMemory?: number }).deviceMemory
+    const ligero =
+      tactil ||
+      (navigator.hardwareConcurrency || 8) <= 4 ||
+      (typeof memoria === 'number' && memoria <= 4)
     const cantidad = ligero ? 24 : 52
     const distanciaMaxima = ligero ? 92 : 122
 

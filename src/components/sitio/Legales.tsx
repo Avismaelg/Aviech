@@ -37,7 +37,7 @@ const DOCUMENTOS: Record<TipoLegal, Documento> = {
         parrafos: [
           'A través del formulario comercial: nombre, empresa (opcional), correo, teléfono (opcional), servicio de interés, descripción del problema, plazo estimado, presupuesto orientativo y la aceptación del consentimiento.',
           'De forma técnica, nuestros proveedores registran la dirección IP, la fecha, el navegador y los eventos necesarios para operar el sitio, prevenir abuso y diagnosticar fallos. No usamos estos registros para publicidad.',
-          'El portal de talento tiene su propio formulario y su propio aviso de privacidad. Los datos de candidatos y empresas se tratan por separado y no se mezclan con las solicitudes comerciales.',
+          'El portal de talento tiene su propio formulario y consentimiento. Los datos de candidatos y empresas se tratan por separado, no se mezclan con las solicitudes comerciales y se rigen por esta misma política.',
         ],
       },
       {
@@ -182,11 +182,19 @@ export function PaginaLegal({ tipo }: { tipo: TipoLegal }) {
     const meta = document.querySelector('meta[name="description"]')
     const descripcionAnterior = meta?.getAttribute('content') ?? ''
     meta?.setAttribute('content', documento.descripcion)
+    const canonicalAnterior = document.querySelector('link[rel="canonical"]')
+    canonicalAnterior?.remove()
+    const canonical = document.createElement('link')
+    canonical.rel = 'canonical'
+    canonical.href = `${window.location.origin}${tipo === 'privacidad' ? '/privacidad' : '/terminos'}`
+    document.head.appendChild(canonical)
     return () => {
       document.title = tituloAnterior
       if (meta) meta.setAttribute('content', descripcionAnterior)
+      canonical.remove()
+      if (canonicalAnterior) document.head.appendChild(canonicalAnterior)
     }
-  }, [documento])
+  }, [documento, tipo])
 
   return (
     <div className="sitio-comercial min-h-screen bg-white text-grafito">

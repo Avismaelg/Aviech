@@ -1,5 +1,6 @@
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
+import { NoEncontrada } from './components/NoEncontrada'
 import './index.css'
 
 // Rutas del proyecto:
@@ -28,6 +29,7 @@ const SECCIONES_PANEL = [
 
 const ruta = window.location.pathname.replace(/\/+$/, '') || '/'
 const seccionAntigua = window.location.hash.replace(/^#\/?/, '')
+const esInicio = ruta === '/'
 const esSolicitudPublica = /^\/solicitud$/i.test(ruta)
 const esTalentoPublico = /^\/talento$/i.test(ruta)
 const esPanel = /^\/panel$/i.test(ruta)
@@ -35,11 +37,7 @@ const esPrivacidad = /^\/privacidad$/i.test(ruta)
 const esTerminos = /^\/terminos$/i.test(ruta)
 
 const redirigirAlPanel =
-  ruta === '/' &&
-  !esSolicitudPublica &&
-  !esTalentoPublico &&
-  !esPanel &&
-  SECCIONES_PANEL.includes(seccionAntigua as (typeof SECCIONES_PANEL)[number])
+  esInicio && SECCIONES_PANEL.includes(seccionAntigua as (typeof SECCIONES_PANEL)[number])
 
 const Pagina = esSolicitudPublica
   ? lazy(() =>
@@ -59,9 +57,11 @@ const Pagina = esSolicitudPublica
           ? lazy(() =>
               import('./components/sitio/Legales.tsx').then((modulo) => ({ default: modulo.PaginaTerminos })),
             )
-          : lazy(() =>
-              import('./components/sitio/SitioPublico.tsx').then((modulo) => ({ default: modulo.SitioPublico })),
-            )
+          : esInicio
+            ? lazy(() =>
+                import('./components/sitio/SitioPublico.tsx').then((modulo) => ({ default: modulo.SitioPublico })),
+              )
+            : NoEncontrada
 
 function arrancar() {
   createRoot(document.getElementById('root')!).render(

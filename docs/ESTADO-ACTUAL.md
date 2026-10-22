@@ -1,9 +1,25 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 21-oct-2026 (12.ª sesión: interactividad del sitio y modelo de IA configurable, en local)
+> Última actualización: 22-oct-2026 (13.ª sesión: auditoría y correcciones, en local)
 
 ## 📌 Punto de continuación
 
+- **Auditoría y correcciones (13.ª sesión, 22 oct, local):** revisión completa de Worker,
+  formularios, panel, facturación, PWA y textos legales. Se corrigieron los enlaces
+  «Entrar al panel» que volvían a `/`, `/talento` ya no lleva `noindex` y tiene canónica
+  propia, el presupuesto vacío en Telegram, el subtotal de facturas con líneas inválidas,
+  el NCF duplicado (comprobación en el panel + trigger/índice 013), las fechas imposibles,
+  las URLs privadas o con credenciales, los topes de lectura de páginas, las descargas que
+  revocaban el objeto demasiado pronto y la sesión que podía quedarse cargando. Se añadieron
+  iconos PNG 192/512 y `apple-touch-icon`, cabeceras de seguridad y caché (`_headers`),
+  página 404 real (`404.html` + `_redirects`, estado HTTP 404) y `noindex`, formato
+  dominicano de presupuesto (`1.500,50`) y validación de `sitio_web`. Validación local:
+  `npm run build`, `npm run lint`, `node --check`, `wrangler deploy --dry-run`, sitio
+  **9/9**, interacciones **6/6**, PWA **5/5**, `wrangler dev` con 200 en las rutas
+  conocidas y 404 real en las desconocidas, y verificación específica sin errores de
+  consola. **No publicado:** pendiente de autorización; producción sigue con el build
+  anterior y el service worker `avitech-v2026-10-21-lanzamiento` (el local sube a
+  `avitech-v2026-10-22-auditoria`).
 - **Interactividad y modelo IA (12.ª sesión, 21 oct, local):** hero con red de
   partículas, parallax 3D y pulso al clic; tarjetas de servicio con inclinación,
   brillo y detalle; aparición de secciones al hacer scroll; microinteracciones en
@@ -11,9 +27,8 @@
   ligeros, y limpia listeners/frames. El modelo de Workers AI queda configurable con
   `IA_MODELO` y overrides `IA_MODELO_ASISTENTE`, `IA_MODELO_SOLICITUDES` e
   `IA_MODELO_TALENTO`. Validación: hero, interacciones y **sitio 9/9**, 0 errores de
-  consola. **No publicado:** pendiente de autorización; producción sigue con el build
-  anterior y el service worker `avitech-v2026-10-21-lanzamiento` (el local sube a
-  `avitech-v2026-10-21-interactivo`).
+  consola. En esa sesión quedó en local, pendiente de autorización; el service worker
+  local era `avitech-v2026-10-21-interactivo`.
 - **Sitio comercial (11.ª sesión, 21 oct):** nueva portada pública en `/` con la paleta
   azul del brief (marino, eléctrico y verde), hero, cuatro servicios, seis
   necesidades, proceso, tres demostraciones funcionales, equipo, cuatro paquetes en
@@ -156,9 +171,10 @@
 8. Para publicar cambios: `git push` a `main`; Cloudflare despliega solo.
 9. Si agregas una migración, créala como `supabase/sql/011_....sql`; el push la aplica.
 
-**Pruebas guardadas:** seis pruebas de humo en `docs/pruebas/` (CRM, Talento,
-Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
-`docs/pruebas/README.md`. No usan la base real (datos simulados) ni contienen secretos.
+**Pruebas guardadas:** ocho pruebas de humo en `docs/pruebas/` (CRM, Talento,
+Auditor SEO, Prospección, PWA, Solicitudes, Sitio comercial e Interacciones), con
+instrucciones en `docs/pruebas/README.md`. No usan la base real (datos simulados)
+ni contienen secretos.
 
 ## ✅ El panel está PUBLICADO y en uso
 
@@ -279,7 +295,7 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   `talento_limites_publicos` (contadores antiabuso, sin acceso para `anon`). Todas con
   RLS: solo usuarios autenticados; un visitante anónimo no ve nada. Bucket privado
   `talento-cv`.
-- Las migraciones viven en **`supabase/sql/`** (001…012) y se aplican solas con el
+- Las migraciones viven en **`supabase/sql/`** (001…013) y se aplican solas con el
   workflow **«Migrar base de datos»** en cada push que cambie esa carpeta.
 - Cada ejecución deja un reporte en **`supabase/verificacion-ultima.txt`**
   (tablas, columnas, conteos, prueba de inserciones que se revierte y prueba de RLS).
@@ -313,6 +329,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   parciales de las listas públicas. El workflow verifica la RPC nueva, la ausencia de
   la vieja, la tabla de límites y el comportamiento del token en una transacción
   revertida. Reporte: `supabase/verificacion-ultima.txt`.
+- **Migración 013 (NCF/e-NCF único), 22-oct-2026:** crea el trigger
+  `facturas_ncf_unico` y, si no hay duplicados históricos, el índice único
+  `facturas_numero_unico`. El panel ya comprueba el número antes de guardar; la base
+  lo refuerza para evitar carreras entre dos pestañas. **Pendiente de aplicar:** se
+  ejecutará con el próximo push autorizado. Si existieran NCF duplicados de antes, la
+  migración avisa y no crea el índice, pero el trigger sigue bloqueando los nuevos.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -496,3 +518,9 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
     clic, tarjetas 3D, scroll reveal y microinteracciones. Pendiente: tu visto bueno
     para publicarlo. El modelo de IA se cambia con `IA_MODELO` (ver
     **`docs/IA-MODELOS.md`**).
+15. **Correcciones de auditoría (13.ª sesión, 22-oct, en local):** enlaces al panel,
+    canónica de Talento, 404, presupuesto dominicano, NCF único (013), fechas/URLs,
+    descargas, sesión, iconos PWA y cabeceras `_headers`. Pendiente: **autorizar la
+    publicación** (`git pull --rebase`, `git push`), aplicar la migración 013 y
+    verificar en producción el hero, `/panel`, `/talento`, legales, PWA y el flujo de
+    una solicitud.
