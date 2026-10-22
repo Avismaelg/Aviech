@@ -1,6 +1,6 @@
 # Verificación de la base de datos
 
-Fecha: 2026-10-21 22:52 UTC
+Fecha: 2026-10-22 14:29 UTC
 
 ## Tablas de public
                   List of relations
@@ -323,13 +323,13 @@ BEGIN
 SET
                                                                                                                                                                        finalizar_solicitud                                                                                                                                                                       
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- {"repetida": false, "cliente_id": "3a756bf4-2ac1-4b61-82a4-29c5d59228cf", "empresa_id": "3fb5c224-b9ee-421f-9e34-958537b1775a", "contacto_id": "d01142a2-88db-4a15-aff2-45269fad40b9", "servicio_id": "5db91525-b4ee-49e6-9aa5-8579ee70e02e", "solicitud_id": "b896ab49-5701-462f-8605-a589d909705b", "oportunidad_id": "1772e2d7-d042-466e-8072-b3f984840b44"}
+ {"repetida": false, "cliente_id": "bd7dc9a4-88ce-49b1-ac66-0743fd20cfd9", "empresa_id": "99d12f5b-a258-4600-83a6-9fac973c7440", "contacto_id": "06986694-6803-4824-ab41-66321b286961", "servicio_id": "80249384-ac88-4647-b801-fd36cb4b713f", "solicitud_id": "9a10b395-422f-4e91-bcb3-a6f61d82d66b", "oportunidad_id": "a629f1c5-973c-43fa-900a-47f179f6166e"}
 (1 row)
 
 ROLLBACK
 ## RPC pública de Talento como anónimo (se revierte)
 BEGIN
 SET
-NOTICE:  Talento público: candidato 30c4d870-7a05-400e-9b4b-17bc6186f605, empresa 135f3481-fd69-4cd5-a4f4-62cac8a3258a, vacante bc8c09d6-fc5b-4746-b86d-8dc9c59d64fe, IA {"vacantes": [], "aplicadas": 0, "existentes": 0}
+NOTICE:  Talento público: candidato 9e4a931b-de62-4021-9e05-cb7624f024f7, empresa e8cba43e-2d92-4344-9872-93f3e48ce8dc, vacante 2d8afab3-5e05-47ee-bc0f-908bea19d1aa, IA {"vacantes": [], "aplicadas": 0, "existentes": 0}
 DO
 ROLLBACK
