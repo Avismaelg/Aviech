@@ -206,8 +206,8 @@ export function Hero({ onSolicitar }: { onSolicitar: () => void }) {
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="cuadricula-sitio absolute inset-0 opacity-70" />
         <ParticulasHero />
-        <div className="hero-glow hero-glow-a absolute -top-44 right-[-12%] h-[540px] w-[540px] rounded-full bg-electrico/10 blur-3xl" />
-        <div className="hero-glow hero-glow-b absolute -bottom-52 left-[-14%] h-[460px] w-[460px] rounded-full bg-verde/10 blur-3xl" />
+        <div className="hero-glow hero-glow-a absolute -top-44 right-[-12%] h-[540px] w-[540px] rounded-full bg-electrico/10 blur-2xl sm:blur-3xl" />
+        <div className="hero-glow hero-glow-b absolute -bottom-52 left-[-14%] h-[460px] w-[460px] rounded-full bg-verde/10 blur-2xl sm:blur-3xl" />
       </div>
 
       <div
@@ -222,7 +222,7 @@ export function Hero({ onSolicitar }: { onSolicitar: () => void }) {
             Digitalización empresarial · República Dominicana
           </p>
 
-          <h1 className="mt-6 text-[40px] leading-[1.02] font-semibold tracking-[-0.04em] text-marino sm:text-[52px] lg:text-[58px]">
+          <h1 className="mt-6 text-balance text-[40px] leading-[1.02] font-semibold tracking-[-0.04em] text-marino sm:text-[52px] lg:text-[58px]">
             Digitalizamos tu empresa.{' '}
             <span className="text-electrico">Simplificamos tu operación.</span>
           </h1>
@@ -340,13 +340,14 @@ function VistaProducto({
         </div>
       </div>
 
-        <div className="hero-capa hero-capa-3 absolute right-0 bottom-0 flex items-center gap-2 rounded-xl border border-borde-azul bg-white px-3 py-2 shadow-[0_18px_40px_-24px_rgba(0,59,114,0.55)]">
+        <div className="hero-capa hero-capa-3 absolute -top-2 -right-2 flex items-center gap-2 rounded-xl border border-borde-azul bg-white px-3 py-2 shadow-[0_18px_40px_-24px_rgba(0,59,114,0.55)]">
           <CircleCheck size={18} className="text-verde" />
           <div>
             <p className="text-[10px] font-semibold text-grafito">Solicitud recibida</p>
             <p className="text-[9px] text-acero">Asignada al equipo</p>
           </div>
         </div>
+        <span aria-hidden className="hero-orbe" />
         <span className="hero-pulso" />
       </div>
     </div>
@@ -421,7 +422,7 @@ function TarjetaServicio({
       <button
         type="button"
         onClick={() => onServicio(servicio.id)}
-        className="mt-4 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-marino transition-colors hover:text-electrico-texto"
+        className="mt-auto inline-flex items-center gap-1.5 self-start pt-4 text-sm font-semibold text-marino transition-colors hover:text-electrico-texto"
       >
         Consultar este servicio
         <ArrowRight
@@ -456,11 +457,37 @@ export function Servicios({ onServicio }: { onServicio: (servicio: IdServicio) =
 }
 
 export function Necesidades({ onNecesidad }: { onNecesidad: (servicio: IdServicio) => void }) {
+  const seccionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const seccion = seccionRef.current
+    if (!seccion) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia('(pointer: coarse)').matches) return
+
+    const seccionNecesidades: HTMLElement = seccion
+    let frame = 0
+    function alScroll() {
+      if (frame) return
+      frame = window.requestAnimationFrame(() => {
+        frame = 0
+        seccionNecesidades.style.setProperty('--scroll', String(Math.min(window.scrollY, 600)))
+      })
+    }
+    alScroll()
+    window.addEventListener('scroll', alScroll, { passive: true })
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', alScroll)
+      seccionNecesidades.style.removeProperty('--scroll')
+    }
+  }, [])
+
   return (
-    <section id="necesidades" className="relative overflow-hidden bg-marino py-20 text-white sm:py-28">
+    <section ref={seccionRef} id="necesidades" className="relative overflow-hidden bg-marino py-20 text-white sm:py-28">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 right-[-10%] h-[420px] w-[420px] rounded-full bg-electrico/20 blur-3xl" />
-        <div className="absolute -bottom-40 left-[-10%] h-[360px] w-[360px] rounded-full bg-verde/10 blur-3xl" />
+        <div className="glow-necesidades-a absolute -top-40 right-[-10%] h-[420px] w-[420px] rounded-full bg-electrico/20 blur-3xl" />
+        <div className="glow-necesidades-b absolute -bottom-40 left-[-10%] h-[360px] w-[360px] rounded-full bg-verde/10 blur-3xl" />
       </div>
 
       <div className={cx(CONTENEDOR, 'revelar relative')} data-revelar>

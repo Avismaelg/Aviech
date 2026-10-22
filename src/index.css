@@ -150,7 +150,34 @@ html:has(.sitio-comercial) {
   transform: translate3d(0, calc(var(--scroll, 0) * -0.04px), 0);
 }
 
+.glow-necesidades-a {
+  transform: translate3d(0, calc(var(--scroll, 0) * 0.05px), 0);
+}
+
+.glow-necesidades-b {
+  transform: translate3d(0, calc(var(--scroll, 0) * -0.03px), 0);
+}
+
+.hero-orbe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 118px;
+  height: 118px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.92), rgba(0, 123, 255, 0.55) 38%, rgba(0, 59, 114, 0.28) 68%, transparent 72%);
+  box-shadow:
+    0 0 64px 10px rgba(0, 123, 255, 0.26),
+    inset 0 0 22px rgba(255, 255, 255, 0.32);
+  transform: translate(-50%, -50%) translate3d(calc(var(--px, 0) * -6px), calc(var(--py, 0) * -4px), 0);
+  transition: transform 0.35s ease-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .hero-escena {
+
   --px: 0;
   --py: 0;
   transform: perspective(1200px) rotateX(calc(var(--py) * -3deg)) rotateY(calc(var(--px) * 5deg));
@@ -202,7 +229,7 @@ html:has(.sitio-comercial) {
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(3.6);
+    transform: translate(-50%, -50%) scale(2.8);
   }
 }
 
@@ -219,9 +246,16 @@ html:has(.sitio-comercial) {
 @media (prefers-reduced-motion: reduce) {
   .hero-glow,
   .hero-escena,
-  .hero-capa {
+  .hero-capa,
+  .hero-orbe,
+  .glow-necesidades-a,
+  .glow-necesidades-b {
     transform: none;
     transition: none;
+  }
+
+  .hero-orbe {
+    transform: translate(-50%, -50%);
   }
 
   .hero-escena[data-reaccion='true'] .hero-pulso,
