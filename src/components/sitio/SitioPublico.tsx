@@ -19,7 +19,7 @@ import { BOTON_PRIMARIO, CONTENEDOR } from './estilos'
 
 const MENSAJE_WHATSAPP = encodeURIComponent('Hola, quiero información sobre los servicios de AviTech Solutions Group.')
 const BOTON_CABECERA =
-  'inline-flex items-center gap-1.5 rounded-xl bg-marino px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-white transition-colors hover:bg-marino-oscuro'
+  'boton-primario inline-flex items-center gap-1.5 rounded-xl bg-marino px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-white transition-colors hover:bg-marino-oscuro'
 
 export function SitioPublico() {
   const [menuAbierto, setMenuAbierto] = useState(false)
@@ -73,6 +73,34 @@ export function SitioPublico() {
     document.getElementById(id)?.scrollIntoView({ block: 'start' })
   }, [])
 
+  // Aparición moderada de las secciones al entrar en pantalla. Si el navegador
+  // no soporta el observador o se pidió reducir movimiento, todo queda visible.
+  useEffect(() => {
+    const nodos = Array.from(document.querySelectorAll<HTMLElement>('[data-revelar]'))
+    if (!nodos.length) return
+
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      !('IntersectionObserver' in window)
+    ) {
+      nodos.forEach((nodo) => nodo.setAttribute('data-visible', 'true'))
+      return
+    }
+
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          if (!entrada.isIntersecting) continue
+          entrada.target.setAttribute('data-visible', 'true')
+          observador.unobserve(entrada.target)
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    )
+    nodos.forEach((nodo) => observador.observe(nodo))
+    return () => observador.disconnect()
+  }, [])
+
   function irAContacto(servicio?: IdServicio) {
     if (servicio) setSolicitud({ servicio })
     setMenuAbierto(false)
@@ -109,7 +137,7 @@ export function SitioPublico() {
                 key={enlace.href}
                 href={enlace.href}
                 className={cx(
-                  'text-sm font-medium text-acero transition-colors hover:text-marino',
+                  'enlace-nav text-sm font-medium text-acero transition-colors hover:text-marino',
                   enlace.href === '#preguntas' && 'hidden xl:inline',
                 )}
               >

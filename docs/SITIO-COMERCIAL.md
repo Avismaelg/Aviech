@@ -130,6 +130,25 @@ sirven como respaldo. No inventar números ni correos.
 - `prefers-reduced-motion` desactiva el desplazamiento suave.
 - Responsive probado a 390, 768, 1024 y 1440 px sin desbordes horizontales.
 
+## Interactividad
+
+- **Hero:** canvas de partículas y conexiones (24 en móvil/equipos ligeros, 52 en
+  escritorio), parallax 3D de las capas del producto con el puntero, glows con parallax
+  de scroll limitado y pulso al hacer clic. Sin Three.js: CSS 3D, canvas y
+  `requestAnimationFrame`.
+- **Tarjetas:** inclinación sutil, brillo radial que sigue al cursor y una línea de
+  detalle en hover/foco. En pantallas táctiles el detalle queda visible y la
+  inclinación se desactiva.
+- **Scroll:** aparición moderada de secciones con `IntersectionObserver` (solo una vez).
+- **Botones/navegación:** subrayado degradado en la nav, press visible y desplazamiento
+  breve del icono.
+- **Rendimiento y accesibilidad:** el canvas se pausa fuera de pantalla o con la
+  pestaña oculta; con `prefers-reduced-motion`, puntero táctil o equipos de pocos
+  recursos se reducen o desactivan los efectos; todos los listeners y frames se
+  limpian al desmontar.
+- **Validación:** `docs/pruebas/prueba-interaccion.js` y la prueba del sitio. El
+  rediseño interactivo está en **local, pendiente de autorización para publicar**.
+
 ## SEO técnico
 
 - `index.html`: título, descripción, `og:title`, `og:description`, `og:locale` y
@@ -146,7 +165,7 @@ sirven como respaldo. No inventar números ni correos.
 ## PWA y rutas del panel
 
 - El manifest abre en **`/panel`**; el service worker cachea `/`, `/panel` y el
-  armazón. Versión: `avitech-v2026-10-21-lanzamiento`.
+  armazón. Versión: `avitech-v2026-10-21-interactivo`.
 - `main.tsx` carga solo el paquete de la ruta (`SitioPublico`, `App`,
   `SolicitudPublica` o `TalentoPublico`).
 - Enlaces antiguos del panel: si la ruta es `/` y el hash es una sección conocida
@@ -200,3 +219,9 @@ confirmación con folio, el reinicio, el menú móvil sin desbordes, las página
    publica; alternativa manual: `npm run build` + `npx wrangler deploy`.
 8. Activar el aviso por Telegram si se quiere respuesta inmediata a cada solicitud
    (ver `docs/LANZAMIENTO.md`).
+9. **Rediseño interactivo (12.ª sesión):** hero con partículas/parallax/clic, tarjetas
+   3D, scroll reveal y microinteracciones. Está en local, **sin publicar**; requiere
+   el visto bueno del usuario. La validación está en
+   `docs/pruebas/prueba-interaccion.js`.
+10. **Modelo de IA configurable:** `IA_MODELO` global y overrides por función; ver
+    `docs/IA-MODELOS.md`.

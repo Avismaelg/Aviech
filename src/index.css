@@ -136,6 +136,249 @@ html:has(.sitio-comercial) {
   mask-image: radial-gradient(ellipse at 50% 35%, #000 25%, transparent 78%);
 }
 
+/* ---------- Hero interactivo ---------- */
+
+.hero-glow {
+  will-change: transform;
+}
+
+.hero-glow-a {
+  transform: translate3d(0, calc(var(--scroll, 0) * 0.06px), 0);
+}
+
+.hero-glow-b {
+  transform: translate3d(0, calc(var(--scroll, 0) * -0.04px), 0);
+}
+
+.hero-escena {
+  --px: 0;
+  --py: 0;
+  transform: perspective(1200px) rotateX(calc(var(--py) * -3deg)) rotateY(calc(var(--px) * 5deg));
+  transform-style: preserve-3d;
+}
+
+.hero-capa {
+  will-change: transform;
+  transition: transform 0.18s ease-out;
+}
+
+.hero-capa-1 {
+  transform: translate3d(calc(var(--px) * -12px), calc(var(--py) * -8px), 0) rotate(-1deg);
+}
+
+.hero-capa-2 {
+  transform: translate3d(calc(var(--px) * 16px), calc(var(--py) * 10px), 0) rotate(1deg);
+}
+
+.hero-capa-3 {
+  transform: translate3d(calc(var(--px) * 24px), calc(var(--py) * 14px), 0);
+}
+
+.hero-pulso {
+  position: absolute;
+  left: var(--click-x, 50%);
+  top: var(--click-y, 50%);
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgb(0 123 255 / 0.55);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.4);
+}
+
+.hero-escena[data-reaccion='true'] .hero-pulso {
+  animation: pulso-hero 0.72s ease-out both;
+}
+
+.hero-escena[data-reaccion='true'] .hero-capa-2 {
+  animation: latido-hero 0.55s ease-out;
+}
+
+@keyframes pulso-hero {
+  0% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.6);
+  }
+}
+
+@keyframes latido-hero {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow,
+  .hero-escena,
+  .hero-capa {
+    transform: none;
+    transition: none;
+  }
+
+  .hero-escena[data-reaccion='true'] .hero-pulso,
+  .hero-escena[data-reaccion='true'] .hero-capa-2 {
+    animation: none;
+  }
+}
+
+/* ---------- Tarjetas interactivas ---------- */
+
+.tarjeta-3d {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tarjeta-3d:hover,
+.tarjeta-3d:focus-within {
+  border-color: rgb(0 123 255 / 0.45);
+  box-shadow: 0 24px 50px -30px rgb(0 59 114 / 0.35);
+}
+
+.tarjeta-brillo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(0 123 255 / 0.15),
+    transparent 45%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.tarjeta-3d:hover .tarjeta-brillo,
+.tarjeta-3d:focus-within .tarjeta-brillo {
+  opacity: 1;
+}
+
+.tarjeta-3d > :not(.tarjeta-brillo) {
+  position: relative;
+  z-index: 1;
+}
+
+.detalle-tarjeta {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tarjeta-3d:hover .detalle-tarjeta,
+.tarjeta-3d:focus-within .detalle-tarjeta {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .detalle-tarjeta {
+    opacity: 1;
+  }
+}
+
+/* ---------- Aparición al hacer scroll ---------- */
+
+[data-revelar] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.55s ease-out,
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-revelar][data-visible='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Navegación y botones ---------- */
+
+.enlace-nav {
+  position: relative;
+}
+
+.enlace-nav::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -7px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #007bff, #21c063);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.enlace-nav:hover::after,
+.enlace-nav:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.boton-primario,
+.boton-secundario {
+  transition:
+    transform 0.12s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.boton-primario:active,
+.boton-secundario:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.boton-primario svg,
+.boton-secundario svg {
+  transition: transform 0.15s ease;
+}
+
+.boton-primario:hover svg,
+.boton-secundario:hover svg {
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-revelar] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .tarjeta-3d {
+    transform: none;
+    transition: none;
+  }
+
+  .tarjeta-brillo,
+  .detalle-tarjeta,
+  .enlace-nav::after,
+  .boton-primario,
+  .boton-secundario,
+  .boton-primario svg,
+  .boton-secundario svg {
+    transition: none;
+  }
+
+  .boton-primario:active,
+  .boton-secundario:active {
+    transform: none;
+  }
+}
+
 /* Documento de factura: siempre con aspecto de papel (claro) */
 .documento-factura {
   color-scheme: light;

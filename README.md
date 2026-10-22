@@ -23,7 +23,7 @@ Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **
 
 | Módulo | Qué hace |
 |---|---|
-| **Sitio comercial** (`/`) | Portada pública con hero, cuatro servicios (web, portales, automatización y soporte), seis necesidades, proceso de trabajo, tres demostraciones funcionales, equipo, paquetes en RD$, preguntas frecuentes, privacidad/términos y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA y puede avisar al equipo por Telegram (opcional). Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
+| **Sitio comercial** (`/`) | Portada pública con hero interactivo (partículas, parallax 3D y pulso al clic), cuatro servicios con tarjetas 3D, seis necesidades, proceso de trabajo, tres demostraciones funcionales, equipo, paquetes en RD$, preguntas frecuentes, privacidad/términos y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA y puede avisar al equipo por Telegram (opcional). Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
@@ -168,6 +168,7 @@ docs/                     # plan, estado, despliegue, respaldos, migraciones
 - `docs/SITIO-COMERCIAL.md` — portada pública, contenido, paquetes, formulario y configuración
 - `docs/LANZAMIENTO.md` — qué falta para operar: dominio, correo, WhatsApp, Telegram y primeros clientes
 - `docs/COMERCIAL.md` — propuesta, contrato, mensajes y objeciones
+- `docs/IA-MODELOS.md` — cómo cambiar el modelo de Workers AI y probar alternativas
 - `docs/CRM.md` — guía del módulo CRM (pipeline, empresas, contactos y actividades)
 - `docs/TALENTO.md` — candidatos, empresas empleadoras, vacantes, portal público, CV privado, matching y postulación asistida con IA
 - `docs/SEO.md` — guía del Auditor SEO (gratis, sin claves; Worker + PageSpeed)

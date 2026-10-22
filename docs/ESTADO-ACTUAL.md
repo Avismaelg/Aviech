@@ -1,9 +1,19 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 21-oct-2026 (11.ª sesión: sitio comercial público, panel en `/panel` y formulario conectado)
+> Última actualización: 21-oct-2026 (12.ª sesión: interactividad del sitio y modelo de IA configurable, en local)
 
 ## 📌 Punto de continuación
 
+- **Interactividad y modelo IA (12.ª sesión, 21 oct, local):** hero con red de
+  partículas, parallax 3D y pulso al clic; tarjetas de servicio con inclinación,
+  brillo y detalle; aparición de secciones al hacer scroll; microinteracciones en
+  botones y navegación. Todo respeta `prefers-reduced-motion`, táctil y equipos
+  ligeros, y limpia listeners/frames. El modelo de Workers AI queda configurable con
+  `IA_MODELO` y overrides `IA_MODELO_ASISTENTE`, `IA_MODELO_SOLICITUDES` e
+  `IA_MODELO_TALENTO`. Validación: hero, interacciones y **sitio 9/9**, 0 errores de
+  consola. **No publicado:** pendiente de autorización; producción sigue con el build
+  anterior y el service worker `avitech-v2026-10-21-lanzamiento` (el local sube a
+  `avitech-v2026-10-21-interactivo`).
 - **Sitio comercial (11.ª sesión, 21 oct):** nueva portada pública en `/` con la paleta
   azul del brief (marino, eléctrico y verde), hero, cuatro servicios, seis
   necesidades, proceso, tres demostraciones funcionales, equipo, cuatro paquetes en
@@ -340,6 +350,12 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
   `urgencia`, presupuesto y consentimiento), confirmación con folio, reinicio, menú
   móvil sin desbordes, `/panel` y redirección `/#crm` → `/panel#crm` — **0 errores de
   consola**. Script: `docs/pruebas/prueba-sitio.js`; capturas en `capturas-sitio`.
+- **Prueba de interacción** (21-oct, 12.ª sesión): parallax del hero, canvas de
+  partículas sin bloquear clics, pulso al clic, inclinación/brillo/detalle de tarjetas,
+  foco de teclado, subrayado de navegación, desplazamiento del icono del botón,
+  aparición al scroll, móvil sin desbordes y movimiento reducido (transform `none`,
+  contenido visible) — **0 errores de consola**. Script:
+  `docs/pruebas/prueba-interaccion.js`; capturas en `capturas-sitio`.
 - **Prueba de Talento** (20–21 oct, 8.ª a 10.ª sesión): 12 pasos con Supabase, Storage y
   Worker simulados — panel interno (métricas, candidato, empresa, matching con IA,
   kanban, entrevista, contratación y **mantenimiento de CV**) y portal público (perfil
@@ -474,3 +490,7 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
     `sitemap.xml`), revisar los rangos de precios y añadir una imagen Open Graph.
     Guía de lanzamiento: **`docs/LANZAMIENTO.md`**; manual comercial:
     **`docs/COMERCIAL.md`**.
+14. **Rediseño interactivo (12.ª sesión, en local):** hero con partículas/parallax/
+    clic, tarjetas 3D, scroll reveal y microinteracciones. Pendiente: tu visto bueno
+    para publicarlo. El modelo de IA se cambia con `IA_MODELO` (ver
+    **`docs/IA-MODELOS.md`**).

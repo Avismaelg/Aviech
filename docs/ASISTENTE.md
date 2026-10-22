@@ -1,6 +1,9 @@
 # Asistente de IA — chat interno
 
 > Última actualización: 20-oct-2026.
+>
+> El modelo de Workers AI es configurable con `IA_MODELO` y overrides por función;
+> ver **`docs/IA-MODELOS.md`**.
 
 ## Qué es
 

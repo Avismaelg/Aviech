@@ -1,6 +1,6 @@
 # Pruebas de navegador
 
-> Siete pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Ocho pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
 ## Sitio comercial (`prueba-sitio.js`)
@@ -20,6 +20,25 @@ móvil sin desbordes a 390 px, panel en `/panel` y redirección de `/#crm` a
 `docs/pruebas/prueba-sitio.js` con la herramienta de Playwright
 (`browser_run_code_unsafe`, parámetro `filename`). Capturas en
 `C:\Users\User\avitech\capturas-sitio`.
+
+## Interactividad (`prueba-interaccion.js`)
+
+Prueba de humo del rediseño interactivo del sitio: hero con partículas y parallax,
+tarjetas 3D, navegación, botones, aparición al scroll, móvil y movimiento reducido.
+No necesita datos ni credenciales.
+
+**Qué comprueba:** el canvas de partículas tiene tamaño y no bloquea clics; el parallax
+cambia `--px`/`--py` al mover el ratón; el clic activa `data-reaccion`; la tarjeta se
+inclina y muestra brillo/detalle con hover y con foco de teclado; la navegación muestra
+su subrayado; el botón desplaza su icono; la sección de paquetes no se revela hasta
+entrar en pantalla y luego queda visible; móvil a 390 px sin desbordes; con
+`prefers-reduced-motion` todo el contenido está visible y los transforms quedan en
+`none`. Devuelve JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
+
+**Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el
+puerto 5181 y pide en OpenCode `docs/pruebas/prueba-interaccion.js` con la herramienta
+de Playwright (`browser_run_code_unsafe`, parámetro `filename`). Capturas en
+`C:\Users\User\avitech\capturas-sitio` (`21` a `24`).
 
 ## CRM (`prueba-crm.js`)
 

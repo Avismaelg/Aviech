@@ -179,7 +179,10 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
 
   return (
     <section id="contacto" className="border-t border-borde-azul/70 bg-niebla py-20 sm:py-28">
-      <div className={cx(CONTENEDOR, 'grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14')}>
+      <div
+        className={cx(CONTENEDOR, 'revelar grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14')}
+        data-revelar
+      >
         <div>
           <p className={ETIQUETA}>Contacto</p>
           <h2 className={TITULO_SECCION}>Cuéntanos qué necesita tu empresa.</h2>

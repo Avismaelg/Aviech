@@ -37,8 +37,15 @@ const MAX_PAGINAS_CONTACTO = 2
 const MAX_PALABRAS_HTML = LIMITE_HTML
 const ORIGENES_EXACTOS = ['https://aviech.avismael-eg.workers.dev']
 
-// Asistente: modelo incluido en Workers AI y límites para cuidar la cuota gratis.
-const MODELO_IA = '@cf/google/gemma-4-26b-a4b-it'
+// Workers AI: modelo por defecto y límites para cuidar la cuota gratis.
+// El modelo se puede cambiar sin tocar código con IA_MODELO (global) o con
+// IA_MODELO_ASISTENTE, IA_MODELO_SOLICITUDES e IA_MODELO_TALENTO (por función).
+const MODELO_IA_POR_DEFECTO = '@cf/google/gemma-4-26b-a4b-it'
+
+function modeloIA(env, especifico) {
+  const elegido = (especifico && env[especifico]) || env.IA_MODELO || MODELO_IA_POR_DEFECTO
+  return String(elegido).trim().slice(0, 120) || MODELO_IA_POR_DEFECTO
+}
 const MAX_MENSAJES_IA = 12
 const MAX_CARACTERES_MENSAJE_IA = 3_000
 const MAX_CARACTERES_HISTORIAL_IA = 12_000
@@ -846,9 +853,10 @@ async function conversarConIA(request, env, usuario) {
   }
 
   const mensajes = await leerMensajesIA(request)
+  const modelo = modeloIA(env, 'IA_MODELO_ASISTENTE')
   let salida
   try {
-    salida = await env.AI.run(MODELO_IA, {
+    salida = await env.AI.run(modelo, {
       messages: [{ role: 'system', content: SISTEMA_IA }, ...mensajes],
       max_tokens: MAX_TOKENS_IA,
       temperature: 0.55,
@@ -866,7 +874,7 @@ async function conversarConIA(request, env, usuario) {
   if (!respuesta) {
     throw conEstado('El asistente no devolvió una respuesta. Inténtalo de nuevo.', 502)
   }
-  return { respuesta, modelo: MODELO_IA }
+  return { respuesta, modelo }
 }
 
 async function leerMensajesIA(request) {
@@ -1269,7 +1277,7 @@ async function postularConIA(request, env) {
 
   let salida
   try {
-    salida = await env.AI.run(MODELO_IA, {
+    salida = await env.AI.run(modeloIA(env, 'IA_MODELO_TALENTO'), {
       messages: [
         { role: 'system', content: SISTEMA_POSTULACION_IA },
         {
@@ -1660,7 +1668,7 @@ async function buscarMatchTalento(request, env, usuario) {
 
   let salida
   try {
-    salida = await env.AI.run(MODELO_IA, {
+    salida = await env.AI.run(modeloIA(env, 'IA_MODELO_TALENTO'), {
       messages: [
         { role: 'system', content: SISTEMA_MATCH },
         {
@@ -1815,7 +1823,7 @@ async function generarPlanSolicitud(env, solicitud) {
 
   let salida
   try {
-    salida = await env.AI.run(MODELO_IA, {
+    salida = await env.AI.run(modeloIA(env, 'IA_MODELO_SOLICITUDES'), {
       messages: [
         { role: 'system', content: SISTEMA_SOLICITUD },
         {

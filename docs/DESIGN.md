@@ -152,10 +152,27 @@ usan como acento de marca ni para botones primarios.
 | `Solicitudes` | Bandeja con 4 tarjetas (2×2 en móvil), búsqueda, filtro por estado y filas con origen, urgencia, estado y acciones. El detalle muestra plan, confianza, datos pendientes, propuesta, correo, informe descargable y enlace a Servicios. |
 | `Solicitud pública` | Página `/solicitud` sin sesión: panel de marca en tinta + formulario de superficie con consentimiento, honeypot invisible y pantalla de éxito con folio. En móvil se oculta el panel de marca y se muestra una cabecera compacta. |
 
+- **Interactividad del sitio (12.ª sesión, 21-oct, local):** el hero usa un canvas de
+  partículas (24 en móvil/equipos ligeros, 52 en escritorio), parallax 3D con el
+  puntero sobre las capas del producto y una reacción de pulso al hacer clic. No se
+  usa Three.js ni ninguna librería de animación: CSS 3D + canvas + `requestAnimationFrame`.
+  Las tarjetas de servicio usan `useTilt` (`--rx`, `--ry`, `--mx`, `--my`), brillo radial
+  y una línea de detalle que aparece con hover o `:focus-within`; en táctil el detalle
+  queda visible y la inclinación se desactiva. Las secciones usan `[data-revelar]` con
+  `IntersectionObserver` (una sola vez) y un `rootMargin` moderado. La navegación tiene
+  subrayado degradado y los botones `boton-primario`/`boton-secundario` tienen press,
+  foco y desplazamiento de icono.
+- **Reglas de rendimiento y accesibilidad:** el canvas se pausa cuando el hero sale de
+  pantalla o la pestaña se oculta; la inclinación y el parallax se desactivan con
+  `prefers-reduced-motion`, puntero táctil o equipos con ≤ 4 núcleos/≤ 4 GB; todos los
+  listeners y frames se limpian al desmontar. Con movimiento reducido las secciones se
+  muestran de inmediato y los transforms quedan en `none`. La prueba
+  `docs/pruebas/prueba-interaccion.js` verifica parallax, clic, partículas, tarjetas,
+  foco, navegación, botones, scroll, móvil y reducción de movimiento.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-21-lanzamiento`.
+  Versión actual: `avitech-v2026-10-21-interactivo`.
 - **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
   que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
   bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
