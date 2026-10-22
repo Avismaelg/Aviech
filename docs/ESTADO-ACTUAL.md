@@ -17,9 +17,12 @@
   `npm run build`, `npm run lint`, `node --check`, `wrangler deploy --dry-run`, sitio
   **9/9**, interacciones **6/6**, PWA **5/5**, `wrangler dev` con 200 en las rutas
   conocidas y 404 real en las desconocidas, y verificación específica sin errores de
-  consola. **No publicado:** pendiente de autorización; producción sigue con el build
-  anterior y el service worker `avitech-v2026-10-21-lanzamiento` (el local sube a
-  `avitech-v2026-10-22-auditoria`).
+  consola. **Publicado el 22-oct-2026 (commit `6961fa1`):** Cloudflare ya sirve el
+  build nuevo y el service worker `avitech-v2026-10-22-auditoria`; verificado en
+  producción (rutas 200, 404 real, canónicas, PWA y API). La migración 013 quedó en
+  cola en GitHub Actions por una degradación del servicio; se aplicará sola al
+  recuperarse (o a mano desde Actions). Mientras tanto, el panel ya bloquea NCF
+  duplicados antes de guardar.
 - **Interactividad y modelo IA (12.ª sesión, 21 oct, local):** hero con red de
   partículas, parallax 3D y pulso al clic; tarjetas de servicio con inclinación,
   brillo y detalle; aparición de secciones al hacer scroll; microinteracciones en
@@ -518,9 +521,10 @@ ni contienen secretos.
     clic, tarjetas 3D, scroll reveal y microinteracciones. Pendiente: tu visto bueno
     para publicarlo. El modelo de IA se cambia con `IA_MODELO` (ver
     **`docs/IA-MODELOS.md`**).
-15. **Correcciones de auditoría (13.ª sesión, 22-oct, en local):** enlaces al panel,
-    canónica de Talento, 404, presupuesto dominicano, NCF único (013), fechas/URLs,
-    descargas, sesión, iconos PWA y cabeceras `_headers`. Pendiente: **autorizar la
-    publicación** (`git pull --rebase`, `git push`), aplicar la migración 013 y
-    verificar en producción el hero, `/panel`, `/talento`, legales, PWA y el flujo de
-    una solicitud.
+15. **Correcciones de auditoría (13.ª sesión, 22-oct):** publicadas en el commit
+    `6961fa1`: enlaces al panel, canónica de Talento, 404 real, presupuesto
+    dominicano, NCF único (013), fechas/URLs, descargas, sesión, iconos PWA y
+    cabeceras `_headers`. Verificado en producción: portada, `/panel`, `/talento`,
+    legales, PWA y 404. Pendiente: confirmar que la migración 013 termine en GitHub
+    Actions (quedó en cola por una degradación) y revisar el reporte
+    `supabase/verificacion-ultima.txt`.
