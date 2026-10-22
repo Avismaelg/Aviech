@@ -51,6 +51,7 @@ npm run dev        # servidor de desarrollo → http://localhost:5173
 npm run build      # compilación de producción (genera dist/)
 npm run preview    # previsualizar la compilación local
 npm run lint       # revisión de código (oxlint)
+npx wrangler --version  # CLI de Cloudflare (dependencia de desarrollo)
 ```
 
 > Regla del equipo: **un solo servidor de desarrollo a la vez**. Al terminar, `Ctrl+C`.
@@ -79,7 +80,8 @@ npm run lint       # revisión de código (oxlint)
 ### Despliegue
 
 Automático con Cloudflare Workers al hacer `git push` a `main`.
-Alternativa manual: `npm run build` + `npx wrangler deploy`.
+Alternativa manual: `npm run build` + `npx wrangler deploy`. Wrangler está fijado como
+dependencia de desarrollo, así que `npx` usa la versión del proyecto.
 Detalles y solución de problemas: **`docs/PUBLICAR-CLOUDFLARE.md`**.
 
 ### Respaldos
