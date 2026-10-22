@@ -1,10 +1,10 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 22-oct-2026 (13.ª sesión: auditoría y correcciones, en local)
+> Última actualización: 22-oct-2026 (13.ª sesión: auditoría, correcciones y publicación)
 
 ## 📌 Punto de continuación
 
-- **Auditoría y correcciones (13.ª sesión, 22 oct, local):** revisión completa de Worker,
+- **Auditoría y correcciones (13.ª sesión, 22 oct, publicada):** revisión completa de Worker,
   formularios, panel, facturación, PWA y textos legales. Se corrigieron los enlaces
   «Entrar al panel» que volvían a `/`, `/talento` ya no lleva `noindex` y tiene canónica
   propia, el presupuesto vacío en Telegram, el subtotal de facturas con líneas inválidas,
@@ -19,10 +19,11 @@
   conocidas y 404 real en las desconocidas, y verificación específica sin errores de
   consola. **Publicado el 22-oct-2026 (commit `6961fa1`):** Cloudflare ya sirve el
   build nuevo y el service worker `avitech-v2026-10-22-auditoria`; verificado en
-  producción (rutas 200, 404 real, canónicas, PWA y API). La migración 013 quedó en
-  cola en GitHub Actions por una degradación del servicio; se aplicará sola al
-  recuperarse (o a mano desde Actions). Mientras tanto, el panel ya bloquea NCF
-  duplicados antes de guardar.
+  producción (rutas 200, 404 real, canónicas, PWA y API). La migración 013 se aplicó
+  el 22-oct a las 14:29 UTC y actualizó `supabase/verificacion-ultima.txt`; la prueba
+  de inserciones y las comprobaciones de RLS terminaron sin errores. GitHub Actions
+  todavía muestra el run como «queued» por la degradación, pero el reporte confirma
+  la ejecución. El panel además bloquea NCF duplicados antes de guardar.
 - **Interactividad y modelo IA (12.ª sesión, 21 oct, local):** hero con red de
   partículas, parallax 3D y pulso al clic; tarjetas de servicio con inclinación,
   brillo y detalle; aparición de secciones al hacer scroll; microinteracciones en
@@ -525,6 +526,7 @@ ni contienen secretos.
     `6961fa1`: enlaces al panel, canónica de Talento, 404 real, presupuesto
     dominicano, NCF único (013), fechas/URLs, descargas, sesión, iconos PWA y
     cabeceras `_headers`. Verificado en producción: portada, `/panel`, `/talento`,
-    legales, PWA y 404. Pendiente: confirmar que la migración 013 termine en GitHub
-    Actions (quedó en cola por una degradación) y revisar el reporte
-    `supabase/verificacion-ultima.txt`.
+    legales, PWA y 404. La migración 013 quedó aplicada y el reporte
+    `supabase/verificacion-ultima.txt` se actualizó con la prueba de inserciones y RLS
+    sin errores (aunque el run siga marcado como «queued» por la degradación de
+    GitHub Actions).
