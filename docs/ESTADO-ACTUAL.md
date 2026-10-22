@@ -487,7 +487,9 @@ Auditor SEO, Prospección, PWA y Solicitudes), con instrucciones en
     privacidad/términos, alertas opcionales por Telegram y prueba en verde (publicado
     en `353e4da` y ampliado después). Pendiente: cargar **teléfono, correo y WhatsApp
     reales** (`VITE_*`), definir el **dominio** (canonical, `robots.txt`,
-    `sitemap.xml`), revisar los rangos de precios y añadir una imagen Open Graph.
+    `sitemap.xml`), revisar los rangos de precios. Imagen Open Graph hecha: `og-image.svg`
+    rasterizada a `og-image.png` (1200×630) porque WhatsApp/Facebook/LinkedIn no muestran
+    SVG; `index.html` apunta al PNG.
     Guía de lanzamiento: **`docs/LANZAMIENTO.md`**; manual comercial:
     **`docs/COMERCIAL.md`**.
 14. **Rediseño interactivo (12.ª sesión, en local):** hero con partículas/parallax/

@@ -159,8 +159,9 @@ sirven como respaldo. No inventar números ni correos.
 - `public/sitemap.xml` declara `/`, `/talento`, `/privacidad` y `/terminos`.
 - El panel agrega `noindex` y el formulario `/solicitud` ya lo hace.
 - Pendiente: dominio propio (actualizar `VITE_SITIO_URL`, `robots.txt`, `sitemap.xml` y
-  la canonical), imagen Open Graph y prerender/SSR si se quiere SEO de contenido a gran
-  escala.
+  la canonical) y prerender/SSR si se quiere SEO de contenido a gran escala. La imagen
+  Open Graph ya está lista: `public/og-image.png` (rasterizado de `og-image.svg` con Edge
+  headless, 1200×630) porque WhatsApp/Facebook/LinkedIn no muestran SVG.
 
 ## PWA y rutas del panel
 
@@ -212,7 +213,7 @@ confirmación con folio, el reinicio, el menú móvil sin desbordes, las página
    clientes reales; son un borrador operativo, no asesoría legal.
 4. Sustituir o ampliar las demostraciones cuando existan casos comerciales reales
    (con autorización del cliente).
-5. Imagen Open Graph (1200×630) para compartir en redes.
+5. ~~Imagen Open Graph (1200×630) para compartir en redes.~~ Hecho el 21-oct: `og-image.svg` + `og-image.png` (PNG en las meta tags; el SVG no se renderiza en WhatsApp/Facebook/LinkedIn).
 6. Revisar los rangos de precios y las condiciones de pago (50/50, garantía de 30 días)
    con el equipo antes de publicarlos.
 7. **Publicado el 21-oct-2026 (commit `353e4da`)**: `git push` a `main` compila y
