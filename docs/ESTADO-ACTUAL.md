@@ -336,9 +336,10 @@ ni contienen secretos.
 - **Migración 013 (NCF/e-NCF único), 22-oct-2026:** crea el trigger
   `facturas_ncf_unico` y, si no hay duplicados históricos, el índice único
   `facturas_numero_unico`. El panel ya comprueba el número antes de guardar; la base
-  lo refuerza para evitar carreras entre dos pestañas. **Pendiente de aplicar:** se
-  ejecutará con el próximo push autorizado. Si existieran NCF duplicados de antes, la
-  migración avisa y no crea el índice, pero el trigger sigue bloqueando los nuevos.
+  lo refuerza para evitar carreras entre dos pestañas. **Aplicada el 22-oct a las
+  14:29 UTC** por el workflow «Migrar base de datos», con prueba de inserciones y RLS
+  en verde. Si existieran NCF duplicados de antes, la migración avisa y no crea el
+  índice, pero el trigger sigue bloqueando los nuevos.
 - Detalles: **`docs/MIGRACIONES.md`**.
 - **Contraseña de la base rotada el 19-oct-2026** con la API de administración de
   Supabase: la contraseña vieja quedó invalidada al instante, los secretos de los dos
@@ -518,10 +519,10 @@ ni contienen secretos.
     SVG; `index.html` apunta al PNG.
     Guía de lanzamiento: **`docs/LANZAMIENTO.md`**; manual comercial:
     **`docs/COMERCIAL.md`**.
-14. **Rediseño interactivo (12.ª sesión, en local):** hero con partículas/parallax/
-    clic, tarjetas 3D, scroll reveal y microinteracciones. Pendiente: tu visto bueno
-    para publicarlo. El modelo de IA se cambia con `IA_MODELO` (ver
-    **`docs/IA-MODELOS.md`**).
+14. **Rediseño interactivo (12.ª sesión, 21-oct):** hero con partículas/parallax/
+    clic, tarjetas 3D, scroll reveal y microinteracciones. **Publicado el 22-oct** con
+    la compilación `avitech-v2026-10-22-auditoria`. El modelo de IA se cambia con
+    `IA_MODELO` (ver **`docs/IA-MODELOS.md`**).
 15. **Correcciones de auditoría (13.ª sesión, 22-oct):** publicadas en el commit
     `6961fa1`: enlaces al panel, canónica de Talento, 404 real, presupuesto
     dominicano, NCF único (013), fechas/URLs, descargas, sesión, iconos PWA y
