@@ -8,6 +8,10 @@
 > tinta y naranja, v4 «Open Design · Mastercard»); el **sitio comercial** en `/` usa la
 > paleta azul del brief (marino, eléctrico y verde) y vive dentro de `.sitio-comercial`.
 > Las **facturas, reportes y la impresión** conservan aspecto de papel blanco.
+>
+> **Excepción aislada:** `/ejemplo/securify` es una demo visual (negro/blanco,
+> Readex Pro y video de fondo) que no forma parte de ninguno de los dos sistemas y
+> solo se carga en esa ruta.
 
 ---
 
@@ -173,7 +177,7 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-22-rediseno`.
+  Versión actual: `avitech-v2026-10-23-ejemplo-securify` (local; la publicada sigue siendo `avitech-v2026-10-22-rediseno`).
 - **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
   que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
   bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
@@ -188,7 +192,7 @@ usan como acento de marca ni para botones primarios.
   `prefers-reduced-motion`. El manifest de la PWA abre en `/panel`.
 - **Página 404 y metadatos (13.ª sesión):** las rutas desconocidas devuelven
   `404.html` con estado HTTP 404 y `robots: noindex`; `_redirects` sirve la portada
-  con 200 para `/panel`, `/solicitud`, `/talento`, `/privacidad` y `/terminos`, con o
+  con 200 para `/panel`, `/solicitud`, `/talento`, `/privacidad`, `/terminos` y `/ejemplo/securify`, con o
   sin barra final (`/` se sirve directamente como portada).
   En desarrollo, `main.tsx` conserva `NoEncontrada` como respaldo. `/talento` tiene
   canónica propia y ya no se excluye de buscadores; las páginas legales actualizan su
@@ -221,6 +225,19 @@ usan como acento de marca ni para botones primarios.
 - Mantener contraste: texto normal ≥ 4.5:1; foco visible en todo lo interactivo.
 - Mantener el menú móvil cerrado al elegir una sección.
 - Capitalizar nombres visibles (correo → «María»), no dejarlos en minúscula.
+
+## 8.1 Página de ejemplo «securify» (aislada, 23-oct-2026)
+
+`/ejemplo/securify` es una **demostración visual**, no parte del sitio comercial ni
+del panel: fondo negro, blanco, **Readex Pro Variable** autohospedada (solo se carga
+en esa ruta) y un video de fondo de la plantilla original. No usa los tokens
+crema/azul; todo vive bajo `.securify-demo` y viaja en un paquete `lazy`, así que no
+entra en el paquete de `/` ni en el del panel. Sin datos, formularios ni llamadas a la
+API. Lleva `noindex, nofollow` y `Disallow: /ejemplo` para no competir con el sitio.
+La maqueta sigue la plantilla de referencia (píldoras, titulares gigantes escalonados
+y estadísticas); solo se añadió foco visible y la pausa del video con
+`prefers-reduced-motion`. El video es el de la plantilla; para publicar la demo con
+material propio, se cambia la constante `VIDEO` del componente.
 
 ## 9. Don'ts (anti-patrones)
 

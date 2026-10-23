@@ -1,6 +1,6 @@
 # Pruebas de navegador
 
-> Ocho pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Nueve pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
 ## Sitio comercial (`prueba-sitio.js`)
@@ -23,6 +23,21 @@ archivo con un runner de Playwright que lo evalúe como `async (page)`. Capturas
 > La vista previa de Vite no aplica `_redirects`: ahí las rutas desconocidas muestran el
 > componente React de respaldo con `noindex`. El **404 HTTP real** se comprueba con
 > `wrangler dev` (por ejemplo, `curl -I http://127.0.0.1:8787/ruta-que-no-existe`).
+
+## Página de ejemplo (`prueba-ejemplo.js`)
+
+Prueba de humo de la demo aislada **`/ejemplo/securify`** (plantilla de referencia con
+datos ficticios). No toca la base ni la API.
+
+**Qué comprueba:** título e idioma propios, `noindex`, los tres titulares, el video de
+fondo (autoplay, loop, muted y playsInline) reproduciéndose, la navegación en píldoras,
+las tres estadísticas, el ocultado de enlaces en móvil, cero desbordes a 1440 y 390 px y
+la pausa del video con `prefers-reduced-motion`. Devuelve JSON con `ok`, los pasos y los
+errores de consola (debe ser `[]`). Capturas en `C:\Users\User\avitech\capturas-ejemplo`
+(2 imágenes).
+
+**Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el
+puerto 5181 y ejecútala con el runner de Playwright.
 
 ## Interactividad (`prueba-interaccion.js`)
 

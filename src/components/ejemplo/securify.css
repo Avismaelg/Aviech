@@ -1,0 +1,28 @@
+@import "@fontsource-variable/readex-pro";
+
+/* Página de ejemplo «securify» (15.ª sesión, 23-oct-2026).
+   Aislada del panel y del sitio comercial: negro, blanco y Readex Pro.
+   El CSS se carga solo al abrir /ejemplo/securify. */
+
+.securify-demo {
+  font-family: 'Readex Pro Variable', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* El h1 global del proyecto usa Sofia Sans; la demo conserva Readex Pro. */
+.securify-demo h1 {
+  font-family: inherit;
+}
+
+.securify-demo .hero-title {
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+/* Foco visible para teclado, aunque la plantilla solo defina hover. */
+.securify-demo a:focus-visible,
+.securify-demo button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}

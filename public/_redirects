@@ -11,3 +11,7 @@
 /privacidad/ / 200
 /terminos / 200
 /terminos/ / 200
+
+# Demo visual aislada: también funciona al abrir la URL directamente.
+/ejemplo/securify / 200
+/ejemplo/securify/ / 200

@@ -10,13 +10,14 @@ Plataforma de AviTech Solutions Group: **sitio comercial público** en `/` para 
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
 Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
-Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **sitio comercial** usa la paleta azul del brief (marino `#003B72`, eléctrico `#007BFF`, verde `#21C063`) y el **panel** conserva la v4 «Open Design · Mastercard» (lienzo crema, tinta y naranja de señal), con barra lateral flotante y cabecera tipo píldora en móvil. Las facturas y la impresión siguen en claro.
+Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **sitio comercial** usa la paleta azul del brief (marino `#003B72`, eléctrico `#007BFF`, verde `#21C063`) y el **panel** conserva la v4 «Open Design · Mastercard» (lienzo crema, tinta y naranja de señal), con barra lateral flotante y cabecera tipo píldora en móvil. Las facturas y la impresión siguen en claro. La demo `/ejemplo/securify` es una excepción aislada (negro/blanco y Readex Pro) que solo se carga en esa ruta.
 
 - Sitio comercial: **https://aviech.avismael-eg.workers.dev/**
 - Panel interno: **https://aviech.avismael-eg.workers.dev/panel**
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
 - Portal público de talento: **https://aviech.avismael-eg.workers.dev/talento**
 - Privacidad y términos: **https://aviech.avismael-eg.workers.dev/privacidad** · **/terminos**
+- Demo visual de ejemplo (**no indexada**, aún no publicada): se sirve en `/ejemplo/securify` con `npm run dev` o la vista previa.
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
 
 ### Módulos

@@ -10,6 +10,7 @@ import './index.css'
 //   /talento          Portal público de talento
 //   /privacidad       Política de privacidad
 //   /terminos         Términos del servicio
+//   /ejemplo/securify Demo visual aislada (plantilla Securify, no indexada)
 // Los enlaces antiguos del panel (/#crm, /#talento…) se redirigen a /panel.
 const SECCIONES_PANEL = [
   'inicio',
@@ -35,6 +36,7 @@ const esTalentoPublico = /^\/talento$/i.test(ruta)
 const esPanel = /^\/panel$/i.test(ruta)
 const esPrivacidad = /^\/privacidad$/i.test(ruta)
 const esTerminos = /^\/terminos$/i.test(ruta)
+const esEjemploSecurify = /^\/ejemplo\/securify$/i.test(ruta)
 
 const redirigirAlPanel =
   esInicio && SECCIONES_PANEL.includes(seccionAntigua as (typeof SECCIONES_PANEL)[number])
@@ -57,11 +59,15 @@ const Pagina = esSolicitudPublica
           ? lazy(() =>
               import('./components/sitio/Legales.tsx').then((modulo) => ({ default: modulo.PaginaTerminos })),
             )
-          : esInicio
+          : esEjemploSecurify
             ? lazy(() =>
-                import('./components/sitio/SitioPublico.tsx').then((modulo) => ({ default: modulo.SitioPublico })),
+                import('./components/ejemplo/Securify').then((modulo) => ({ default: modulo.Securify })),
               )
-            : NoEncontrada
+            : esInicio
+              ? lazy(() =>
+                  import('./components/sitio/SitioPublico.tsx').then((modulo) => ({ default: modulo.SitioPublico })),
+                )
+              : NoEncontrada
 
 function arrancar() {
   createRoot(document.getElementById('root')!).render(
