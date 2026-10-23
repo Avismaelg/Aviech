@@ -1,10 +1,10 @@
 # Estado actual — dónde nos quedamos
 
-> Última actualización: 22-oct-2026 (14.ª sesión: rediseño de la portada, local y sin publicar)
+> Última actualización: 22-oct-2026 (14.ª sesión: rediseño de la portada, publicado en `062b7d0`)
 
 ## 📌 Punto de continuación
 
-- **Rediseño de la portada (14.ª sesión, 22 oct, local, sin publicar):** `/` se rehízo con una composición inspirada en la plantilla **Vaultline** de motionsites.ai, tomando solo su estructura y su lenguaje visual (no se copiaron imágenes, textos ni la prueba social). Cabecera oscura; portada marina con una bóveda 3D (SVG + CSS) que sigue el cursor y cuatro fichas de garantía; franja «Garantías» con solo lo que el código cumple; servicios con filete de marca; botón magnético en la acción principal; línea de proceso que avanza con el scroll; y panel de contacto oscuro. El formulario, su consentimiento y el endpoint no cambiaron. Se quitaron los filtros SVG y el `drop-shadow` animados, y la bóveda queda estática en equipos ligeros (`hero-ligero`). Service worker `avitech-v2026-10-22-rediseno`. Validación local: `npm run build` y `npm run lint` sin avisos; sitio **9/9**; interacciones **9/9** (incluye bóveda, botón magnético, línea de proceso y filete); PWA **5/5**; sin desbordes a 390 y 1440 px; 0 errores de consola. No se publicó: el push a `main` despliega en Cloudflare de inmediato y falta tu autorización.
+- **Rediseño de la portada (14.ª sesión, 22 oct, publicado en `062b7d0`):** `/` se rehízo con una composición inspirada en la plantilla **Vaultline** de motionsites.ai, tomando solo su estructura y su lenguaje visual (no se copiaron imágenes, textos ni la prueba social). Cabecera oscura; portada marina con una bóveda 3D (SVG + CSS) que sigue el cursor y cuatro fichas de garantía; franja «Garantías» con solo lo que el código cumple; servicios con filete de marca; botón magnético en la acción principal; línea de proceso que avanza con el scroll; y panel de contacto oscuro. El formulario, su consentimiento y el endpoint no cambiaron. Se quitaron los filtros SVG y el `drop-shadow` animados, y la bóveda queda estática en equipos ligeros (`hero-ligero`). Service worker `avitech-v2026-10-22-rediseno`. Validación local: `npm run build` y `npm run lint` sin avisos; sitio **9/9**; interacciones **9/9** (incluye bóveda, botón magnético, línea de proceso y filete); PWA **5/5**; sin desbordes a 390 y 1440 px; 0 errores de consola. Publicado el 22-oct con tu autorización (commit `062b7d0`): Cloudflare sirve `avitech-v2026-10-22-rediseno`. Verificado en producción: rutas 200 y 404 real, sitio **9/9**, interacciones **9/9**, PWA **5/5** y 0 errores de consola.
 - **Auditoría y correcciones (13.ª sesión, 22 oct, publicada):** revisión completa de Worker,
   formularios, panel, facturación, PWA y textos legales. Se corrigieron los enlaces
   «Entrar al panel» que volvían a `/`, `/talento` ya no lleva `noindex` y tiene canónica
@@ -470,7 +470,7 @@ ni contienen secretos.
 
 ## 📋 Próximos pasos
 
-- **Pendiente de tu autorización (14.ª sesión):** publicar la portada rediseñada. Al hacer push a `main`, Cloudflare despliega automáticamente. Siguen pendientes los datos de contacto, el dominio propio y Telegram.
+- **Publicado (14.ª sesión, `062b7d0`):** la portada rediseñada ya está en producción. Siguen pendientes los datos de contacto, el dominio propio y Telegram.
 
 1. **Solicitudes con IA (hecho, 6.ª sesión):** formulario público `/solicitud`, bandeja
    interna y cierre automático con IA. Migración 009 y endpoints verificados en producción.
