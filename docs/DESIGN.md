@@ -243,7 +243,7 @@ y estadísticas); solo se añadió foco visible y la pausa del video con
 material propio, se cambia la constante `VIDEO` del componente. Publicada el
 23-oct-2026 en el commit `aea3101`.
 
-## 8.2 Portada «Orbit» (aislada, local, 23-oct-2026)
+## 8.2 Portada «Orbit» (aislada, publicada el 23-oct-2026)
 
 `/` es la landing estática **`public/orbit/index.html`**, servida por el Worker
 (`env.ASSETS` → `/orbit/`). Es una plantilla de producto espacial ficticio, en inglés,
@@ -269,7 +269,7 @@ reutilizar sus estilos en el panel.
   `/panel` por separado.
 - **Archivos:** `public/orbit/index.html`, `app.html`, `worker/index.js`,
   `wrangler.jsonc`, `public/_redirects`, `public/sw.js`, `vite.config.ts`.
-- **No publicar sin autorización.** La web comercial Vaultline no se sirve en `/`.
+- **Publicada el 23-oct-2026 en `0e36add`.** La web comercial Vaultline no se sirve en `/`; cualquier cambio requiere autorización.
 
 ## 9. Don'ts (anti-patrones)
 
