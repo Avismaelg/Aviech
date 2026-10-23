@@ -1,12 +1,18 @@
 # Sitio comercial
 
+> **Nota (23-oct-2026):** `/` ya no sirve esta portada: es la landing estática
+> **Orbit** (`public/orbit/index.html`), servida por el Worker. Este documento describe
+> el sitio Vaultline que sigue en el código (`SitioPublico`) para consulta o para
+> reactivarlo. El panel (`/panel`), `/solicitud`, `/talento`, `/privacidad` y
+> `/terminos` siguen activos.
+
 Portada pública de AviTech Solutions Group para presentar y vender servicios de
-digitalización empresarial. Vive en la **raíz `/`**; el panel interno se movió a
+digitalización empresarial. Vivía en la **raíz `/`**; el panel interno se movió a
 **`/panel`** y los enlaces antiguos (`/#crm`, `/#talento`…) redirigen solos.
 
 | Ruta | Qué es |
 |---|---|
-| `/` | Sitio comercial (esta guía) |
+| `/` | **Orbit** (landing estática). La portada Vaultline descrita aquí ya no se sirve en `/`. |
 | `/panel` | Panel interno con login |
 | `/solicitud` | Formulario público detallado de solicitudes |
 | `/talento` | Portal público de talento |

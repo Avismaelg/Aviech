@@ -243,6 +243,12 @@ export default {
     const url = new URL(request.url)
     const origen = origenPermitido(request.headers.get('Origin'))
 
+    // Portada pública: HTML estático e independiente del build de React.
+    // El resto de rutas del sitio y del panel siguen sirviéndose desde el armazón app.html.
+    if ((request.method === 'GET' || request.method === 'HEAD') && url.pathname === '/' && env.ASSETS) {
+      return env.ASSETS.fetch(new Request(new URL('/orbit/', url), request))
+    }
+
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cabecerasCors(origen) })
     }

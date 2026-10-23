@@ -2,11 +2,11 @@
 // - Guarda el armazón (HTML, CSS, JS, fuentes): repetir visita al instante y abrir sin conexión.
 // - La API (/api/*) y Supabase NUNCA se guardan en caché: los datos siempre van a la red.
 // Al cambiar esta lógica, sube VERSION para purgar las cachés viejas.
-const VERSION = 'avitech-v2026-10-23-ejemplo-securify'
+const VERSION = 'avitech-v2026-10-23-orbit'
 const ARMAZON = [
   '/',
   '/panel',
-  '/index.html',
+  '/app.html',
   '/manifest.webmanifest',
   '/favicon.svg',
   '/icon-192.png',
@@ -42,15 +42,20 @@ self.addEventListener('fetch', (evento) => {
   if (direccion.pathname.startsWith('/api/')) return
 
   // Página: red primero (para recibir versiones nuevas); sin conexión, la copia guardada.
+  // Se guarda por ruta: / es Orbit y /panel y el resto usan el armazón de React.
   if (peticion.mode === 'navigate') {
     evento.respondWith(
       fetch(peticion)
         .then((respuesta) => {
           const copia = respuesta.clone()
-          caches.open(VERSION).then((cache) => cache.put('/index.html', copia))
+          caches.open(VERSION).then((cache) => cache.put(peticion, copia))
           return respuesta
         })
-        .catch(() => caches.match('/index.html')),
+        .catch(() =>
+          caches
+            .match(peticion)
+            .then((guardada) => guardada || caches.match('/app.html')),
+        ),
     )
     return
   }

@@ -1,9 +1,39 @@
 # Pruebas de navegador
 
-> Nueve pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
+> Diez pruebas de humo con **datos simulados** (Playwright): no tocan la base real de Supabase
 > ni Google, y no contienen secretos.
 
+## Portada Orbit (`prueba-orbit.js`)
+
+Prueba de humo de la **portada pública actual** `/` (HTML estático `public/orbit/index.html`,
+servido por el Worker). No toca la base ni la API.
+
+**Qué comprueba:** título y descripción exactos; escala de referencia 1563×1006 (barra,
+píldora, titular, subtítulo y CTA); video reproduciéndose, silenciado, en bucle e inline;
+sin scroll; entrada terminada y clases limpias; móvil 390×844 sin desbordes y menú
+(abrir, clic fuera, Escape); 640×500 y 320×568 sin solape entre subtítulo y CTA;
+ultra-wide 3/1 con video anclado abajo y velo en degradado; `prefers-reduced-motion`;
+y que `/panel` siga usando React y una ruta desconocida devuelva 404 real. Devuelve JSON
+con `ok`, 6 pasos y los errores de consola (debe ser `[]`). Capturas en
+`C:\Users\User\avitech\capturas-orbit`.
+
+**Cómo ejecutarla:** compila y levanta el Worker (no la vista previa de Vite, porque `/`
+la sirve el Worker):
+
+```powershell
+cd C:\Users\User\avitech\avitech-panel
+npm run build
+npx wrangler dev --port 8792 --ip 127.0.0.1
+```
+
+Luego ejecuta el archivo con la herramienta de Playwright (`browser_run_code_unsafe`,
+parámetro `filename`).
+
 ## Sitio comercial (`prueba-sitio.js`)
+
+> **Aviso (23-oct-2026):** esta prueba apunta a la portada Vaultline que ya no se sirve
+> en `/`; se conserva como referencia del componente React. Para la portada actual usa
+> `prueba-orbit.js`.
 
 Prueba de humo de la portada pública con **datos simulados**: intercepta
 `**/api/solicitudes` para no escribir en la base real. No necesita sesión ni secretos.

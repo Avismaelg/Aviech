@@ -6,13 +6,19 @@ Startup de auditoría y consultoría.
 
 ## AviTech Panel — producto interno
 
-Plataforma de AviTech Solutions Group: **sitio comercial público** en `/` para vender servicios de digitalización y **panel interno** en `/panel` con clientes, CRM, talento, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA. Pensado para **República Dominicana**: montos en **RD$**
+Plataforma de AviTech Solutions Group: **panel interno** en `/panel` con clientes, CRM, talento, prospección de contactos, auditoría SEO, solicitudes de servicio con IA, servicios, pagos, facturación, gastos, reportes y un asistente de IA, más las páginas públicas `/solicitud` y `/talento`. La portada `/` es la landing estática **Orbit** (plantilla de demostración). Pensado para **República Dominicana**: montos en **RD$**
 (pesos dominicanos), **RNC** de clientes, **NCF/e-NCF con ITBIS 18%** y teléfonos con
 formato local (809/829/849).
-Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**.
-Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **sitio comercial** usa la paleta azul del brief (marino `#003B72`, eléctrico `#007BFF`, verde `#21C063`) y el **panel** conserva la v4 «Open Design · Mastercard» (lienzo crema, tinta y naranja de señal), con barra lateral flotante y cabecera tipo píldora en móvil. Las facturas y la impresión siguen en claro. La demo `/ejemplo/securify` es una excepción aislada (negro/blanco y Readex Pro) que solo se carga en esa ruta.
+Stack: **Vite + React + TypeScript + Tailwind CSS + Supabase**. La portada `/` es la
+excepción: un `index.html` plano, sin React ni build propio, servido por el Worker.
+Tres superficies visuales: el **panel** conserva la v4 «Open Design · Mastercard»
+(lienzo crema, tinta y naranja, Sofia Sans); el **sitio comercial AviTech** (código
+React en `.sitio-comercial`, azul del brief) ya no se sirve en `/`; y la **portada
+Orbit** usa negro/espacio, Inter variable y video de fondo. Las facturas y la impresión
+siguen en claro. La demo `/ejemplo/securify` es otra excepción aislada (negro/blanco y
+Readex Pro) que solo se carga en esa ruta.
 
-- Sitio comercial: **https://aviech.avismael-eg.workers.dev/**
+- Portada Orbit: **https://aviech.avismael-eg.workers.dev/**
 - Panel interno: **https://aviech.avismael-eg.workers.dev/panel**
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
 - Portal público de talento: **https://aviech.avismael-eg.workers.dev/talento**
@@ -24,7 +30,8 @@ Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **
 
 | Módulo | Qué hace |
 |---|---|
-| **Sitio comercial** (`/`) | Portada pública con bóveda 3D que sigue el cursor, fichas de garantía, franja «Garantías», cuatro servicios con tarjetas 3D y filete de marca, seis necesidades, proceso de trabajo con línea de avance, tres demostraciones funcionales, equipo, paquetes en RD$, preguntas frecuentes, privacidad/términos y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA y puede avisar al equipo por Telegram (opcional). Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
+| **Portada Orbit** (`/`) | Landing estática de demostración (producto espacial ficticio): video de fondo, hero de 55u, escala rígida `--u` de 1563×1006, entrada de ~1,7 s y menú móvil. Vive en `public/orbit/index.html`; no usa React ni build propio. Ver **`docs/DESIGN.md` §8.2** |
+| **Sitio comercial AviTech** (código) | Componente `SitioPublico` (Vaultline) conservado, pero **ya no se sirve en `/`**. Su formulario de contacto no está en `/`; el formulario público sigue en `/solicitud`. Ver **`docs/SITIO-COMERCIAL.md`** |
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |

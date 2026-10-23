@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
@@ -10,6 +11,12 @@ export default defineConfig({
     // (React y Supabase) se cachea aparte y no se vuelve a descargar al navegar.
     chunkSizeWarningLimit: 700,
     rollupOptions: {
+      // app.html es el armazón de React que sirve /panel, /talento y el resto
+      // de rutas de la SPA. index.html queda como entrada de desarrollo.
+      input: {
+        index: resolve('index.html'),
+        app: resolve('app.html'),
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) return 'react'

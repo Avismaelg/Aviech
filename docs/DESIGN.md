@@ -4,14 +4,16 @@
 > la misma línea visual sin leer todo el código. Si algo cambia aquí, debe cambiar
 > también en `src/index.css` — y al revés.
 >
-> **Dos sistemas deliberados:** el **panel interno** es cálido y claro (lienzo crema,
-> tinta y naranja, v4 «Open Design · Mastercard»); el **sitio comercial** en `/` usa la
-> paleta azul del brief (marino, eléctrico y verde) y vive dentro de `.sitio-comercial`.
-> Las **facturas, reportes y la impresión** conservan aspecto de papel blanco.
+> **Tres superficies deliberadas:** el **panel interno** es cálido y claro (lienzo crema,
+> tinta y naranja, v4 «Open Design · Mastercard»); el **sitio comercial AviTech** usa la
+> paleta azul del brief (marino, eléctrico y verde) y vive dentro de `.sitio-comercial`;
+> **ya no se sirve en `/`** (su código React se conserva). Las **facturas, reportes y la
+> impresión** conservan aspecto de papel blanco.
 >
-> **Excepción aislada:** `/ejemplo/securify` es una demo visual (negro/blanco,
-> Readex Pro y video de fondo) que no forma parte de ninguno de los dos sistemas y
-> solo se carga en esa ruta.
+> **Portadas aisladas:** `/` es **Orbit**, un `index.html` estático (negro/blanco, Inter
+> variable y video de fondo) servido por el Worker; no comparte tokens con el panel ni con
+> `.sitio-comercial`. `/ejemplo/securify` es otra demo visual (negro/blanco, Readex Pro y
+> video de fondo) que solo se carga en esa ruta.
 
 ---
 
@@ -144,7 +146,7 @@ usan como acento de marca ni para botones primarios.
 
 | Componente | Notas |
 |---|---|
-| `Sitio comercial` | Portada pública en `/` con su propia paleta. Cabecera oscura sticky con nav de anclas, CTA y menú móvil; portada marina con bóveda 3D que sigue el cursor (SVG + CSS, sin imágenes) y fichas de garantía con profundidad; franja «Garantías»; tarjetas de servicio con entregables y filete de marca; sección oscura de necesidades; proceso en cuatro pasos con línea que avanza con el scroll; panel de contacto oscuro junto al formulario; tres demostraciones con miniaturas CSS y etiqueta «Demostración»; equipo en tarjetas; cuatro paquetes (el destacado en marino); preguntas frecuentes con `<details>` nativos y formulario de contacto con consentimiento y detalles de privacidad. Las páginas `/privacidad` y `/terminos` reutilizan la marca y los tokens del sitio. Los textos pequeños en azul usan `electrico-texto` (`#005FCC`) para contraste AA. No reutiliza los tokens cálidos del panel. |
+| `Sitio comercial` | **Ya no se sirve en `/`**: la portada es Orbit. El componente React se conserva para consulta o para volver a activarlo. Portada pública con su propia paleta. Cabecera oscura sticky con nav de anclas, CTA y menú móvil; portada marina con bóveda 3D que sigue el cursor (SVG + CSS, sin imágenes) y fichas de garantía con profundidad; franja «Garantías»; tarjetas de servicio con entregables y filete de marca; sección oscura de necesidades; proceso en cuatro pasos con línea que avanza con el scroll; panel de contacto oscuro junto al formulario; tres demostraciones con miniaturas CSS y etiqueta «Demostración»; equipo en tarjetas; cuatro paquetes (el destacado en marino); preguntas frecuentes con `<details>` nativos y formulario de contacto con consentimiento y detalles de privacidad. Las páginas `/privacidad` y `/terminos` reutilizan la marca y los tokens del sitio. Los textos pequeños en azul usan `electrico-texto` (`#005FCC`) para contraste AA. No reutiliza los tokens cálidos del panel. |
 | `Asistente IA` | En escritorio se abre desde el botón **Asistente IA** de la barra de contexto; en móvil, desde el icono de destellos de la cabecera fija (junto al avatar y el menú). Panel de 400 px en escritorio y hoja inferior en móvil. Cabecera con estado, nueva conversación y cerrar; sugerencias iniciales, indicador de escritura y compositor con `Enter` para enviar y `Shift+Enter` para salto de línea. No guarda historial ni ve la base de datos. |
 | `Login` | Dos columnas: panel de marca en tinta con órbita naranja + tarjeta de superficie con acceso. Píldora «Acceso privado», ver/ocultar contraseña y error legible. En móvil se apila. |
 | `Inicio` | Hero editorial con saludo capitalizado, acciones rápidas, KPIs, gráfica de ingresos (barras de tinta + mes actual naranja), tarjeta de ingreso recurrente y anillo de cobro. |
@@ -177,7 +179,7 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-23-ejemplo-securify`.
+  Versión actual: `avitech-v2026-10-23-orbit`.
 - **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
   que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
   bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
@@ -191,9 +193,10 @@ usan como acento de marca ni para botones primarios.
   suave solo se activa con `html:has(.sitio-comercial)` y respeta
   `prefers-reduced-motion`. El manifest de la PWA abre en `/panel`.
 - **Página 404 y metadatos (13.ª sesión):** las rutas desconocidas devuelven
-  `404.html` con estado HTTP 404 y `robots: noindex`; `_redirects` sirve la portada
-  con 200 para `/panel`, `/solicitud`, `/talento`, `/privacidad`, `/terminos` y `/ejemplo/securify`, con o
-  sin barra final (`/` se sirve directamente como portada).
+  `404.html` con estado HTTP 404 y `robots: noindex`; `_redirects` sirve el armazón
+  React `app.html` (ruta canónica `/app`) con 200 para `/panel`, `/solicitud`, `/talento`,
+  `/privacidad`, `/terminos` y `/ejemplo/securify`, con o sin barra final. `/` lo sirve el
+  Worker desde `public/orbit/index.html` (portada Orbit).
   En desarrollo, `main.tsx` conserva `NoEncontrada` como respaldo. `/talento` tiene
   canónica propia y ya no se excluye de buscadores; las páginas legales actualizan su
   canónica al entrar. La PWA usa `icon-192.png`, `icon-512.png` y
@@ -240,10 +243,39 @@ y estadísticas); solo se añadió foco visible y la pausa del video con
 material propio, se cambia la constante `VIDEO` del componente. Publicada el
 23-oct-2026 en el commit `aea3101`.
 
+## 8.2 Portada «Orbit» (aislada, local, 23-oct-2026)
+
+`/` es la landing estática **`public/orbit/index.html`**, servida por el Worker
+(`env.ASSETS` → `/orbit/`). Es una plantilla de producto espacial ficticio, en inglés,
+independiente de React: un solo HTML con `<style>` y `<script>` inline, sin build
+propio. No comparte tokens con el panel ni con `.sitio-comercial`; no se deben
+reutilizar sus estilos en el panel.
+
+- **Escala:** `--u = max(min(100vw / 1563, 100vh / 460), 0.80px)` (con `100dvh`
+  cuando existe); todas las medidas en `calc(N * var(--u))`. Referencia 1563×1006.
+- **Composición:** video de fondo de CloudFront (1664×1248), póster PNG de respaldo,
+  velo, cabecera, píldora, titular de dos líneas (55u/56u), subtítulo de 700u, CTA y
+  planeta en la mitad inferior. Sin scroll.
+- **Responsive:** ≤1023 (`100vw/900`, barra 91.6vw, menú), ≤640 (`100vw/486`, p
+  `min(560u, 88vw)`), ≤380 (`100vw/470`), ≤1023×520 (`min(100vw/900, 100vh/470)`) y
+  ultra-wide 3/1 con el video anclado abajo y el velo en degradado.
+- **Entrada:** `intro`/`intro-play`, ~1,69 s, con fail-safe de 3 s y 5 s; el HTML
+  limpia clases y `will-change`. Respeta `prefers-reduced-motion`.
+- **Interacción:** menú móvil con `aria-expanded`, Escape y clic fuera; video
+  silenciado con reintentos en carga, `canplay`, visibilidad y primer puntero/touch/
+  scroll; foco `#9b8cff` de 2 px y offset 3 px.
+- **Integración:** el Worker sirve `/` desde `public/orbit/index.html`; las rutas
+  React usan `app.html` y `_redirects` a `/app`; el service worker guarda `/` y
+  `/panel` por separado.
+- **Archivos:** `public/orbit/index.html`, `app.html`, `worker/index.js`,
+  `wrangler.jsonc`, `public/_redirects`, `public/sw.js`, `vite.config.ts`.
+- **No publicar sin autorización.** La web comercial Vaultline no se sirve en `/`.
+
 ## 9. Don'ts (anti-patrones)
 
 - ❌ Volver a la barra superior fija en escritorio o a la nav azul de la v3 **en el panel**.
 - ❌ Usar azul/índigo como acento de marca **en el panel** o reintroducir degradados violeta. (El sitio comercial es la excepción deliberada: su paleta azul está aislada en `.sitio-comercial`.)
+- ❌ Mezclar la portada Orbit (negro/espacio, escala `--u`) con las pantallas del panel o con `.sitio-comercial`; es una pieza aislada.
 - ❌ Poner botones primarios naranjas: el naranja es señal, no acción.
 - ❌ Hex crudos de Tailwind para superficies/texto (usar tokens).
 - ❌ Mezclar botones cuadrados con píldoras o radios arbitrarios.
@@ -260,7 +292,8 @@ material propio, se cambia la constante `VIDEO` del componente. Publicada el
 - [ ] Focus visible en botones, campos y enlaces
 - [ ] Responsive 375 / 768 / 1024 / 1440 sin recortes (menú móvil incluido)
 - [ ] Formulario público `/solicitud` sin recortes a 390 px y con consentimiento visible
-- [ ] Sitio comercial `/` sin recortes a 390 / 768 / 1024 / 1440, menú móvil accesible y formulario con validación y consentimiento
+- [ ] Portada Orbit `/` sin scroll ni recortes a 1563×1006, 1023, 640, 390, 380, 320 y ultra-wide 3/1; menú móvil accesible; video reproduciéndose y póster de respaldo
+- [ ] Rutas React (`/panel`, `/talento`, `/solicitud`, legales y `/ejemplo/securify`) siguen respondiendo 200 desde `app.html` y no muestran Orbit
 - [ ] Contraste AA en textos azules pequeños del sitio (usar `electrico-texto`, no `electrico` brillante)
 - [ ] Portal `/talento` sin recortes a 390 px, perfiles sin datos de contacto y shortlist usable
 - [ ] Postulación con IA: autorización explícita, máximo 3, resultado legible y sin exponer correo/CV
@@ -283,4 +316,4 @@ material propio, se cambia la constante `VIDEO` del componente. Publicada el
 ---
 
 > Enfoque de sistema de diseño: tokens → componentes → reglas → checklist.
-> Última revisión: 22-oct-2026 (portada rediseñada con bóveda 3D; panel v4 «Open Design · Mastercard» + barra lateral flotante).
+> Última revisión: 23-oct-2026 (portada Orbit aislada en `/`; demo Securify; panel v4 «Open Design · Mastercard» + barra lateral flotante).

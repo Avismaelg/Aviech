@@ -1,17 +1,18 @@
-# Rutas de la SPA: se sirve la portada con estado 200 sin cambiar la URL.
+# Rutas de la SPA: se sirve el armazón de React con estado 200 sin cambiar la URL.
+# La portada / es un HTML estático independiente (Orbit), servido por el Worker.
 # Las rutas desconocidas no coinciden con estas reglas y Cloudflare responde
 # con 404.html (not_found_handling: "404-page").
-/panel / 200
-/panel/ / 200
-/solicitud / 200
-/solicitud/ / 200
-/talento / 200
-/talento/ / 200
-/privacidad / 200
-/privacidad/ / 200
-/terminos / 200
-/terminos/ / 200
+/panel /app 200
+/panel/ /app 200
+/solicitud /app 200
+/solicitud/ /app 200
+/talento /app 200
+/talento/ /app 200
+/privacidad /app 200
+/privacidad/ /app 200
+/terminos /app 200
+/terminos/ /app 200
 
 # Demo visual aislada: también funciona al abrir la URL directamente.
-/ejemplo/securify / 200
-/ejemplo/securify/ / 200
+/ejemplo/securify /app 200
+/ejemplo/securify/ /app 200
