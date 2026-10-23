@@ -26,16 +26,16 @@ archivo con un runner de Playwright que lo evalúe como `async (page)`. Capturas
 
 ## Interactividad (`prueba-interaccion.js`)
 
-Prueba de humo del rediseño interactivo del sitio: hero con partículas y parallax,
+Prueba de humo del rediseño interactivo del sitio: hero con partículas, bóveda 3D, botón magnético, línea de proceso y parallax,
 tarjetas 3D, navegación, botones, aparición al scroll, móvil y movimiento reducido.
 No necesita datos ni credenciales.
 
 **Qué comprueba:** el canvas de partículas tiene tamaño y no bloquea clics; el parallax
 cambia `--px`/`--py` al mover el ratón; el clic activa `data-reaccion`; la tarjeta se
-inclina y muestra brillo/detalle con hover y con foco de teclado; la navegación muestra
+inclina y muestra brillo/detalle con hover y con foco de teclado; la bóveda gira con el puntero, las fichas responden a su profundidad, el botón magnético se desplaza y vuelve, la línea de proceso avanza con el scroll, el filete de la tarjeta se revela; la navegación muestra
 su subrayado; el botón desplaza su icono; la sección de paquetes no se revela hasta
 entrar en pantalla y luego queda visible; móvil a 390 px sin desbordes; con
-`prefers-reduced-motion` todo el contenido está visible y los transforms quedan en
+`prefers-reduced-motion` todo el contenido está visible, la bóveda y el botón quedan sin movimiento, la línea de proceso aparece completa y los transforms quedan en
 `none`. Devuelve JSON con `ok`, los pasos y los errores de consola (debe ser `[]`).
 
 **Cómo ejecutarla:** igual que las anteriores: compila, levanta la vista previa en el

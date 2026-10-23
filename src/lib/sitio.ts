@@ -172,6 +172,36 @@ export const PREGUNTAS: PreguntaSitio[] = [
   },
 ]
 
+export interface GarantiaSitio {
+  titulo: string
+  descripcion: string
+  icono: 'escudo' | 'consentimiento' | 'dinero' | 'flujo'
+}
+
+/** Garantías que el código actual sí cumple; no son promesas comerciales. */
+export const GARANTIAS: GarantiaSitio[] = [
+  {
+    titulo: 'Seguridad desde el diseño',
+    descripcion: 'La información viaja cifrada por HTTPS y el panel exige inicio de sesión.',
+    icono: 'escudo',
+  },
+  {
+    titulo: 'Consentimiento claro',
+    descripcion: 'Ningún formulario se envía sin tu autorización explícita.',
+    icono: 'consentimiento',
+  },
+  {
+    titulo: 'Dinero bajo control',
+    descripcion: 'Facturas con NCF, pagos y gastos en RD$, con reportes para revisar.',
+    icono: 'dinero',
+  },
+  {
+    titulo: 'Procesos automáticos',
+    descripcion: 'Notificaciones y flujos que trabajan solos, sin tareas repetidas a mano.',
+    icono: 'flujo',
+  },
+]
+
 export interface PasoSitio {
   titulo: string
   descripcion: string

@@ -4,23 +4,24 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
-  CircleCheck,
+  ClipboardCheck,
   Code2,
   Compass,
   Globe2,
   LayoutDashboard,
   LifeBuoy,
   Megaphone,
+  ShieldCheck,
   Smartphone,
   Sparkles,
+  Wallet,
   Workflow,
 } from 'lucide-react'
-import { useEffect, useRef, useState, type MouseEvent as EventoMouse, type RefObject } from 'react'
+import { useEffect, useRef } from 'react'
 import { cx } from '../../lib/estilos'
-import { ParticulasHero } from './Particulas'
-import { useTilt } from './useInteraccion'
 import {
   DEMOS,
+  GARANTIAS,
   NECESIDADES,
   PAQUETES,
   PREGUNTAS,
@@ -28,19 +29,13 @@ import {
   ROLES,
   SERVICIOS,
   type DemoSitio,
+  type GarantiaSitio,
   type IdServicio,
   type RolEquipo,
   type ServicioSitio,
 } from '../../lib/sitio'
-import {
-  BOTON_PRIMARIO,
-  BOTON_SECUNDARIO,
-  CONTENEDOR,
-  ETIQUETA,
-  TARJETA,
-  TEXTO_SECCION,
-  TITULO_SECCION,
-} from './estilos'
+import { CONTENEDOR, ETIQUETA, TARJETA, TEXTO_SECCION, TITULO_SECCION } from './estilos'
+import { useProgresoScroll, useTilt } from './useInteraccion'
 
 const ICONOS_SERVICIO: Record<ServicioSitio['icono'], LucideIcon> = {
   globo: Globe2,
@@ -56,12 +51,12 @@ const ICONOS_ROL: Record<RolEquipo['icono'], LucideIcon> = {
   diseno: Megaphone,
 }
 
-const VALORES: Array<{ icono: LucideIcon; titulo: string; texto: string }> = [
-  { icono: Globe2, titulo: 'Presencia digital', texto: 'Sitios que explican y convierten.' },
-  { icono: LayoutDashboard, titulo: 'Portales a medida', texto: 'Tu operación en un solo lugar.' },
-  { icono: Workflow, titulo: 'Automatización', texto: 'Menos tareas manuales y menos errores.' },
-  { icono: LifeBuoy, titulo: 'Soporte continuo', texto: 'Acompañamiento después de entregar.' },
-]
+const ICONOS_GARANTIA: Record<GarantiaSitio['icono'], LucideIcon> = {
+  escudo: ShieldCheck,
+  consentimiento: ClipboardCheck,
+  dinero: Wallet,
+  flujo: Workflow,
+}
 
 export function MarcaSitio({ claro = false }: { claro?: boolean }) {
   return (
@@ -77,7 +72,7 @@ export function MarcaSitio({ claro = false }: { claro?: boolean }) {
           aria-hidden
           className={cx(
             'absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 bg-verde',
-            claro ? 'border-white' : 'border-marino',
+            claro ? 'border-marino-profundo' : 'border-marino',
           )}
         />
       </span>
@@ -88,7 +83,7 @@ export function MarcaSitio({ claro = false }: { claro?: boolean }) {
         <span
           className={cx(
             'block text-[10px] font-medium tracking-[0.14em] uppercase',
-            claro ? 'text-white/55' : 'text-acero',
+            claro ? 'text-white/60' : 'text-acero',
           )}
         >
           Solutions Group
@@ -98,277 +93,25 @@ export function MarcaSitio({ claro = false }: { claro?: boolean }) {
   )
 }
 
-export function Hero({ onSolicitar }: { onSolicitar: () => void }) {
-  const seccionRef = useRef<HTMLElement>(null)
-  const escenaRef = useRef<HTMLDivElement>(null)
-  const [reaccion, setReaccion] = useState(false)
-  const temporizador = useRef<number | null>(null)
-
-  useEffect(() => {
-    const seccion = seccionRef.current
-    const escena = escenaRef.current
-    if (!seccion || !escena) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const seccionHero: HTMLElement = seccion
-    const escenaHero: HTMLDivElement = escena
-    const tactil = window.matchMedia('(pointer: coarse)').matches
-    let frame = 0
-    let objetivoX = 0
-    let objetivoY = 0
-    let actualX = 0
-    let actualY = 0
-
-    function animar() {
-      frame = 0
-      actualX += (objetivoX - actualX) * 0.13
-      actualY += (objetivoY - actualY) * 0.13
-      escenaHero.style.setProperty('--px', actualX.toFixed(3))
-      escenaHero.style.setProperty('--py', actualY.toFixed(3))
-      if (Math.abs(objetivoX - actualX) > 0.002 || Math.abs(objetivoY - actualY) > 0.002) {
-        frame = window.requestAnimationFrame(animar)
-      }
-    }
-
-    function alMover(evento: PointerEvent) {
-      if (tactil || evento.pointerType === 'touch') return
-      const rect = seccionHero.getBoundingClientRect()
-      objetivoX = ((evento.clientX - rect.left) / rect.width - 0.5) * 2
-      objetivoY = ((evento.clientY - rect.top) / rect.height - 0.5) * 2
-      if (!frame) frame = window.requestAnimationFrame(animar)
-    }
-
-    function alSalir() {
-      objetivoX = 0
-      objetivoY = 0
-      if (!frame) frame = window.requestAnimationFrame(animar)
-    }
-
-    seccionHero.addEventListener('pointermove', alMover, { passive: true })
-    seccionHero.addEventListener('pointerleave', alSalir)
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame)
-      seccionHero.removeEventListener('pointermove', alMover)
-      seccionHero.removeEventListener('pointerleave', alSalir)
-      escenaHero.style.removeProperty('--px')
-      escenaHero.style.removeProperty('--py')
-    }
-  }, [])
-
-  useEffect(() => {
-    const seccion = seccionRef.current
-    if (!seccion) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    if (window.matchMedia('(pointer: coarse)').matches) return
-
-    const seccionScroll: HTMLElement = seccion
-    let frame = 0
-    function alScroll() {
-      if (frame) return
-      frame = window.requestAnimationFrame(() => {
-        frame = 0
-        seccionScroll.style.setProperty('--scroll', String(Math.min(window.scrollY, 700)))
-      })
-    }
-    alScroll()
-    window.addEventListener('scroll', alScroll, { passive: true })
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', alScroll)
-      seccionScroll.style.removeProperty('--scroll')
-    }
-  }, [])
-
-  useEffect(() => {
-    return () => {
-      if (temporizador.current) window.clearTimeout(temporizador.current)
-    }
-  }, [])
-
-  function alReaccionar(evento: EventoMouse<HTMLDivElement>) {
-    const escena = escenaRef.current
-    if (!escena) return
-    const rect = escena.getBoundingClientRect()
-    escena.style.setProperty('--click-x', `${evento.clientX - rect.left}px`)
-    escena.style.setProperty('--click-y', `${evento.clientY - rect.top}px`)
-    setReaccion(false)
-    window.requestAnimationFrame(() => setReaccion(true))
-    if (temporizador.current) window.clearTimeout(temporizador.current)
-    temporizador.current = window.setTimeout(() => setReaccion(false), 760)
-  }
-
-  return (
-    <section
-      ref={seccionRef}
-      id="portada"
-      className="relative overflow-hidden border-b border-borde-azul/70 bg-white"
-    >
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="cuadricula-sitio absolute inset-0 opacity-70" />
-        <ParticulasHero />
-        <div className="hero-glow hero-glow-a absolute -top-44 right-[-12%] h-[540px] w-[540px] rounded-full bg-electrico/10 blur-2xl sm:blur-3xl" />
-        <div className="hero-glow hero-glow-b absolute -bottom-52 left-[-14%] h-[460px] w-[460px] rounded-full bg-verde/10 blur-2xl sm:blur-3xl" />
-      </div>
-
-      <div
-        className={cx(
-          CONTENEDOR,
-          'relative grid items-center gap-14 pt-16 pb-20 lg:grid-cols-[1.04fr_0.96fr] lg:gap-10 lg:pt-24 lg:pb-28',
-        )}
-      >
-        <div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-borde-azul bg-white/85 px-3 py-1 text-[10px] font-bold tracking-[0.13em] text-marino uppercase">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-verde" />
-            Digitalización empresarial · República Dominicana
-          </p>
-
-          <h1 className="mt-6 text-balance text-[40px] leading-[1.02] font-semibold tracking-[-0.04em] text-marino sm:text-[52px] lg:text-[58px]">
-            Digitalizamos tu empresa.{' '}
-            <span className="text-electrico">Simplificamos tu operación.</span>
-          </h1>
-
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-acero sm:text-lg">
-            Diseñamos páginas web, portales empresariales y automatizaciones que ayudan a las empresas a
-            organizar sus procesos, mejorar la experiencia de sus clientes y trabajar con mayor eficiencia.
-          </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button type="button" onClick={onSolicitar} className={BOTON_PRIMARIO}>
-              Solicitar una propuesta
-              <ArrowRight size={18} aria-hidden />
-            </button>
-            <a href="#soluciones" className={BOTON_SECUNDARIO}>
-              Explorar soluciones
-            </a>
-          </div>
-
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-acero">
-            {['Diagnóstico inicial', 'Propuesta clara', 'Sin compromiso'].map((texto) => (
-              <li key={texto} className="flex items-center gap-1.5">
-                <CircleCheck size={16} className="text-verde" aria-hidden />
-                {texto}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <VistaProducto escenaRef={escenaRef} reaccion={reaccion} onReaccion={alReaccionar} />
-      </div>
-    </section>
-  )
-}
-
-/** Composición decorativa de producto: navegador, panel y aviso de solicitud. */
-function VistaProducto({
-  escenaRef,
-  reaccion,
-  onReaccion,
-}: {
-  escenaRef: RefObject<HTMLDivElement | null>
-  reaccion: boolean
-  onReaccion: (evento: EventoMouse<HTMLDivElement>) => void
-}) {
-  return (
-    <div aria-hidden className="relative mx-auto w-full max-w-[560px]">
-      <div
-        ref={escenaRef}
-        data-hero-escena
-        className="hero-escena relative cursor-pointer"
-        data-reaccion={reaccion ? 'true' : undefined}
-        onClick={onReaccion}
-      >
-        <div className="hero-capa hero-capa-1 relative w-[88%] rounded-2xl border border-borde-azul bg-white shadow-[0_30px_70px_-38px_rgba(0,59,114,0.55)]">
-        <div className="flex items-center gap-1.5 border-b border-borde-azul px-4 py-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-          <span className="ml-3 flex h-5 flex-1 items-center rounded-full bg-niebla px-2.5 text-[9px] text-acero">
-            avitech.do
-          </span>
-        </div>
-        <div className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span className="h-4 w-4 rounded-md bg-marino" />
-              <span className="h-1.5 w-12 rounded-full bg-marino/25" />
-            </div>
-            <div className="h-5 w-16 rounded-full bg-marino" />
-          </div>
-          <div className="mt-5 h-5 w-11/12 rounded-md bg-marino" />
-          <div className="mt-2 h-5 w-7/12 rounded-md bg-marino/75" />
-          <div className="mt-3 h-1.5 w-9/12 rounded-full bg-acero/20" />
-          <div className="mt-1.5 h-1.5 w-6/12 rounded-full bg-acero/20" />
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            {[Globe2, Workflow, LayoutDashboard].map((Icono, indice) => (
-              <div key={indice} className="rounded-lg border border-borde-azul bg-niebla/70 p-2.5">
-                <Icono size={14} className="text-electrico" />
-                <div className="mt-2 h-1.5 w-4/5 rounded-full bg-marino/25" />
-                <div className="mt-1 h-1.5 w-3/5 rounded-full bg-acero/20" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="hero-capa hero-capa-2 relative -mt-8 ml-auto w-[76%] rounded-2xl bg-marino p-4 text-white shadow-[0_34px_60px_-30px_rgba(0,38,74,0.7)]">
-        <div className="flex items-center justify-between">
-          <p className="text-[9px] font-bold tracking-[0.12em] text-white/65 uppercase">Panel de operaciones</p>
-          <span className="flex items-center gap-1 text-[9px] font-medium text-verde">
-            <span className="h-1.5 w-1.5 rounded-full bg-verde" /> En vivo
-          </span>
-        </div>
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          {[
-            ['Solicitudes', '12'],
-            ['Clientes', '48'],
-            ['Ingresos', 'RD$'],
-          ].map(([etiqueta, valor]) => (
-            <div key={etiqueta} className="rounded-lg bg-white/8 px-2 py-1.5 ring-1 ring-white/10">
-              <p className="text-[8px] text-white/55">{etiqueta}</p>
-              <p className="mt-0.5 text-[11px] font-semibold">{valor}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 flex h-16 items-end gap-1.5">
-          {[34, 52, 41, 68, 58, 86, 72].map((altura, indice) => (
-            <div
-              key={indice}
-              style={{ height: `${altura}%` }}
-              className={cx('flex-1 rounded-t-sm', indice === 5 ? 'bg-verde' : 'bg-electrico/70')}
-            />
-          ))}
-        </div>
-      </div>
-
-        <div className="hero-capa hero-capa-3 absolute -top-2 -right-2 flex items-center gap-2 rounded-xl border border-borde-azul bg-white px-3 py-2 shadow-[0_18px_40px_-24px_rgba(0,59,114,0.55)]">
-          <CircleCheck size={18} className="text-verde" />
-          <div>
-            <p className="text-[10px] font-semibold text-grafito">Solicitud recibida</p>
-            <p className="text-[9px] text-acero">Asignada al equipo</p>
-          </div>
-        </div>
-        <span aria-hidden className="hero-orbe" />
-        <span className="hero-pulso" />
-      </div>
-    </div>
-  )
-}
-
+/** Franja de garantías concretas, justo bajo la portada. */
 export function TiraValor() {
   return (
-    <section aria-label="Qué hacemos" className="border-b border-borde-azul/70 bg-white">
+    <section aria-label="Garantías de AviTech" className="fondo-oscuro border-b border-white/10 bg-marino-profundo">
       <div className={cx(CONTENEDOR, 'revelar grid gap-6 py-10 sm:grid-cols-2 lg:grid-cols-4')} data-revelar>
-        {VALORES.map(({ icono: Icono, titulo, texto }) => (
-          <div key={titulo} className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-electrico-suave text-electrico">
-              <Icono size={19} aria-hidden />
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-marino">{titulo}</p>
-              <p className="mt-0.5 text-xs leading-relaxed text-acero">{texto}</p>
+        {GARANTIAS.map(({ icono, titulo, descripcion }) => {
+          const Icono = ICONOS_GARANTIA[icono]
+          return (
+            <div key={titulo} className="flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] text-electrico-claro ring-1 ring-white/10">
+                <Icono size={19} aria-hidden />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-white">{titulo}</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-white/65">{descripcion}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
@@ -387,7 +130,7 @@ function TarjetaServicio({
   return (
     <article
       ref={ref}
-      className={cx(TARJETA, 'tarjeta-3d group relative flex h-full flex-col overflow-hidden p-6')}
+      className={cx(TARJETA, 'tarjeta-3d tarjeta-servicio group relative flex h-full flex-col overflow-hidden p-6')}
     >
       <span aria-hidden className="tarjeta-brillo" />
 
@@ -425,11 +168,7 @@ function TarjetaServicio({
         className="mt-auto inline-flex items-center gap-1.5 self-start pt-4 text-sm font-semibold text-marino transition-colors hover:text-electrico-texto"
       >
         Consultar este servicio
-        <ArrowRight
-          size={15}
-          className="transition-transform group-hover:translate-x-0.5"
-          aria-hidden
-        />
+        <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" aria-hidden />
       </button>
     </article>
   )
@@ -484,10 +223,14 @@ export function Necesidades({ onNecesidad }: { onNecesidad: (servicio: IdServici
   }, [])
 
   return (
-    <section ref={seccionRef} id="necesidades" className="relative overflow-hidden bg-marino py-20 text-white sm:py-28">
+    <section
+      ref={seccionRef}
+      id="necesidades"
+      className="fondo-oscuro relative overflow-hidden bg-marino py-20 text-white sm:py-28"
+    >
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="glow-necesidades-a absolute -top-40 right-[-10%] h-[420px] w-[420px] rounded-full bg-electrico/20 blur-3xl" />
-        <div className="glow-necesidades-b absolute -bottom-40 left-[-10%] h-[360px] w-[360px] rounded-full bg-verde/10 blur-3xl" />
+        <div className="glow-necesidades-a absolute -top-40 right-[-10%] h-[420px] w-[420px] rounded-full bg-electrico/25 blur-3xl" />
+        <div className="glow-necesidades-b absolute -bottom-40 left-[-10%] h-[360px] w-[360px] rounded-full bg-verde/12 blur-3xl" />
       </div>
 
       <div className={cx(CONTENEDOR, 'revelar relative')} data-revelar>
@@ -495,7 +238,7 @@ export function Necesidades({ onNecesidad }: { onNecesidad: (servicio: IdServici
         <h2 className="mt-3 max-w-3xl text-[32px] leading-[1.08] font-semibold tracking-[-0.03em] sm:text-[40px]">
           ¿Qué necesita tu empresa hoy?
         </h2>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/65">
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70">
           Elige la opción que más se parezca a tu situación. Te llevamos al formulario con el servicio ya
           seleccionado para que no tengas que empezar de cero.
         </p>
@@ -523,18 +266,22 @@ export function Necesidades({ onNecesidad }: { onNecesidad: (servicio: IdServici
 }
 
 export function Proceso() {
+  const seccionRef = useProgresoScroll<HTMLElement>()
+
   return (
-    <section id="proceso" className="bg-white py-20 sm:py-28">
+    <section ref={seccionRef} id="proceso" className="bg-white py-20 sm:py-28">
       <div className={cx(CONTENEDOR, 'revelar')} data-revelar>
         <p className={ETIQUETA}>Cómo trabajamos</p>
         <h2 className={TITULO_SECCION}>Un proceso claro, de la idea a la entrega.</h2>
         <p className={TEXTO_SECCION}>
-          Sin cajas negras: en cada etapa sabes qué estamos haciendo, qué falta y qué decisiones necesitamos
-          de tu equipo.
+          Sin cajas negras: en cada etapa sabes qué estamos haciendo, qué falta y qué decisiones necesitamos de
+          tu equipo.
         </p>
 
         <div className="relative mt-12 grid gap-8 md:grid-cols-4 md:gap-5">
-          <div aria-hidden className="absolute top-5 right-8 left-8 hidden h-px bg-borde-azul md:block" />
+          <div aria-hidden className="absolute top-5 right-8 left-8 hidden h-px bg-borde-azul md:block">
+            <span className="proceso-linea absolute inset-0" />
+          </div>
           {PROCESO.map((paso, indice) => (
             <div key={paso.titulo} className="relative">
               <span className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-electrico bg-white text-sm font-bold text-electrico-texto">
@@ -557,8 +304,8 @@ export function Portafolio() {
         <p className={ETIQUETA}>Portafolio</p>
         <h2 className={TITULO_SECCION}>Demostraciones funcionales, no promesas.</h2>
         <p className={TEXTO_SECCION}>
-          Estos son productos que ya construimos dentro de nuestra propia plataforma. Puedes abrirlos y
-          revisar cómo se sienten antes de contratar.
+          Estos son productos que ya construimos dentro de nuestra propia plataforma. Puedes abrirlos y revisar
+          cómo se sienten antes de contratar.
         </p>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -678,26 +425,22 @@ function MiniVisual({ tipo }: { tipo: DemoSitio['visual'] }) {
 export function Nosotros() {
   return (
     <section id="nosotros" className="bg-white py-20 sm:py-28">
-      <div
-        className={cx(CONTENEDOR, 'revelar grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16')}
-        data-revelar
-      >
+      <div className={cx(CONTENEDOR, 'revelar grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16')} data-revelar>
         <div>
           <p className={ETIQUETA}>Sobre AviTech</p>
           <h2 className={TITULO_SECCION}>Un equipo multidisciplinario, enfocado en resolver.</h2>
           <p className="mt-5 text-base leading-relaxed text-acero">
-            AviTech Solutions Group es una empresa tecnológica en desarrollo. Reunimos perfiles de
-            coordinación, ingeniería de software, desarrollo web y móvil, y diseño para acompañar la
-            digitalización de pequeñas y medianas empresas.
+            AviTech Solutions Group es una empresa tecnológica en desarrollo. Reunimos perfiles de coordinación,
+            ingeniería de software, desarrollo web y móvil, y diseño para acompañar la digitalización de pequeñas
+            y medianas empresas.
           </p>
           <p className="mt-4 text-base leading-relaxed text-acero">
             Trabajamos por etapas y con alcance escrito. Preferimos mostrar el trabajo antes que prometer
-            resultados: las demostraciones de esta página son productos que ya construimos, no casos de
-            clientes.
+            resultados: las demostraciones de esta página son productos que ya construimos, no casos de clientes.
           </p>
           <p className="mt-4 text-base leading-relaxed text-acero">
-            Nuestra base está en Santo Domingo, República Dominicana. Coordinamos el trabajo de forma remota
-            cuando el proyecto lo permite.
+            Nuestra base está en Santo Domingo, República Dominicana. Coordinamos el trabajo de forma remota cuando
+            el proyecto lo permite.
           </p>
         </div>
 
@@ -741,7 +484,7 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
               )}
             >
               {paquete.destacado && (
-                <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-verde px-3 py-1 text-[9px] font-bold tracking-[0.1em] text-marino uppercase">
+                <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-verde px-3 py-1 text-[9px] font-bold tracking-[0.1em] text-marino-profundo uppercase">
                   <Sparkles size={12} aria-hidden />
                   Recomendado
                 </span>
@@ -766,22 +509,12 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
               >
                 <span className="whitespace-nowrap">{paquete.rango}</span>
                 {paquete.sufijo && (
-                  <span
-                    className={cx(
-                      'text-xs font-medium',
-                      paquete.destacado ? 'text-white/60' : 'text-acero',
-                    )}
-                  >
+                  <span className={cx('text-xs font-medium', paquete.destacado ? 'text-white/60' : 'text-acero')}>
                     {paquete.sufijo}
                   </span>
                 )}
               </p>
-              <p
-                className={cx(
-                  'mt-2 text-sm leading-relaxed',
-                  paquete.destacado ? 'text-white/70' : 'text-acero',
-                )}
-              >
+              <p className={cx('mt-2 text-sm leading-relaxed', paquete.destacado ? 'text-white/70' : 'text-acero')}>
                 {paquete.resumen}
               </p>
 
@@ -789,10 +522,7 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
                 {paquete.incluye.map((item) => (
                   <li
                     key={item}
-                    className={cx(
-                      'flex items-start gap-2 text-sm',
-                      paquete.destacado ? 'text-white/85' : 'text-grafito/85',
-                    )}
+                    className={cx('flex items-start gap-2 text-sm', paquete.destacado ? 'text-white/85' : 'text-grafito/85')}
                   >
                     <Check
                       size={15}
@@ -804,12 +534,7 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
                 ))}
               </ul>
 
-              <p
-                className={cx(
-                  'mt-5 text-xs leading-relaxed',
-                  paquete.destacado ? 'text-white/55' : 'text-acero',
-                )}
-              >
+              <p className={cx('mt-5 text-xs leading-relaxed', paquete.destacado ? 'text-white/60' : 'text-acero')}>
                 <span className="font-semibold">Ideal para:</span> {paquete.ideal}
               </p>
 
@@ -820,7 +545,7 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
                   className={cx(
                     'boton-primario inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors',
                     paquete.destacado
-                      ? 'bg-verde text-marino hover:bg-verde/90'
+                      ? 'bg-verde text-marino-profundo hover:bg-verde/90'
                       : 'bg-marino text-white hover:bg-marino-oscuro',
                   )}
                 >
@@ -833,9 +558,9 @@ export function Paquetes({ onPaquete }: { onPaquete: (servicio: IdServicio) => v
         </div>
 
         <div className="mt-6 rounded-xl border border-borde-azul bg-white px-4 py-3 text-xs leading-relaxed text-acero">
-          <span className="font-semibold text-marino">Nota:</span> los rangos son referencias comerciales
-          iniciales, no una cotización vinculante. El precio final depende del alcance, las integraciones, el
-          contenido y los requisitos técnicos. Hosting, dominio, licencias y APIs se cotizan por separado.
+          <span className="font-semibold text-marino">Nota:</span> los rangos son referencias comerciales iniciales,
+          no una cotización vinculante. El precio final depende del alcance, las integraciones, el contenido y los
+          requisitos técnicos. Hosting, dominio, licencias y APIs se cotizan por separado.
         </div>
       </div>
     </section>

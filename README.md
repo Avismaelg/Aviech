@@ -23,7 +23,7 @@ Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **
 
 | Módulo | Qué hace |
 |---|---|
-| **Sitio comercial** (`/`) | Portada pública con hero interactivo (partículas, parallax 3D y pulso al clic), cuatro servicios con tarjetas 3D, seis necesidades, proceso de trabajo, tres demostraciones funcionales, equipo, paquetes en RD$, preguntas frecuentes, privacidad/términos y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA y puede avisar al equipo por Telegram (opcional). Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
+| **Sitio comercial** (`/`) | Portada pública con bóveda 3D que sigue el cursor, fichas de garantía, franja «Garantías», cuatro servicios con tarjetas 3D y filete de marca, seis necesidades, proceso de trabajo con línea de avance, tres demostraciones funcionales, equipo, paquetes en RD$, preguntas frecuentes, privacidad/términos y formulario de contacto. El envío entra al mismo flujo de solicitudes con IA y puede avisar al equipo por Telegram (opcional). Sin cuentas, sin testimonios ni clientes inventados. Ver **`docs/SITIO-COMERCIAL.md`** |
 | **Inicio** | Tablero: contadores animados, gráfica de ingresos (últimos 6 meses), anillo de estado de cobro, gastos y balance del mes, últimos clientes y pagos pendientes |
 | **Clientes** | Alta, edición y borrado; búsqueda y filtro por estado (activo / prospecto / pausado); **RNC** para facturación formal |
 | **CRM** | Pipeline kanban en 7 etapas, empresas, contactos y actividades de seguimiento; métricas de pipeline/ponderado/ganado y conversión de empresa en cliente con un clic |
@@ -98,7 +98,9 @@ src/
   components/
     sitio/
       SitioPublico.tsx    # portada comercial, cabecera, navegación móvil y pie
-      Secciones.tsx       # hero, servicios, necesidades, proceso, portafolio, equipo, paquetes y FAQ
+      Secciones.tsx       # garantías, servicios, necesidades, proceso, portafolio, nosotros, paquetes y FAQ
+      Hero.tsx            # portada: texto, CTA y bóveda con fichas
+      Boveda.tsx          # bóveda SVG y anillos orbitales (decorativa)
       Contacto.tsx        # formulario comercial → /api/solicitudes
       Legales.tsx         # privacidad y términos
       estilos.ts          # clases compartidas del sitio

@@ -138,7 +138,7 @@ sirven como respaldo. No inventar números ni correos.
 ## Interactividad
 
 - **Hero:** canvas de partículas y conexiones (24 en móvil/equipos ligeros, 52 en
-  escritorio), parallax 3D de las capas del producto con el puntero, glows con parallax
+  escritorio), bóveda 3D que gira con el puntero y fichas con profundidad, glows con parallax
   de scroll limitado y pulso al hacer clic. Sin Three.js: CSS 3D, canvas y
   `requestAnimationFrame`.
 - **Tarjetas:** inclinación sutil, brillo radial que sigue al cursor y una línea de

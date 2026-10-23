@@ -140,7 +140,7 @@ usan como acento de marca ni para botones primarios.
 
 | Componente | Notas |
 |---|---|
-| `Sitio comercial` | Portada pública en `/` con su propia paleta. Cabecera sticky con nav de anclas, CTA y menú móvil; hero de dos columnas con composición CSS de navegador/panel (sin imágenes pesadas); tarjetas de servicio con entregables; sección oscura de necesidades; proceso en cuatro pasos; tres demostraciones con miniaturas CSS y etiqueta «Demostración»; equipo en tarjetas; cuatro paquetes (el destacado en marino); preguntas frecuentes con `<details>` nativos y formulario de contacto con consentimiento y detalles de privacidad. Las páginas `/privacidad` y `/terminos` reutilizan la marca y los tokens del sitio. Los textos pequeños en azul usan `electrico-texto` (`#005FCC`) para contraste AA. No reutiliza los tokens cálidos del panel. |
+| `Sitio comercial` | Portada pública en `/` con su propia paleta. Cabecera oscura sticky con nav de anclas, CTA y menú móvil; portada marina con bóveda 3D que sigue el cursor (SVG + CSS, sin imágenes) y fichas de garantía con profundidad; franja «Garantías»; tarjetas de servicio con entregables y filete de marca; sección oscura de necesidades; proceso en cuatro pasos con línea que avanza con el scroll; panel de contacto oscuro junto al formulario; tres demostraciones con miniaturas CSS y etiqueta «Demostración»; equipo en tarjetas; cuatro paquetes (el destacado en marino); preguntas frecuentes con `<details>` nativos y formulario de contacto con consentimiento y detalles de privacidad. Las páginas `/privacidad` y `/terminos` reutilizan la marca y los tokens del sitio. Los textos pequeños en azul usan `electrico-texto` (`#005FCC`) para contraste AA. No reutiliza los tokens cálidos del panel. |
 | `Asistente IA` | En escritorio se abre desde el botón **Asistente IA** de la barra de contexto; en móvil, desde el icono de destellos de la cabecera fija (junto al avatar y el menú). Panel de 400 px en escritorio y hoja inferior en móvil. Cabecera con estado, nueva conversación y cerrar; sugerencias iniciales, indicador de escritura y compositor con `Enter` para enviar y `Shift+Enter` para salto de línea. No guarda historial ni ve la base de datos. |
 | `Login` | Dos columnas: panel de marca en tinta con órbita naranja + tarjeta de superficie con acceso. Píldora «Acceso privado», ver/ocultar contraseña y error legible. En móvil se apila. |
 | `Inicio` | Hero editorial con saludo capitalizado, acciones rápidas, KPIs, gráfica de ingresos (barras de tinta + mes actual naranja), tarjeta de ingreso recurrente y anillo de cobro. |
@@ -162,6 +162,7 @@ usan como acento de marca ni para botones primarios.
   `IntersectionObserver` (una sola vez) y un `rootMargin` moderado. La navegación tiene
   subrayado degradado y los botones `boton-primario`/`boton-secundario` tienen press,
   foco y desplazamiento de icono.
+- **Portada rediseñada (14.ª sesión, 22-oct, local):** la composición se inspira en la plantilla **Vaultline** de motionsites.ai, tomando solo su estructura y su lenguaje visual (no se copiaron imágenes, textos ni la prueba social). La bóveda es un SVG con costuras que giran (60 s), dos anillos orbitales y un halo; `data-hero-escena` recibe `--px`/`--py`, la bóveda se inclina hasta 14°/16° y las cuatro fichas responden con dos profundidades. El botón principal es magnético (`useMagnetico`, hasta 7 px); la línea del proceso avanza con el scroll (`useProgresoScroll` → `--progreso`); las tarjetas de servicio muestran un filete de marca al pasar el puntero o al enfocar. No hay filtros SVG ni `drop-shadow` animados: el brillo de las costuras es un trazo translúcido. En equipos ligeros (≤ 4 núcleos o ≤ 4 GB, clase `hero-ligero`) la bóveda queda estática; con `prefers-reduced-motion` o puntero táctil no hay giros ni magnetismo. `prueba-interaccion.js` comprueba cada una.
 - **Reglas de rendimiento y accesibilidad:** el canvas se pausa cuando el hero sale de
   pantalla o la pestaña se oculta; la inclinación y el parallax se desactivan con
   `prefers-reduced-motion`, puntero táctil o equipos con ≤ 4 núcleos/≤ 4 GB; todos los
@@ -172,7 +173,7 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-22-auditoria`.
+  Versión actual: `avitech-v2026-10-22-rediseno`.
 - **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
   que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
   bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
@@ -181,8 +182,8 @@ usan como acento de marca ni para botones primarios.
   del armazón.
 - **Sitio comercial (11.ª sesión):** tokens propios en `@theme` (`marino`,
   `electrico`, `electrico-texto`, `electrico-suave`, `verde`, `verde-suave`,
-  `grafito`, `acero`, `niebla`, `borde-azul`). El foco del sitio se pinta azul dentro de
-  `.sitio-comercial`; la cuadrícula del hero es `.cuadricula-sitio`; el desplazamiento
+  `grafito`, `acero`, `niebla`, `borde-azul`, `marino-profundo`, `electrico-claro`). El foco del sitio se pinta azul dentro de
+  `.sitio-comercial`; la cuadrícula de la portada es `.cuadricula-oscura`; el desplazamiento
   suave solo se activa con `html:has(.sitio-comercial)` y respeta
   `prefers-reduced-motion`. El manifest de la PWA abre en `/panel`.
 - **Página 404 y metadatos (13.ª sesión):** las rutas desconocidas devuelven
@@ -264,4 +265,4 @@ usan como acento de marca ni para botones primarios.
 ---
 
 > Enfoque de sistema de diseño: tokens → componentes → reglas → checklist.
-> Última revisión: 20-oct-2026 (v4 «Open Design · Mastercard» + barra lateral flotante).
+> Última revisión: 22-oct-2026 (portada rediseñada con bóveda 3D; panel v4 «Open Design · Mastercard» + barra lateral flotante).

@@ -22,6 +22,7 @@ async (page) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto(BASE, { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: /Digitalizamos tu empresa/ }).waitFor({ timeout: 20000 })
+    await page.waitForTimeout(300)
 
     const escena = page.locator('[data-hero-escena]')
     const leerEscena = () =>
@@ -60,6 +61,54 @@ async (page) => {
     await page.screenshot({ path: `${CAPTURAS}/21-hero-interaccion.png` })
     marcar('hero con partículas, parallax y clic')
 
+    // ---------- Bóveda 3D: gira con el puntero y las fichas responden ----------
+    const boveda = page.locator('.boveda')
+    const ficha = page.locator('.boveda-chip-lejos').first()
+    const leerMovimiento = () =>
+      Promise.all([
+        boveda.evaluate((el) => getComputedStyle(el).transform),
+        ficha.evaluate((el) => getComputedStyle(el).transform),
+      ])
+    const [bovedaAntes, fichaAntes] = await leerMovimiento()
+    await page.mouse.move(150, 160)
+    await page.waitForTimeout(600)
+    const [bovedaDespues, fichaDespues] = await leerMovimiento()
+    afirmar(bovedaAntes !== bovedaDespues, 'la bóveda gira con el puntero')
+    afirmar(fichaAntes !== fichaDespues, 'las fichas responden a su profundidad')
+    afirmar((await page.locator('.boveda-orbita').count()) === 2, 'la bóveda tiene sus dos anillos orbitales')
+    marcar('bóveda 3D sigue el puntero')
+
+    // ---------- Botón magnético ----------
+    const ctaHero = page.getByRole('button', { name: 'Solicitar una propuesta' })
+    const cajaCta = await ctaHero.boundingBox()
+    await page.mouse.move(cajaCta.x + cajaCta.width * 0.92, cajaCta.y + cajaCta.height * 0.8)
+    await page.waitForTimeout(350)
+    const iman = await ctaHero.evaluate((el) => el.style.getPropertyValue('--iman-x'))
+    afirmar(iman !== '' && iman !== '0.00px', `el botón principal se desplaza hacia el puntero (${iman})`)
+    await page.mouse.move(150, 160)
+    await page.waitForTimeout(350)
+    const imanSalida = await ctaHero.evaluate((el) => el.style.getPropertyValue('--iman-x'))
+    afirmar(imanSalida === '0px', 'el botón vuelve a su sitio al salir')
+    marcar('botón magnético')
+
+    // ---------- Línea de proceso que avanza con el scroll ----------
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+    })
+    await page.waitForTimeout(250)
+    const proceso = page.locator('#proceso')
+    const progresoAntes = await proceso.evaluate((el) => Number(el.style.getPropertyValue('--progreso')))
+    await page.evaluate(() => {
+      document.getElementById('proceso')?.scrollIntoView({ block: 'center' })
+    })
+    await page.waitForTimeout(400)
+    const progresoDespues = await proceso.evaluate((el) => Number(el.style.getPropertyValue('--progreso')))
+    afirmar(progresoAntes === 0, `la línea de proceso empieza vacía (${progresoAntes})`)
+    afirmar(progresoDespues > 0.4, `la línea de proceso avanza al recorrerla (${progresoDespues})`)
+    await page.screenshot({ path: `${CAPTURAS}/25-proceso-avance.png` })
+    marcar('línea de proceso con avance')
+
     // ---------- Tarjetas: inclinación, brillo y detalle ----------
     await page.evaluate(() => {
       document.documentElement.style.scrollBehavior = 'auto'
@@ -81,10 +130,13 @@ async (page) => {
       })
 
     const tarjetaAntes = await leerTarjeta()
+    const barraAntes = await tarjeta.evaluate((el) => getComputedStyle(el, '::before').transform)
     const caja = await tarjeta.boundingBox()
     await page.mouse.move(caja.x + caja.width * 0.78, caja.y + caja.height * 0.22)
     await page.waitForTimeout(450)
     const tarjetaDespues = await leerTarjeta()
+    const barraDespues = await tarjeta.evaluate((el) => getComputedStyle(el, '::before').transform)
+    afirmar(barraAntes !== barraDespues, 'el filete de marca de la tarjeta se revela con el puntero')
     afirmar(
       tarjetaAntes.rx !== tarjetaDespues.rx || tarjetaAntes.ry !== tarjetaDespues.ry,
       'la tarjeta se inclina con el puntero',
@@ -149,6 +201,12 @@ async (page) => {
       const revelar = document.querySelectorAll('[data-revelar]')
       const tarjeta = document.querySelector('#soluciones article')
       const escena = document.querySelector('[data-hero-escena]')
+      const boveda = document.querySelector('.boveda')
+      const costuras = document.querySelector('.boveda-costuras')
+      const cta = Array.from(document.querySelectorAll('button')).find(
+        (boton) => boton.textContent?.trim() === 'Solicitar una propuesta',
+      )
+      const proceso = document.getElementById('proceso')
       return {
         revelarVisibles: Array.from(revelar).every(
           (nodo) => nodo.getAttribute('data-visible') === 'true',
@@ -156,12 +214,20 @@ async (page) => {
         opacidad: revelar[0] ? getComputedStyle(revelar[0]).opacity : null,
         tarjeta: tarjeta ? getComputedStyle(tarjeta).transform : null,
         escena: escena ? getComputedStyle(escena).transform : null,
+        boveda: boveda ? getComputedStyle(boveda).transform : null,
+        costuras: costuras ? getComputedStyle(costuras).animationName : null,
+        iman: cta ? cta.style.getPropertyValue('--iman-x') : null,
+        progreso: proceso ? proceso.style.getPropertyValue('--progreso') : null,
       }
     })
     afirmar(reducido.revelarVisibles, 'con movimiento reducido todo el contenido es visible')
     afirmar(reducido.opacidad === '1', 'con movimiento reducido no queda opacidad pendiente')
     afirmar(reducido.tarjeta === 'none', 'con movimiento reducido la tarjeta no se transforma')
     afirmar(reducido.escena === 'none', 'con movimiento reducido la escena no se transforma')
+    afirmar(reducido.boveda === 'none', 'con movimiento reducido la bóveda queda plana')
+    afirmar(reducido.costuras === 'none', 'con movimiento reducido las costuras no giran')
+    afirmar(reducido.iman === '', 'con movimiento reducido el botón no se desplaza')
+    afirmar(reducido.progreso === '1', 'con movimiento reducido la línea de proceso aparece completa')
     marcar('movimiento reducido respetado')
     await page.emulateMedia({ reducedMotion: 'no-preference' })
 

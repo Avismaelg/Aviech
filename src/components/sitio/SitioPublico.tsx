@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { cx } from '../../lib/estilos'
 import { CONTACTO, ENLACES_NAV, SERVICIOS, SITIO, type IdServicio } from '../../lib/sitio'
 import { SeccionContacto } from './Contacto'
+import { Hero } from './Hero'
 import {
-  Hero,
   MarcaSitio,
   Necesidades,
   Nosotros,
@@ -15,11 +15,11 @@ import {
   Servicios,
   TiraValor,
 } from './Secciones'
-import { BOTON_PRIMARIO, CONTENEDOR } from './estilos'
+import { BOTON_VERDE, CONTENEDOR } from './estilos'
 
 const MENSAJE_WHATSAPP = encodeURIComponent('Hola, quiero información sobre los servicios de AviTech Solutions Group.')
 const BOTON_CABECERA =
-  'boton-primario inline-flex items-center gap-1.5 rounded-xl bg-marino px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-white transition-colors hover:bg-marino-oscuro'
+  'boton-primario inline-flex items-center gap-1.5 rounded-xl bg-verde px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-marino-profundo transition-colors hover:bg-verde/90'
 
 export function SitioPublico() {
   const [menuAbierto, setMenuAbierto] = useState(false)
@@ -118,12 +118,12 @@ export function SitioPublico() {
     <div className="sitio-comercial min-h-screen bg-white text-grafito">
       <a
         href="#contenido"
-        className="absolute top-0 left-[-9999px] z-[60] rounded-lg bg-marino px-4 py-2 text-sm font-semibold text-white focus:top-3 focus:left-3"
+        className="absolute top-0 left-[-9999px] z-[60] rounded-lg bg-verde px-4 py-2 text-sm font-semibold text-marino-profundo focus:top-3 focus:left-3"
       >
         Saltar al contenido
       </a>
 
-      <header className="sticky top-0 z-50 border-b border-borde-azul/70 bg-white/90 backdrop-blur">
+      <header className="fondo-oscuro sticky top-0 z-50 border-b border-white/10 bg-marino-profundo/95">
         <div className={cx(CONTENEDOR, 'flex h-16 items-center justify-between gap-4')}>
           <a
             href="#portada"
@@ -131,7 +131,7 @@ export function SitioPublico() {
             onClick={() => setMenuAbierto(false)}
             className="shrink-0"
           >
-            <MarcaSitio />
+            <MarcaSitio claro />
           </a>
 
           <nav aria-label="Navegación principal" className="hidden items-center gap-4 lg:flex xl:gap-6">
@@ -140,7 +140,7 @@ export function SitioPublico() {
                 key={enlace.href}
                 href={enlace.href}
                 className={cx(
-                  'enlace-nav text-sm font-medium text-acero transition-colors hover:text-marino',
+                  'enlace-nav text-sm font-medium text-white/80 transition-colors hover:text-white',
                   enlace.href === '#preguntas' && 'hidden xl:inline',
                 )}
               >
@@ -152,7 +152,7 @@ export function SitioPublico() {
           <div className="hidden items-center gap-4 lg:flex">
             <a
               href="/panel"
-              className="hidden text-sm font-medium text-acero transition-colors hover:text-marino xl:inline"
+              className="hidden text-sm font-medium text-white/75 transition-colors hover:text-white xl:inline"
             >
               Acceso
             </a>
@@ -168,21 +168,21 @@ export function SitioPublico() {
             aria-expanded={menuAbierto}
             aria-controls="menu-sitio"
             aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-borde-azul text-marino transition-colors hover:bg-electrico-suave lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 text-white transition-colors hover:bg-white/10 lg:hidden"
           >
             {menuAbierto ? <X size={19} aria-hidden /> : <Menu size={19} aria-hidden />}
           </button>
         </div>
 
         {menuAbierto && (
-          <div id="menu-sitio" className="border-t border-borde-azul/70 bg-white lg:hidden">
+          <div id="menu-sitio" className="border-t border-white/10 bg-marino-profundo lg:hidden">
             <nav aria-label="Navegación móvil" className={cx(CONTENEDOR, 'grid gap-1 py-4')}>
               {ENLACES_NAV.map((enlace) => (
                 <a
                   key={enlace.href}
                   href={enlace.href}
                   onClick={() => setMenuAbierto(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-marino transition-colors hover:bg-electrico-suave"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
                 >
                   {enlace.etiqueta}
                 </a>
@@ -190,17 +190,13 @@ export function SitioPublico() {
               <a
                 href="/panel"
                 onClick={() => setMenuAbierto(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-acero transition-colors hover:bg-electrico-suave hover:text-marino"
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
               >
                 Acceso al panel
               </a>
             </nav>
             <div className={cx(CONTENEDOR, 'pb-4')}>
-              <a
-                href="#contacto"
-                onClick={() => setMenuAbierto(false)}
-                className={cx(BOTON_PRIMARIO, 'w-full')}
-              >
+              <a href="#contacto" onClick={() => setMenuAbierto(false)} className={cx(BOTON_VERDE, 'w-full')}>
                 Solicitar propuesta
                 <ArrowRight size={17} aria-hidden />
               </a>
@@ -222,7 +218,7 @@ export function SitioPublico() {
         <SeccionContacto solicitud={solicitud} />
       </main>
 
-      <footer className="bg-marino-oscuro text-white/70">
+      <footer className="fondo-oscuro bg-marino-oscuro text-white/70">
         <div className={cx(CONTENEDOR, 'grid gap-10 py-14 md:grid-cols-[1.5fr_1fr_1fr_1fr]')}>
           <div>
             <MarcaSitio claro />
@@ -311,7 +307,7 @@ export function SitioPublico() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Escribir por WhatsApp"
-          className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex h-12 w-12 items-center justify-center rounded-full bg-verde text-marino shadow-[0_18px_40px_-18px_rgba(0,59,114,0.65)] transition-transform hover:scale-105"
+          className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex h-12 w-12 items-center justify-center rounded-full bg-verde text-marino-profundo shadow-[0_18px_40px_-18px_rgba(33,192,99,0.7)] transition-transform hover:scale-105"
         >
           <MessageCircle size={22} aria-hidden />
         </a>

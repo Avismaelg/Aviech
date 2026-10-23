@@ -108,7 +108,7 @@ export function ParticulasHero() {
           const b = particulas[j]
           const distancia = Math.hypot(a.x - b.x, a.y - b.y)
           if (distancia < distanciaMaxima) {
-            ctx.strokeStyle = `rgba(0, 90, 180, ${(1 - distancia / distanciaMaxima) * 0.17})`
+            ctx.strokeStyle = `rgba(92, 179, 255, ${(1 - distancia / distanciaMaxima) * 0.24})`
             ctx.beginPath()
             ctx.moveTo(a.x, a.y)
             ctx.lineTo(b.x, b.y)
@@ -129,7 +129,7 @@ export function ParticulasHero() {
       }
 
       for (const particula of particulas) {
-        ctx.fillStyle = 'rgba(0, 123, 255, 0.36)'
+        ctx.fillStyle = 'rgba(160, 214, 255, 0.5)'
         ctx.beginPath()
         ctx.arc(particula.x, particula.y, particula.r, 0, Math.PI * 2)
         ctx.fill()

@@ -53,6 +53,8 @@
   --color-acero: #5b6b7f;
   --color-niebla: #f4f7fb;
   --color-borde-azul: #dbe6f2;
+  --color-marino-profundo: #001d3a;
+  --color-electrico-claro: #5cb3ff;
 
   /* Una sola familia: Sofia Sans como sustituto abierto de MarkForMC. */
   --font-sans: 'Sofia Sans Variable', 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -126,14 +128,29 @@ html:has(.sitio-comercial) {
   }
 }
 
-/* Cuadrícula técnica del hero, desvanecida en los bordes. */
-.cuadricula-sitio {
+/* Portada: fondo marino con luz eléctrica y verde, sin imágenes pesadas. */
+.hero-fondo {
+  background:
+    radial-gradient(880px circle at 78% 14%, rgb(0 123 255 / 0.36), transparent 62%),
+    radial-gradient(640px circle at 6% 96%, rgb(33 192 99 / 0.16), transparent 60%),
+    linear-gradient(180deg, #003b72 0%, #00264a 70%, #001d3a 100%);
+}
+
+/* Cuadrícula técnica de la portada, desvanecida hacia los bordes. */
+.cuadricula-oscura {
   background-image:
-    linear-gradient(to right, rgb(0 59 114 / 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(0 59 114 / 0.055) 1px, transparent 1px);
+    linear-gradient(to right, rgb(255 255 255 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.055) 1px, transparent 1px);
   background-size: 44px 44px;
-  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, #000 25%, transparent 78%);
-  mask-image: radial-gradient(ellipse at 50% 35%, #000 25%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at 60% 40%, #000 20%, transparent 74%);
+  mask-image: radial-gradient(ellipse at 60% 40%, #000 20%, transparent 74%);
+}
+
+.texto-degradado {
+  background-image: linear-gradient(90deg, #5cb3ff 0%, #ffffff 55%, #21c063 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- Hero interactivo ---------- */
@@ -158,47 +175,124 @@ html:has(.sitio-comercial) {
   transform: translate3d(0, calc(var(--scroll, 0) * -0.03px), 0);
 }
 
-.hero-orbe {
+/* Bóveda 3D: .hero-escena escribe --px y --py; cada capa responde a su profundidad. */
+.boveda-halo {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 118px;
-  height: 118px;
+  inset: -6%;
   border-radius: 999px;
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.92), rgba(0, 123, 255, 0.55) 38%, rgba(0, 59, 114, 0.28) 68%, transparent 72%);
-  box-shadow:
-    0 0 64px 10px rgba(0, 123, 255, 0.26),
-    inset 0 0 22px rgba(255, 255, 255, 0.32);
-  transform: translate(-50%, -50%) translate3d(calc(var(--px, 0) * -6px), calc(var(--py, 0) * -4px), 0);
-  transition: transform 0.35s ease-out;
-  pointer-events: none;
-  z-index: 0;
+  background: radial-gradient(circle, rgb(0 123 255 / 0.4) 0%, rgb(0 123 255 / 0.12) 42%, transparent 68%);
+  transform: translate3d(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -12px), 0);
 }
 
-.hero-escena {
+.boveda-orbita {
+  --inclinacion: 68deg;
+  position: absolute;
+  inset: 4%;
+  border: 1px solid rgb(92 179 255 / 0.3);
+  border-radius: 999px;
+  transform: rotateX(var(--inclinacion));
+  animation: orbita-girar 28s linear infinite;
+}
 
-  --px: 0;
-  --py: 0;
-  transform: perspective(1200px) rotateX(calc(var(--py) * -3deg)) rotateY(calc(var(--px) * 5deg));
+.boveda-orbita::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 999px;
+  background: #21c063;
+  box-shadow: 0 0 14px 2px rgb(33 192 99 / 0.8);
+}
+
+.boveda-orbita-b {
+  --inclinacion: 74deg;
+  inset: 10%;
+  border-color: rgb(33 192 99 / 0.22);
+  animation-duration: 36s;
+  animation-direction: reverse;
+}
+
+.boveda {
+  position: absolute;
+  inset: 12%;
+  transform: perspective(900px) rotateX(calc(var(--py, 0) * -14deg)) rotateY(calc(var(--px, 0) * 16deg));
   transform-style: preserve-3d;
 }
 
-.hero-capa {
-  will-change: transform;
-  transition: transform 0.18s ease-out;
+.boveda-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.hero-capa-1 {
-  transform: translate3d(calc(var(--px) * -12px), calc(var(--py) * -8px), 0) rotate(-1deg);
+.boveda-costuras {
+  animation: girar-lento 60s linear infinite;
 }
 
-.hero-capa-2 {
-  transform: translate3d(calc(var(--px) * 16px), calc(var(--py) * 10px), 0) rotate(1deg);
+/* Equipos con pocos núcleos o poca memoria: la bóveda queda estática. */
+.hero-ligero .boveda-orbita,
+.hero-ligero .boveda-costuras {
+  animation: none;
 }
 
-.hero-capa-3 {
-  transform: translate3d(calc(var(--px) * 24px), calc(var(--py) * 14px), 0);
+.boveda-reflejo {
+  transform: translate3d(calc(var(--px, 0) * -12px), calc(var(--py, 0) * -8px), 0);
+}
+
+.hero-escena {
+  --px: 0;
+  --py: 0;
+}
+
+.boveda-chip-cerca {
+  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 7px), 0);
+}
+
+.boveda-chip-lejos {
+  transform: translate3d(calc(var(--px, 0) * 22px), calc(var(--py, 0) * 14px), 0);
+}
+
+/* Botón magnético: el JS escribe --iman-x e --iman-y en el propio botón. */
+.boton-iman {
+  transform: translate3d(var(--iman-x, 0px), var(--iman-y, 0px), 0);
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Línea de proceso que avanza con el scroll (--progreso lo escribe el JS). */
+.proceso-linea {
+  transform: scaleX(var(--progreso, 0));
+  transform-origin: left center;
+  background: linear-gradient(90deg, #007bff, #21c063);
+}
+
+/* Foco visible sobre fondos oscuros: azul claro en lugar del eléctrico. */
+.sitio-comercial .fondo-oscuro :where(a, button, summary):focus-visible {
+  outline-color: #5cb3ff;
+}
+
+@keyframes orbita-girar {
+  from {
+    transform: rotateX(var(--inclinacion)) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(var(--inclinacion)) rotateZ(360deg);
+  }
+}
+
+@keyframes girar-lento {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .hero-pulso {
@@ -207,7 +301,7 @@ html:has(.sitio-comercial) {
   top: var(--click-y, 50%);
   width: 40px;
   height: 40px;
-  border: 2px solid rgb(0 123 255 / 0.55);
+  border: 2px solid rgb(92 179 255 / 0.6);
   border-radius: 999px;
   opacity: 0;
   pointer-events: none;
@@ -218,7 +312,7 @@ html:has(.sitio-comercial) {
   animation: pulso-hero 0.72s ease-out both;
 }
 
-.hero-escena[data-reaccion='true'] .hero-capa-2 {
+.hero-escena[data-reaccion='true'] .boveda {
   animation: latido-hero 0.55s ease-out;
 }
 
@@ -246,20 +340,25 @@ html:has(.sitio-comercial) {
 @media (prefers-reduced-motion: reduce) {
   .hero-glow,
   .hero-escena,
-  .hero-capa,
-  .hero-orbe,
+  .boveda,
+  .boveda-halo,
+  .boveda-reflejo,
+  .boveda-chip-cerca,
+  .boveda-chip-lejos,
   .glow-necesidades-a,
-  .glow-necesidades-b {
+  .glow-necesidades-b,
+  .boton-iman {
     transform: none;
     transition: none;
   }
 
-  .hero-orbe {
-    transform: translate(-50%, -50%);
+  .boveda-orbita,
+  .boveda-costuras {
+    animation: none;
   }
 
   .hero-escena[data-reaccion='true'] .hero-pulso,
-  .hero-escena[data-reaccion='true'] .hero-capa-2 {
+  .hero-escena[data-reaccion='true'] .boveda {
     animation: none;
   }
 }
@@ -319,6 +418,24 @@ html:has(.sitio-comercial) {
   .detalle-tarjeta {
     opacity: 1;
   }
+}
+
+/* Servicios (fondo claro): filete de marca que se revela con el puntero o el foco. */
+.tarjeta-servicio::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, #007bff, #21c063);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.tarjeta-servicio:hover::before,
+.tarjeta-servicio:focus-within::before {
+  transform: scaleX(1);
 }
 
 /* ---------- Aparición al hacer scroll ---------- */
@@ -399,6 +516,7 @@ html:has(.sitio-comercial) {
 
   .tarjeta-brillo,
   .detalle-tarjeta,
+  .tarjeta-servicio::before,
   .enlace-nav::after,
   .boton-primario,
   .boton-secundario,

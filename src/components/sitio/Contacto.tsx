@@ -2,7 +2,7 @@ import { AlertCircle, CircleCheck, Loader2, LockKeyhole, Mail, MapPin, MessageCi
 import { useState, type FormEvent } from 'react'
 import { cx } from '../../lib/estilos'
 import { CONTACTO, PLAZOS_CONTACTO, SERVICIOS, type IdServicio } from '../../lib/sitio'
-import { BOTON_PRIMARIO, CONTENEDOR, ETIQUETA, TEXTO_SECCION, TITULO_SECCION } from './estilos'
+import { BOTON_PRIMARIO, CONTENEDOR, ETIQUETA_OSCURA, TEXTO_OSCURO, TITULO_OSCURO } from './estilos'
 
 interface FormularioContacto {
   nombre: string
@@ -214,18 +214,19 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
         className={cx(CONTENEDOR, 'revelar grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14')}
         data-revelar
       >
-        <div>
-          <p className={ETIQUETA}>Contacto</p>
-          <h2 className={TITULO_SECCION}>Cuéntanos qué necesita tu empresa.</h2>
-          <p className={TEXTO_SECCION}>
+        <div className="fondo-oscuro relative isolate overflow-hidden rounded-3xl bg-marino-profundo p-7 text-white shadow-[0_30px_70px_-40px_rgba(0,38,74,0.8)] sm:p-9">
+          <div aria-hidden className="cuadricula-oscura absolute inset-0 -z-10 opacity-60" />
+          <p className={ETIQUETA_OSCURA}>Contacto</p>
+          <h2 className={TITULO_OSCURO}>Cuéntanos qué necesita tu empresa.</h2>
+          <p className={TEXTO_OSCURO}>
             Completa el formulario y el equipo revisará el caso para coordinar un diagnóstico inicial. Si
             falta algún dato, te lo pedimos antes de preparar la propuesta.
           </p>
 
           <ol className="mt-8 space-y-4">
             {PASOS_CONTACTO.map((paso, indice) => (
-              <li key={paso} className="flex items-start gap-3 text-sm leading-relaxed text-acero">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-bold text-electrico-texto ring-1 ring-borde-azul">
+              <li key={paso} className="flex items-start gap-3 text-sm leading-relaxed text-white/75">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-[11px] font-bold text-electrico-claro ring-1 ring-white/15">
                   {indice + 1}
                 </span>
                 {paso}
@@ -239,7 +240,7 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
                 href={`https://wa.me/${CONTACTO.whatsapp}?text=${MENSAJE_WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2.5 font-medium text-marino transition-colors hover:text-electrico-texto"
+                className="flex items-center gap-2.5 font-medium text-white transition-colors hover:text-electrico-claro"
               >
                 <MessageCircle size={17} aria-hidden />
                 WhatsApp
@@ -248,7 +249,7 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
             {CONTACTO.correo && (
               <a
                 href={`mailto:${CONTACTO.correo}`}
-                className="flex items-center gap-2.5 font-medium text-marino transition-colors hover:text-electrico-texto"
+                className="flex items-center gap-2.5 font-medium text-white transition-colors hover:text-electrico-claro"
               >
                 <Mail size={17} aria-hidden />
                 {CONTACTO.correo}
@@ -257,19 +258,19 @@ export function SeccionContacto({ solicitud }: { solicitud: { servicio: IdServic
             {CONTACTO.telefono && (
               <a
                 href={`tel:${CONTACTO.telefono.replace(/\s/g, '')}`}
-                className="flex items-center gap-2.5 font-medium text-marino transition-colors hover:text-electrico-texto"
+                className="flex items-center gap-2.5 font-medium text-white transition-colors hover:text-electrico-claro"
               >
                 <Phone size={17} aria-hidden />
                 {CONTACTO.telefono}
               </a>
             )}
-            <p className="flex items-center gap-2.5 text-acero">
-              <MapPin size={17} className="text-electrico" aria-hidden />
+            <p className="flex items-center gap-2.5 text-white/70">
+              <MapPin size={17} className="text-electrico-claro" aria-hidden />
               {CONTACTO.ubicacion}
             </p>
           </div>
 
-          <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-acero">
+          <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-white/70">
             <LockKeyhole size={14} className="mt-0.5 shrink-0 text-verde" aria-hidden />
             Tus datos se usan solo para atender esta solicitud. No los publicamos ni los compartimos con
             terceros ajenos al servicio.
