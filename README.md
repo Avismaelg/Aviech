@@ -17,7 +17,7 @@ Dos sistemas visuales con la misma tipografía **Sofia Sans** autoalojada: el **
 - Formulario público de solicitudes: **https://aviech.avismael-eg.workers.dev/solicitud**
 - Portal público de talento: **https://aviech.avismael-eg.workers.dev/talento**
 - Privacidad y términos: **https://aviech.avismael-eg.workers.dev/privacidad** · **/terminos**
-- Demo visual de ejemplo (**no indexada**, aún no publicada): se sirve en `/ejemplo/securify` con `npm run dev` o la vista previa.
+- Demo visual de ejemplo (**no indexada**): **https://aviech.avismael-eg.workers.dev/ejemplo/securify**
 - Cada `git push` a `main` compila y publica solo (Cloudflare, en menos de 1 minuto).
 
 ### Módulos

@@ -177,7 +177,7 @@ usan como acento de marca ni para botones primarios.
 - **Actualización PWA:** el service worker usa red primero para la página y caché para
   recursos; al detectar una versión nueva se activa y **recarga una sola vez**
   (`src/main.tsx`). Subir `VERSION` en `public/sw.js` con cada cambio de caché.
-  Versión actual: `avitech-v2026-10-23-ejemplo-securify` (local; la publicada sigue siendo `avitech-v2026-10-22-rediseno`).
+  Versión actual: `avitech-v2026-10-23-ejemplo-securify`.
 - **Rendimiento (10.ª y 11.ª sesión):** `src/main.tsx` carga con `lazy` solo la página
   que toca (`/`, `/panel`, `/solicitud` o `/talento`) y `App.tsx` carga cada sección
   bajo `Suspense`; React y Supabase viajan en chunks de vendor separados
@@ -226,7 +226,7 @@ usan como acento de marca ni para botones primarios.
 - Mantener el menú móvil cerrado al elegir una sección.
 - Capitalizar nombres visibles (correo → «María»), no dejarlos en minúscula.
 
-## 8.1 Página de ejemplo «securify» (aislada, 23-oct-2026)
+## 8.1 Página de ejemplo «securify» (aislada, publicada el 23-oct-2026)
 
 `/ejemplo/securify` es una **demostración visual**, no parte del sitio comercial ni
 del panel: fondo negro, blanco, **Readex Pro Variable** autohospedada (solo se carga
@@ -236,8 +236,9 @@ entra en el paquete de `/` ni en el del panel. Sin datos, formularios ni llamada
 API. Lleva `noindex, nofollow` y `Disallow: /ejemplo` para no competir con el sitio.
 La maqueta sigue la plantilla de referencia (píldoras, titulares gigantes escalonados
 y estadísticas); solo se añadió foco visible y la pausa del video con
-`prefers-reduced-motion`. El video es el de la plantilla; para publicar la demo con
-material propio, se cambia la constante `VIDEO` del componente.
+`prefers-reduced-motion`. El video es el de la plantilla; para sustituirlo por
+material propio, se cambia la constante `VIDEO` del componente. Publicada el
+23-oct-2026 en el commit `aea3101`.
 
 ## 9. Don'ts (anti-patrones)
 
